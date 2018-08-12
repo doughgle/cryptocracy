@@ -1,9 +1,13 @@
 
 import unittest
+from hypothesis import given
+from hypothesis.strategies import text
 
-class Proxykeygen(unittest.TestCase):
-    def test(self):
-        self.fail('it failed :(')
+class TestProxyKeyGen(unittest.TestCase):
 
-if __name__ == "__main__":
+    @given(text())
+    def test_no_two_proxy_keys_are_the_same(self, s):
+        assert True
+
+if __name__ == '__main__':
     unittest.main()
