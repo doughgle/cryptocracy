@@ -1,4 +1,5 @@
 import unittest
+from add_user import AddUserUseCase
 
 class AddUserTest(unittest.TestCase):
     def runTest(self):
@@ -16,19 +17,6 @@ class AddUserTest(unittest.TestCase):
             "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f",
             cloud_server.get_proxy_key(user_id)
         )
-
-class AddUserUseCase(object):
-    def __init__(self, proxy_key_gen, cloud_server):
-        self.proxy_key_gen = proxy_key_gen
-        self.cloud_server = cloud_server
-
-    def run(self, user_id, user_public_key, attributes):
-        proxy_key = self.proxy_key_gen.generate(
-            user_public_key,
-            self.cloud_server.public_key,
-            attributes
-        )
-        self.cloud_server.add_user_proxy_key(user_id, proxy_key)
 
 class CloudServerMock(object):
 
