@@ -13,8 +13,8 @@ class AddUserTest(unittest.TestCase):
 
         self.assertIn(user_id, cloud_server.get_proxy_key_store())
         self.assertEqual(
-          "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f",
-          cloud_server.get_proxy_key(user_id)
+            "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f",
+            cloud_server.get_proxy_key(user_id)
         )
 
 class AddUserUseCase(object):
@@ -24,9 +24,9 @@ class AddUserUseCase(object):
 
     def run(self, user_id, user_public_key, attributes):
         proxy_key = self.proxy_key_gen.generate(
-          user_public_key,
-          self.cloud_server.public_key,
-          attributes
+            user_public_key,
+            self.cloud_server.public_key,
+            attributes
         )
         self.cloud_server.add_user_proxy_key(user_id, proxy_key)
 
