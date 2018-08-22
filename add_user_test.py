@@ -23,10 +23,18 @@ class AddUserUseCase(object):
         self.cloud_server = cloud_server
 
     def run(self, user_id, user_public_key, attributes):
-        proxy_key = self.proxy_key_gen.generate()
+        proxy_key = self.proxy_key_gen.generate(
+          user_public_key,
+          self.cloud_server.public_key,
+          attributes
+        )
         self.cloud_server.add_user_proxy_key(user_id, proxy_key)
 
 class CloudServerMock(object):
+
+    @property
+    def public_key(self):
+        return '4228e3eabc0ec5d246ef114eb0c11edbe6453190'
 
     def __init__(self):
         self.proxy_key_store = {}
@@ -43,7 +51,7 @@ class CloudServerMock(object):
 
 class ProxyKeyGeneratorMock(object):
 
-    def generate(self):
+    def generate(self, user_public_key, cloud_server_public_key, user_attributes):
         return "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f"
 
 if __name__ == '__main__':
