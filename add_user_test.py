@@ -6,27 +6,44 @@ class AddUserTest(unittest.TestCase):
         attributes = {"gender" : "female", "age" : 25}
         user_public_key = "bfed8adb4f21cc3f2a813ed8389d02709f34749f"
         cloud_server = CloudServerMock()
-        add_user = AddUserUseCase(cloud_server)
+        proxy_key_gen = ProxyKeyGeneratorMock()
+
+        add_user = AddUserUseCase(proxy_key_gen, cloud_server)
         add_user.run(user_id, user_public_key, attributes)
+
         self.assertIn(user_id, cloud_server.get_proxy_key_store())
         self.assertEqual(
-            "273c1ff060399a9059558ff7e8d75876e36836d6",
+            "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f",
             cloud_server.get_proxy_key(user_id))
 
 class AddUserUseCase():
-    def __init__(self, cloud_server):
-        pass
+    def __init__(self, proxy_key_gen, cloud_server):
+        self.proxy_key_gen = proxy_key_gen
+        self.cloud_server = cloud_server
 
     def run(self, user_id, user_public_key, attributes):
-        pass
+        proxy_key = self.proxy_key_gen.generate()
+        self.cloud_server.add_user_proxy_key(user_id, proxy_key)
 
 class CloudServerMock():
 
-    def get_proxy_key_store(self):
-        return {'123456': '273c1ff060399a9059558ff7e8d75876e36836d6'}
+    def __init__(self):
+        self.proxy_key_store = {}
 
-    def get_proxy_key(self, userid):
-        return '273c1ff060399a9059558ff7e8d75876e36836d6'
+    def add_user_proxy_key(self, user_id, proxy_key):
+        self.proxy_key_store[user_id] = proxy_key
+
+    def get_proxy_key_store(self):
+        '''spy method'''
+        return self.proxy_key_store
+
+    def get_proxy_key(self, user_id):
+        '''spy method'''
+        return self.proxy_key_store[user_id]
+
+class ProxyKeyGeneratorMock():
+    def generate(self):
+        return "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f"
 
 if __name__ == '__main__':
     unittest.main()
