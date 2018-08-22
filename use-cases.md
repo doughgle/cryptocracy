@@ -5,7 +5,7 @@
 |actors|Data Owner, System|
 |pre-conditions|one-time setup complete.<br>master key generated.<br>global params generated.<br>Cloud Server's public key known.<br>User's public key known.
 |post-conditions|user and proxy key are added in Cloud Server's proxy key store.|
-|main course|Data Owner decides attributes for user.<br>Data Owner inputs `userid`, `user's public key` and associated `attributes`.<br>System generates proxy key for user with decided attibutes.<br>Data Owner transfers proxy key with username to Cloud Server. (*should this be out of band?*)<br>Cloud Server adds proxy key for user.|
+|main course|Data Owner decides attributes for user.<br>Data Owner inputs `userid`, `user's public key` and associated `attributes`.<br>System generates proxy key for user with decided attibutes.<br>System posts proxy key with username to Cloud Server. (*should this be out of band?*)<br>Cloud Server adds proxy key for user.|
 |alternate courses|
 |exceptional courses|
 
