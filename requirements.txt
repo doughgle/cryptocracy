@@ -1,1 +1,3 @@
 hypothesis
+ipython
+pylint
