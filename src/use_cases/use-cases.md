@@ -13,7 +13,7 @@
 |---|---|
 |actors|Data Owner|
 |pre-conditions|one-time setup complete.<br>master key generated.<br>global params generated.
-|post-conditions|
-|main course|Data Owner calls `encrypt(message, access policy expression)`.<br>attributes suggestions may come to auto-complete the policy|
+|post-conditions|ciphertext file produced for given plaintext file.|
+|main course|Data Owner submits `file` for encryption together with an `access policy expression`.<br>System responds with a ciphertext representing the file.<br>|
 |alternate courses|
 |exceptional courses|
