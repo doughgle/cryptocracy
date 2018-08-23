@@ -1,5 +1,7 @@
 import unittest
 from add_user import AddUserUseCase
+from add_user import Result
+
 
 class AddUserTest(unittest.TestCase):
     def runTest(self):
@@ -10,13 +12,15 @@ class AddUserTest(unittest.TestCase):
         proxy_key_gen = ProxyKeyGeneratorMock()
 
         add_user = AddUserUseCase(proxy_key_gen, cloud_server)
-        add_user.run(user_id, user_public_key, attributes)
+        response = add_user.run(user_id, user_public_key, attributes)
 
         self.assertIn(user_id, cloud_server.get_proxy_key_store())
         self.assertEqual(
             "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f",
             cloud_server.get_proxy_key(user_id)
         )
+        
+        self.assertDictContainsSubset({"result": Result.SUCCESS, "user_id": 800800}, response)
 
 class CloudServerMock(object):
 

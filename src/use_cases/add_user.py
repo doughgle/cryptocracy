@@ -1,3 +1,7 @@
+from enum import Enum
+
+Result = Enum("Result", "SUCCESS FAILURE")
+
 class AddUserUseCase(object):
     def __init__(self, proxy_key_gen, cloud_server):
         self.proxy_key_gen = proxy_key_gen
@@ -10,3 +14,6 @@ class AddUserUseCase(object):
             attributes
         )
         self.cloud_server.add_user_proxy_key(user_id, proxy_key)
+        return {"result": Result.SUCCESS, "user_id": 800800}
+
+
