@@ -1,6 +1,7 @@
 import unittest
 from add_user import AddUserUseCase
 from add_user import Result
+from add_user import AddUserRequest
 
 
 class AddUserTest(unittest.TestCase):
@@ -12,7 +13,8 @@ class AddUserTest(unittest.TestCase):
         proxy_key_gen = ProxyKeyGeneratorMock()
 
         add_user = AddUserUseCase(proxy_key_gen, cloud_server)
-        response = add_user.run(user_id, user_public_key, attributes)
+        request = AddUserRequest(user_id, user_public_key, attributes)
+        response = add_user.run(request)
 
         self.assertIn(user_id, cloud_server.get_proxy_key_store())
         self.assertEqual(
