@@ -1,6 +1,6 @@
 from enum import Enum
 
-Result = Enum("Result", "SUCCESS FAILURE")
+RESULT = Enum("RESULT", "SUCCESS FAILURE")
 
 
 class AddUserUseCase(object):
@@ -19,11 +19,10 @@ class AddUserUseCase(object):
             request.attributes
         )
         self.cloud_server.add_user_proxy_key(request.user_id, proxy_key)
-        return {"result": Result.SUCCESS, "user_id": 800800}
+        return {"result": RESULT.SUCCESS, "user_id": 800800}
 
 
 class AddUserRequest(object):
-
     def __init__(self, user_id, user_public_key, attributes):
         self._user_id = user_id
         self._user_public_key = user_public_key

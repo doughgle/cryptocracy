@@ -1,6 +1,6 @@
 import unittest
 from add_user import AddUserUseCase
-from add_user import Result
+from add_user import RESULT
 from add_user import AddUserRequest
 
 
@@ -22,7 +22,7 @@ class AddUserTest(unittest.TestCase):
             cloud_server.get_proxy_key(user_id)
         )
         
-        self.assertDictContainsSubset({"result": Result.SUCCESS, "user_id": 800800}, response)
+        self.assertDictContainsSubset({"result": RESULT.SUCCESS, "user_id": 800800}, response)
 
 class CloudServerMock(object):
 
