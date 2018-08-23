@@ -1,6 +1,4 @@
-from enum import Enum
-
-RESULT = Enum("RESULT", "SUCCESS FAILURE")
+from src.use_cases.result import RESULT
 
 
 class AddUserUseCase(object):

@@ -1,6 +1,6 @@
 import unittest
 from add_user import AddUserUseCase
-from add_user import RESULT
+from src.use_cases.result import RESULT
 from add_user import AddUserRequest
 
 
