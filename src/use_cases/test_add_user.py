@@ -19,7 +19,7 @@ class AddUserTest(unittest.TestCase):
         self.assertIn(user_id, cloud_server.get_proxy_key_store())
         self.assertEqual(
             "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f",
-            cloud_server.get_proxy_key(user_id)
+            cloud_server.get_user_proxy_key(user_id)
         )
         
         self.assertDictContainsSubset({"result": RESULT.SUCCESS, "user_id": 800800}, response)
@@ -36,7 +36,7 @@ class CloudServerMock(object):
     def add_user_proxy_key(self, user_id, proxy_key):
         self.proxy_key_store[user_id] = proxy_key
 
-    def get_proxy_key(self, user_id):
+    def get_user_proxy_key(self, user_id):
         return self.proxy_key_store[user_id]
 
     def get_proxy_key_store(self):
