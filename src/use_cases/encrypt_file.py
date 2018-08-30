@@ -54,12 +54,14 @@ class EncryptFileResponse(object):
     def output_file(self):
         return self._output_file
 
-    def __eq__(self, o):
-        if not isinstance(o, EncryptFileResponse):
+    def __eq__(self, other):
+        if not isinstance(other, EncryptFileResponse):
             return NotImplemented
-        if self is o:
+        if self is other:
             return True
-        return self.result == o.result and self.output_file == o.output_file
+        return self.result == other.result and self.output_file == other.output_file
 
     def __repr__(self):
-        return super(EncryptFileResponse, self).__repr__() + "result=" + self.result.name + "output_file=" + self.output_file
+        return super(EncryptFileResponse, self).__repr__() + \
+               "result=" + self.result.name + \
+               "output_file=" + self.output_file
