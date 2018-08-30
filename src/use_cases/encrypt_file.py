@@ -1,5 +1,5 @@
 from src.use_cases.result import RESULT
-
+import json
 
 class EncryptFileResponse(object):
     def __init__(self, result, output_file):
@@ -21,6 +21,9 @@ class EncryptFileResponse(object):
             return True
         return self.result == o.result and self.output_file == o.output_file
 
+    def __repr__(self):
+        return super(EncryptFileResponse, self).__repr__() + "result=" + self.result.name + "output_file=" + self.output_file
+
 
 class EncryptFileUseCase(object):
     def __init__(self, cipher):
@@ -30,7 +33,7 @@ class EncryptFileUseCase(object):
         result = self.cipher.encrypt(request.input_file,
                                      request.output_file,
                                      request.policy_expression)
-        response = EncryptFileResponse(RESULT.SUCCESS, request.output_file)
+        response = EncryptFileResponse(RESULT.SUCCESS if result else RESULT.FAILURE, request.output_file)
         return response
 
 
