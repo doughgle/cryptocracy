@@ -2,9 +2,8 @@ from src.use_cases.result import RESULT
 
 
 class EncryptFileUseCase(object):
-    def __init__(self, cipher, file_operator):
+    def __init__(self, cipher):
         self.cipher = cipher
-        self.file_operator = file_operator
 
     def run(self, request):
         result = RESULT.FAILURE
