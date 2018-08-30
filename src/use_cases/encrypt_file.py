@@ -2,14 +2,23 @@ from src.use_cases.result import RESULT
 
 
 class EncryptFileUseCase(object):
-    def __init__(self, cipher):
+    def __init__(self, cipher, file_operator):
         self.cipher = cipher
+        self.file_operator = file_operator
 
     def run(self, request):
-        result = self.cipher.encrypt(request.input_file,
-                                     request.output_file,
-                                     request.policy_expression)
-        response = EncryptFileResponse(RESULT.SUCCESS if result else RESULT.FAILURE, request.output_file)
+        result = RESULT.FAILURE
+        try:
+            with open(request.input_file, 'r') as in_f:
+                plaintext = in_f.read()
+            ciphertext = self.cipher.encrypt(plaintext,
+                                             request.policy_expression)
+            with open(request.output_file, 'w') as out_f:
+                out_f.write(ciphertext)
+            result = RESULT.SUCCESS
+        finally:
+            response = EncryptFileResponse(result,
+                                           request.output_file)
         return response
 
 
