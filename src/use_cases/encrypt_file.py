@@ -1,28 +1,4 @@
 from src.use_cases.result import RESULT
-import json
-
-class EncryptFileResponse(object):
-    def __init__(self, result, output_file):
-        self._result = result
-        self._output_file = output_file
-
-    @property
-    def result(self):
-        return self._result
-
-    @property
-    def output_file(self):
-        return self._output_file
-
-    def __eq__(self, o):
-        if not isinstance(o, EncryptFileResponse):
-            return NotImplemented
-        if self is o:
-            return True
-        return self.result == o.result and self.output_file == o.output_file
-
-    def __repr__(self):
-        return super(EncryptFileResponse, self).__repr__() + "result=" + self.result.name + "output_file=" + self.output_file
 
 
 class EncryptFileUseCase(object):
@@ -54,3 +30,27 @@ class EncryptFileRequest(object):
     @property
     def policy_expression(self):
         return self._policy_expression
+
+
+class EncryptFileResponse(object):
+    def __init__(self, result, output_file):
+        self._result = result
+        self._output_file = output_file
+
+    @property
+    def result(self):
+        return self._result
+
+    @property
+    def output_file(self):
+        return self._output_file
+
+    def __eq__(self, o):
+        if not isinstance(o, EncryptFileResponse):
+            return NotImplemented
+        if self is o:
+            return True
+        return self.result == o.result and self.output_file == o.output_file
+
+    def __repr__(self):
+        return super(EncryptFileResponse, self).__repr__() + "result=" + self.result.name + "output_file=" + self.output_file
