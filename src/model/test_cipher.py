@@ -3,6 +3,8 @@ import unittest
 from hypothesis import given
 from hypothesis.strategies import binary
 
+from src.model.key_spec import keys
+
 
 class Cipher(object):
     def encrypt(self, message, policy_expression):
@@ -17,15 +19,11 @@ class Cipher(object):
 
 class TestCipher(unittest.TestCase):
 
-    @given(message=binary())
-    def test_encrypt_decrypt_round_trip(self, message):
+    @given(message=binary(), cloud_server_private_key=keys, proxy_key_user=keys, user_private_key=keys)
+    def test_encrypt_decrypt_round_trip(self, message, cloud_server_private_key, proxy_key_user, user_private_key):
         cipher = Cipher()
         policy_expression = u'((Manager and Experience > 3) or Admin)'
-        cloud_server_private_key = 'kashdkjahd'
-        proxy_key_user = 'aksljnd09'
-        user_private_key = 'ajsdknbcvcryto'
 
         ciphertext = cipher.encrypt(message, policy_expression)
         intermediate_value = cipher.proxy_decrypt(cloud_server_private_key, proxy_key_user, ciphertext)
         self.assertEqual(message, cipher.decrypt(user_private_key, intermediate_value))
-
