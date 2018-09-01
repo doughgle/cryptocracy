@@ -1,14 +1,19 @@
 import unittest
+
+from hypothesis import given
+
 from add_user import AddUserUseCase
+from src.model.key_spec import keys
 from src.use_cases.result import RESULT
 from add_user import AddUserRequest
 
 
 class AddUserTest(unittest.TestCase):
-    def runTest(self):
+
+    @given(user_public_key=keys)
+    def runTest(self, user_public_key):
         user_id = "123456" # Alice Tan
         attributes = {"gender" : "female", "age" : 25}
-        user_public_key = "bfed8adb4f21cc3f2a813ed8389d02709f34749f"
         cloud_server = CloudServerMock()
         proxy_key_gen = ProxyKeyGeneratorMock()
 
@@ -23,6 +28,7 @@ class AddUserTest(unittest.TestCase):
         )
         
         self.assertDictContainsSubset({"result": RESULT.SUCCESS, "user_id": 800800}, response)
+
 
 class CloudServerMock(object):
 
@@ -43,10 +49,12 @@ class CloudServerMock(object):
         '''spy method'''
         return self.proxy_key_store
 
+
 class ProxyKeyGeneratorMock(object):
 
     def generate(self, user_public_key, cloud_server_public_key, user_attributes):
         return "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f"
+
 
 if __name__ == '__main__':
     unittest.main()

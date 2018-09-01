@@ -1,3 +1,4 @@
+import base64
 import os
 
 
@@ -7,4 +8,4 @@ class ProxyKeyGenerator(object):
         pass
 
     def generate(self, user_public_key, cloud_server_public_key, user_attributes):
-        return os.urandom(10)
+        return base64.b64encode(os.urandom(16))
