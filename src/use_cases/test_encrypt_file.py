@@ -2,7 +2,7 @@ import unittest
 import os
 
 from src.use_cases.encrypt_file import EncryptFileResponse, EncryptFileUseCase, EncryptFileRequest
-from src.use_cases.result import RESULT
+from src.model.result import RESULT
 
 
 class NullCipher(object):

@@ -4,7 +4,7 @@ from hypothesis import given
 
 from add_user import AddUserUseCase
 from src.model.key_spec import keys
-from src.use_cases.result import RESULT
+from src.model.result import RESULT
 from add_user import AddUserRequest
 
 

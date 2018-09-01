@@ -1,4 +1,4 @@
-from src.use_cases.result import RESULT
+from src.model.result import RESULT
 
 
 class AddUserUseCase(object):
