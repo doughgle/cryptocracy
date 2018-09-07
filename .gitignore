@@ -1,3 +1,4 @@
 .hypothesis
 *.pyc
 .idea/
+.pytest_cache

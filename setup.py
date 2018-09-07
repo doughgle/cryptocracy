@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='proxy-crypt',
@@ -6,7 +6,7 @@ setup(
     description='Delegate attribute-based decryption to a \
     proxy server without the need to implicitly trust that server.',
     url='github.com/doughgle',
-    packages=[''],
+    packages=find_packages(),
     install_requires=[],
     author='Douglas Hellinger',
     author_email='some@email.com'

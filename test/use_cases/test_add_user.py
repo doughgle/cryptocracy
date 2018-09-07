@@ -2,10 +2,10 @@ import unittest
 
 from hypothesis import given
 
-from add_user import AddUserUseCase
+from src.use_cases.add_user import AddUserUseCase
 from src.model.key_spec import keys
 from src.model.result import RESULT
-from add_user import AddUserRequest
+from src.use_cases.add_user import AddUserRequest
 
 
 class AddUserTest(unittest.TestCase):
