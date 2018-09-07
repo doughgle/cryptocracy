@@ -8,7 +8,7 @@ from src.model.key_spec import keys
 
 class TestCloudServer(unittest.TestCase):
 
-    @given(user_id=text(), proxy_key=keys)
+    @given(user_id=text(), proxy_key=keys())
     def test_add_key_for_userid_retrieve_by_userid(self, user_id, proxy_key):
         server = CloudServer()
         server.add_user_proxy_key(user_id, proxy_key)

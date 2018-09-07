@@ -10,7 +10,7 @@ from add_user import AddUserRequest
 
 class AddUserTest(unittest.TestCase):
 
-    @given(user_public_key=keys)
+    @given(user_public_key=keys())
     def runTest(self, user_public_key):
         user_id = "123456" # Alice Tan
         attributes = {"gender" : "female", "age" : 25}

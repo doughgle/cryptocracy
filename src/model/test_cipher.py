@@ -21,9 +21,9 @@ class Cipher(object):
 class TestCipher(unittest.TestCase):
 
     @given(message=binary(),
-           cloud_server_private_key=keys,
-           proxy_key_user=keys,
-           user_private_key=keys,
+           cloud_server_private_key=keys(),
+           proxy_key_user=keys(),
+           user_private_key=keys(),
            policy_expression=policy_expressions())
     def test_encrypt_proxy_decrypt_decrypt_round_trip(self,
                                                       message,
