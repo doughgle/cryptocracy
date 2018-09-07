@@ -4,6 +4,7 @@ from hypothesis import given
 from hypothesis.strategies import binary
 
 from src.model.key_spec import keys
+from src.model.policy_expression_spec import policy_expressions
 
 
 class Cipher(object):
@@ -19,10 +20,18 @@ class Cipher(object):
 
 class TestCipher(unittest.TestCase):
 
-    @given(message=binary(), cloud_server_private_key=keys, proxy_key_user=keys, user_private_key=keys)
-    def test_encrypt_decrypt_round_trip(self, message, cloud_server_private_key, proxy_key_user, user_private_key):
+    @given(message=binary(),
+           cloud_server_private_key=keys,
+           proxy_key_user=keys,
+           user_private_key=keys,
+           policy_expression=policy_expressions())
+    def test_encrypt_proxy_decrypt_decrypt_round_trip(self,
+                                                      message,
+                                                      cloud_server_private_key,
+                                                      proxy_key_user,
+                                                      user_private_key,
+                                                      policy_expression):
         cipher = Cipher()
-        policy_expression = u'((Manager and Experience > 3) or Admin)'
 
         ciphertext = cipher.encrypt(message, policy_expression)
         intermediate_value = cipher.proxy_decrypt(cloud_server_private_key, proxy_key_user, ciphertext)
