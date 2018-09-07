@@ -1,6 +1,3 @@
-import unittest
-
-from hypothesis import given
 from hypothesis.strategies import text, composite, sampled_from, characters, one_of, integers
 
 
@@ -36,11 +33,6 @@ def gates():
     return sampled_from((u'or', u'and'))
 
 
-class TestPolicyExpressionSpec(unittest.TestCase):
-
-    @given(policy_expressions())
-    def test_policy_expression_spec(self, policy_expression):
-        expr = policy_expression
-        print expr
-        assert expr # not empty
-        assert expr.count(u'(') == expr.count(u')')
+def assert_valid(policy_expression):
+    assert policy_expression  # not empty
+    assert policy_expression.count(u'(') == policy_expression.count(u')')
