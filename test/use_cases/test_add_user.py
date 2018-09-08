@@ -12,13 +12,14 @@ class AddUserTest(unittest.TestCase):
 
     @given(user_public_key=keys())
     def runTest(self, user_public_key):
-        user_id = "123456" # Alice Tan
-        attributes = {"gender" : "female", "age" : 25}
         cloud_server = CloudServerMock()
         proxy_key_gen = ProxyKeyGeneratorMock()
-
         add_user = AddUserUseCase(proxy_key_gen, cloud_server)
+
+        user_id = "alice.tan@nus.edu.sg"
+        attributes = {"gender": "female", "age": 25}
         request = AddUserRequest(user_id, user_public_key, attributes)
+
         response = add_user.run(request)
 
         self.assertIn(user_id, cloud_server.get_proxy_key_store())
@@ -27,7 +28,7 @@ class AddUserTest(unittest.TestCase):
             cloud_server.get_user_proxy_key(user_id)
         )
         
-        self.assertDictContainsSubset({"result": RESULT.SUCCESS, "user_id": 800800}, response)
+        self.assertDictContainsSubset({"result": RESULT.SUCCESS, "user_id": user_id}, response)
 
 
 class CloudServerMock(object):
