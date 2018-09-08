@@ -1,6 +1,10 @@
 # Proxy Crypt
 > Delegate attribute-based decryption to a proxy server without the need to implicitly trust that server.
 
+## Use Cases
+See [use-cases.md](./src/use_cases/use-cases.md).
+
+## Developing
 Clean
 ```sh
 $ python setup.py clean --all
@@ -8,7 +12,7 @@ $ python setup.py clean --all
 
 Test
 ```sh
-$ python setup.py test --test-suite oabe_proxykeygen_test
+$ python setup.py test
 ```
 
 Package

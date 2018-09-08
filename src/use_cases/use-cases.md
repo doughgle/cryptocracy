@@ -1,4 +1,5 @@
 # Use Cases
+===
 
 |add user||
 |---|---|
@@ -8,6 +9,8 @@
 |main course|Data Owner decides attributes for user.<br>Data Owner inputs `userid ` (maybe email address), `user's public key` and associated `attributes`.<br>System generates proxy key for user with decided attibutes.<br>System posts proxy key with username to Cloud Server. (*should this be out of band?*)<br>Cloud Server adds proxy key for user.<br>System responds to Data Owner with result and `user identification ref`.|
 |alternate courses|
 |exceptional courses|
+
+---
 
 |encrypt file||
 |---|---|
