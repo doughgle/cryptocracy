@@ -17,6 +17,6 @@
 |actors|Data Owner|
 |pre-conditions|one-time setup complete.<br>master key generated.<br>global params generated.
 |post-conditions|ciphertext file produced for given plaintext file.|
-|main course|Data Owner submits `file` for encryption together with an `access policy expression`.<br>System responds with a ciphertext representing the file.<br>|
+|main course|Data Owner submits `file` for encryption together with an `access policy expression`.<br>System responds with an encrypted file representing the plaintext file.<br>|
 |alternate courses|
 |exceptional courses|
