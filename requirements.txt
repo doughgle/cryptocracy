@@ -2,3 +2,4 @@ hypothesis
 ipython
 pylint
 pytest
+boto3
