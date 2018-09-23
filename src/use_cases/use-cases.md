@@ -4,19 +4,33 @@
 |add user||
 |---|---|
 |actors|Data Owner, System|
-|pre-conditions|one-time setup complete.<br>master key generated.<br>global params generated.<br>Cloud Server's public key known.<br>User's public key known.
+|pre-conditions|one-time setup complete.<br>master key pair generated.<br>global params generated.<br>Cloud Server's public key known.<br>User's public key known.
 |post-conditions|user and proxy key are added in Cloud Server's proxy key store.|
 |main course|Data Owner decides attributes for user.<br>Data Owner inputs `userid ` (maybe email address), `user's public key` and associated `attributes`.<br>System generates proxy key for user with decided attibutes.<br>System posts proxy key with username to Cloud Server. (*should this be out of band?*)<br>Cloud Server adds proxy key for user.<br>System responds to Data Owner with result and `user identification ref`.|
 |alternate courses|
 |exceptional courses|
+|example|`$ aws dynamodb scan --table-name proxy-key-table`<br>`$ aws dynamodb put-item --table-name proxy-key-table --item "$ITEM"`|
 
 ---
 
 |encrypt file||
 |---|---|
 |actors|Data Owner|
-|pre-conditions|one-time setup complete.<br>master key generated.<br>global params generated.
+|pre-conditions|one-time setup complete.<br>master key pair generated.<br>global params generated.
 |post-conditions|ciphertext file produced for given plaintext file.|
 |main course|Data Owner submits `file` for encryption together with an `access policy expression`.<br>System responds with an encrypted file representing the plaintext file.<br>|
 |alternate courses|
 |exceptional courses|
+|example| `$ oabe_enc -v -s CP -e '(A or B) and C' -i data.png -o encrypted.png.cpabe -p gov.sg`|
+
+---
+
+|upload file||
+|---|---|
+|example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp encrypted.png.cpabe s3://proxy-crypt-bucket/encrypted.png.cpabe```|
+
+---
+
+|download file||
+|---|---|
+|example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp s3://proxy-crypt-bucket/encrypted.png.cpabe encrypted.png.cpabe```|
