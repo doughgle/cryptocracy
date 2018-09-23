@@ -16,7 +16,7 @@ class AddUserUseCase(object):
             self.cloud_server.public_key,
             request.attributes
         )
-        self.cloud_server.add_user_proxy_key(request.user_id, proxy_key)
+        self.cloud_server.put(request.user_id, proxy_key)
         return {"result": RESULT.SUCCESS, "user_id": request.user_id}
 
 
