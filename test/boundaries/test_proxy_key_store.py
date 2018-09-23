@@ -3,7 +3,7 @@ import unittest
 from hypothesis import given, settings
 from hypothesis.strategies import emails
 
-from src.model.proxy_key_store import ProxyKeyStore, AwsProxyKeyStore
+from src.boundaries.proxy_key_store import ProxyKeyStore, AwsProxyKeyStore
 from src.model.key_spec import keys
 
 
