@@ -1,4 +1,4 @@
-class CloudServer(object):
+class ProxyKeyStore(object):
 
     def __init__(self):
         self.proxy_key_store = {}
@@ -16,7 +16,7 @@ class CloudServer(object):
 import boto3
 
 
-class AwsCloudServer(object):
+class AwsProxyKeyStore(object):
 
     def __init__(self, table_name):
         dynamodb = boto3.resource('dynamodb')

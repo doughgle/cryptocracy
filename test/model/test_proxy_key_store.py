@@ -3,11 +3,11 @@ import unittest
 from hypothesis import given, settings
 from hypothesis.strategies import emails
 
-from src.model.cloud_server import CloudServer, AwsCloudServer
+from src.model.proxy_key_store import ProxyKeyStore, AwsProxyKeyStore
 from src.model.key_spec import keys
 
 
-class TestCloudServer:
+class ProxyKeyStoreTestBase:
 
     @settings(max_examples=10)
     @given(user_id=emails(), proxy_key=keys())
@@ -18,9 +18,9 @@ class TestCloudServer:
         self.server.delete_user_proxy_key(user_id)
 
 
-class TestInMemoryCloudServer(TestCloudServer, unittest.TestCase):
-    server = CloudServer()
+class InMemoryProxyKeyStoreTestBase(ProxyKeyStoreTestBase, unittest.TestCase):
+    server = ProxyKeyStore()
 
 
-class TestAwsCloudServer(TestCloudServer, unittest.TestCase):
-    server = AwsCloudServer(table_name=u'proxy-key-table-nonprod')
+class AwsProxyKeyStoreTestBase(ProxyKeyStoreTestBase, unittest.TestCase):
+    server = AwsProxyKeyStore(table_name=u'proxy-key-table-nonprod')
