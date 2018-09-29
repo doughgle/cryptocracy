@@ -1,4 +1,4 @@
-# Use Cases
+Use Cases
 ===
 
 |add user||
@@ -34,3 +34,10 @@
 |download file||
 |---|---|
 |example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp s3://proxy-crypt-bucket/encrypted.png.cpabe encrypted.png.cpabe```|
+
+---
+### Upload Download Worflow
+![alt text](diagrams/Upload-Download%20Workflow.png)
+---
+### Revoke User Workflow
+![alt text](diagrams/Revoke%20User%20Workflow.png)
