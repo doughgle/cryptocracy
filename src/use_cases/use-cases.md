@@ -1,7 +1,7 @@
 Use Cases
 ===
 
-|add user||
+|Add user||
 |---|---|
 |actors|Data Owner, System|
 |pre-conditions|one-time setup complete.<br>master key pair generated.<br>global params generated.<br>Cloud Server's public key known.<br>User's public key known.
@@ -13,7 +13,7 @@ Use Cases
 
 ---
 
-|encrypt file||
+|Encrypt file||
 |---|---|
 |actors|Data Owner|
 |pre-conditions|one-time setup complete.<br>master key pair generated.<br>global params generated.
@@ -25,14 +25,20 @@ Use Cases
 
 ---
 
-|upload file||
+|Upload file||
 |---|---|
 |example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp encrypted.png.cpabe s3://proxy-crypt-bucket/encrypted.png.cpabe```|
 
 ---
 
-|download file||
+|Download file||
 |---|---|
+|actors|User|
+|pre-conditions|File exists in Cloud Server.<br>User's proxy key exists in Proxy Key Store.|
+|post-conditions|User has partially decrypted file.|
+|main course|<ol><li>User requests `file`.<li>System partially decrypts `file` using User's proxy key.<li>System returns partially decrypted file to User.</ol>|
+|alternate courses|
+|exceptional courses|
 |example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp s3://proxy-crypt-bucket/encrypted.png.cpabe encrypted.png.cpabe```|
 
 ---
