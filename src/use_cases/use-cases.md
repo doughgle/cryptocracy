@@ -9,7 +9,7 @@ Use Cases
 |main course|Data Owner decides attributes for user.<br>Data Owner inputs `userid ` (maybe email address), `user's public key` and associated `attributes`.<br>System generates proxy key for user with decided attibutes.<br>System posts proxy key with username to Cloud Server. (*should this be out of band?*)<br>Cloud Server adds proxy key for user.<br>System responds to Data Owner with result and `user identification ref`.|
 |alternate courses|
 |exceptional courses|
-|example|`$ aws dynamodb scan --table-name proxy-key-table`<br>`$ aws dynamodb put-item --table-name proxy-key-table --item "$ITEM"`|
+|example|`$ aws dynamodb scan --table-name proxy-key-table`<br>`$ aws dynamodb put-item --table-name proxy-key-table --item "{\"user_id\":{\"S\":\"alice@dev.net\"}, \"proxy_key\":{\"S\":\"$PROXY_KEY\"}}"`|
 
 ---
 
