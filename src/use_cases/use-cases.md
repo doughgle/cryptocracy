@@ -34,15 +34,15 @@ Use Cases
 |Download file||
 |---|---|
 |actors|User|
-|pre-conditions|File exists in Cloud Server.<br>User's proxy key exists in Proxy Key Store.|
+|pre-conditions||
 |post-conditions|User has partially decrypted file.|
-|main course|<ol><li>User requests `file`.<li>System partially decrypts `file` using User's proxy key.<li>System returns partially decrypted file to User.</ol>|
-|alternate courses|
+|main course|<ol><li>User requests `file`.<li>System partially decrypts `file` using User's `proxy key`.<li>System returns partially decrypted file to User.</ol>|
+|alternate courses|2a.)<ol><li>User's `proxy key` not in Proxy Key Store.<li>System responds with Forbidden status.</ol>2b.)<ol><li>`file` does not exist in Cloud Server.<li>System responds with Not Found status.</ol>|
 |exceptional courses|
 |example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp s3://proxy-crypt-bucket/encrypted.png.cpabe encrypted.png.cpabe```|
 
 ---
-### Upload Download Worflow
+### Upload Download Workflow
 ![alt text](diagrams/Upload-Download%20Workflow.png)
 ---
 ### Revoke User Workflow
