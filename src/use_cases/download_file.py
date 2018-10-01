@@ -1,5 +1,5 @@
 from src.boundaries.object_cache import ObjectCache
-from src.boundaries.object_store import ObjectStore
+from src.boundaries.object_store import ObjectStore, ObjectNotFound
 from src.model.crypto import proxy_decrypt
 from src.model.result import RESULT
 
@@ -24,6 +24,8 @@ class DownloadFileUseCase(object):
             response = DownloadFileResponse(RESULT.SUCCESS, download_url=download_url)
         except KeyError:
             response = DownloadFileResponse(RESULT.FAILURE, status="FORBIDDEN")
+        except ObjectNotFound:
+            response = DownloadFileResponse(RESULT.FAILURE, status="NOT FOUND")
         return response
 
 

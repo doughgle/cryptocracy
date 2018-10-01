@@ -35,4 +35,14 @@ class DownloadFileTest(unittest.TestCase):
         response = self.download_file.run(request)
 
         self.assertEqual(RESULT.FAILURE, response.result)
+        self.assertEqual("FORBIDDEN", response.status)
+        self.assertEqual(None, response.download_url)
+
+    def test_file_not_found(self):
+        request = DownloadFileRequest("alice@dev.net", "file://" + "missing.me")
+
+        response = self.download_file.run(request)
+
+        self.assertEqual(RESULT.FAILURE, response.result)
+        self.assertEqual("NOT FOUND", response.status)
         self.assertEqual(None, response.download_url)
