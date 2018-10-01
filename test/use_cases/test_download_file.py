@@ -2,7 +2,7 @@ import os
 import unittest
 
 from src.boundaries.proxy_key_store import ProxyKeyStore
-from src.model.result import RESULT
+from src.model.result import RESULT, STATUS
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 
 
@@ -35,7 +35,7 @@ class DownloadFileTest(unittest.TestCase):
         response = self.download_file.run(request)
 
         self.assertEqual(RESULT.FAILURE, response.result)
-        self.assertEqual("FORBIDDEN", response.status)
+        self.assertEqual(STATUS.FORBIDDEN, response.status)
         self.assertEqual(None, response.download_url)
 
     def test_file_not_found(self):
@@ -44,5 +44,5 @@ class DownloadFileTest(unittest.TestCase):
         response = self.download_file.run(request)
 
         self.assertEqual(RESULT.FAILURE, response.result)
-        self.assertEqual("NOT FOUND", response.status)
+        self.assertEqual(STATUS.NOT_FOUND, response.status)
         self.assertEqual(None, response.download_url)
