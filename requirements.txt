@@ -3,3 +3,4 @@ ipython
 pylint
 pytest
 boto3
+pytest-pylint
