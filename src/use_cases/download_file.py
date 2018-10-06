@@ -5,10 +5,10 @@ from src.model.result import RESULT, STATUS
 
 
 class DownloadFileUseCase(object):
-    def __init__(self, proxy_key_store):
+    def __init__(self, proxy_key_store, object_store=ObjectStore()):
         self.proxy_key_store = proxy_key_store
         self.object_cache = ObjectCache()
-        self.object_store = ObjectStore()
+        self.object_store = object_store
 
     def run(self, request):
         """
