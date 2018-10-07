@@ -12,6 +12,10 @@ class ProxyKeyStore(object):
     def delete(self, user_id):
         del self.proxy_key_store[user_id]
 
+    @property
+    def public_key(self):
+        return self.__class__.__name__ + "publickey=="
+
 
 import boto3
 
@@ -32,3 +36,7 @@ class AwsProxyKeyStore(object):
 
     def delete(self, user_id):
         self.table.delete_item(Key={u'user_id': user_id})
+
+    @property
+    def public_key(self):
+        return self.__class__.__name__ + "publickey=="

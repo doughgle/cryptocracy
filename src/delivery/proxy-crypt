@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+"""
+Usage: proxy-crypt add_user <email_address> <user_public_key> <attribute_expression>
+       proxy-crypt revoke_user <email_address>
+       proxy-crypt (encrypt|decrypt) <file>
+       proxy-crypt (upload|download) <file>
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+
+"""
+import json
+
+from docopt import docopt
+
+from src.boundaries.proxy_key_store import ProxyKeyStore
+from src.model.proxy_key_generator import ProxyKeyGenerator
+from src.use_cases.add_user import AddUserUseCase, AddUserRequest
+
+if __name__ == '__main__':
+    arguments = docopt(__doc__, version='Proxy Crypt 1.0')
+    add_user = AddUserUseCase(ProxyKeyGenerator(master_secret_key=123456), proxy_key_store=ProxyKeyStore())
+    if arguments['add_user']:
+        response = add_user.run(AddUserRequest(user_id=arguments['<email_address>'],
+                                    user_public_key=arguments['<user_public_key>'],
+                                    attributes=arguments['<attribute_expression>']))
+    print(response)

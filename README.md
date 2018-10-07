@@ -21,10 +21,16 @@ Clean
 $ python setup.py clean --all
 ```
 
+Install locally for development
+```bash
+$ pip install -e .
+```
+
 Test
 ```sh
 $ python setup.py test
 ```
+
 
 Package
 ```sh
