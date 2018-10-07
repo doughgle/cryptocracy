@@ -33,7 +33,7 @@ class DownloadFileTest(unittest.TestCase):
 
         print(response)
         self.assertEqual(RESULT.SUCCESS, response.result)
-        self.assertEqual("http://proxy-crypt/file/945435a339729aa4b4d916ac7a9360fc", response.download_url)
+        self.assertEqual("fca2b4fd8e90fc9537720c3d00b0fd37433fa33aec12c76a4a33255dab27a16a", response.download_url)
 
     def test_proxy_key_not_found(self):
         request = DownloadFileRequest("bob@dev.net", self.download_url)

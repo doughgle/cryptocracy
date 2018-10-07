@@ -1,4 +1,3 @@
-import io
 import urllib2
 import urlparse
 
@@ -27,6 +26,9 @@ class ObjectStore(object):
         full_url = urlparse.urlparse(source_url)
         url = ("file://" + source_url) if full_url.scheme == '' else full_url.geturl()
         data = urllib2.urlopen(url).read()
+        self.put_binary(key, data)
+
+    def put_binary(self, key, data):
         self.store[key] = data
 
     def delete(self, key):
@@ -41,6 +43,9 @@ class AwsObjectStore(object):
 
     def put(self, source_url, key):
         self.s3.upload_file(source_url, self.bucket_name, key)
+
+    def put_binary(self, key, data):
+        self.s3.put_object(Bucket=self.bucket_name, Key=key, Body=data)
 
     def get_download_url(self, key):
         return self.s3.generate_presigned_url(
