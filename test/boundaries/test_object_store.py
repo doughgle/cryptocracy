@@ -14,7 +14,7 @@ class ObjectStoreTest(unittest.TestCase):
         self.store = object_store
         unittest.TestCase.__init__(self, methodName)
 
-    @settings(max_examples=3)
+    @settings(max_examples=10)
     @given(ciphertext=binary(min_size=16, max_size=2048))
     def test_put_url_get_binary(self, ciphertext):
         self.path = os.path.join(os.path.dirname(__file__), 'cipher.txt')
@@ -29,7 +29,7 @@ class ObjectStoreTest(unittest.TestCase):
         self.store.delete(key)
         os.remove(self.path)
 
-    @settings(max_examples=3)
+    @settings(max_examples=10)
     @given(lookup_key=lookup_keys(), ciphertext=binary(min_size=16, max_size=2048))
     def test_put_binary_get_url(self, lookup_key, ciphertext):
         self.store.put_binary(lookup_key, ciphertext)
