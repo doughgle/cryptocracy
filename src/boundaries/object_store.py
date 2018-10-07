@@ -53,7 +53,8 @@ class AwsObjectStore(object):
             Params={
                 'Bucket': self.bucket_name,
                 'Key': key
-            }
+            },
+            ExpiresIn=1800
         )
 
     def get(self, download_url):
