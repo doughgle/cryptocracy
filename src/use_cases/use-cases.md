@@ -13,6 +13,18 @@ Use Cases
 
 ---
 
+|Revoke user||
+|---|---|
+|actors|Data Owner, System|
+|pre-conditions|User's id key known.<br>User proxy key exists in proxy key store.|
+|post-conditions|User's proxy key does not exist in proxy key store.|
+|main course|<ol><li>Data Owner issues `revoke` command with `userid ` (maybe email address).<li>System removes `proxy key` for given user.<li>System responds to Data Owner with result and `user identification ref`.</ol>|
+|alternate courses|
+|exceptional courses|
+|example|`$ proxy-crypt revoke_user alice@a.com`|
+
+---
+
 |Encrypt file||
 |---|---|
 |actors|Data Owner|
