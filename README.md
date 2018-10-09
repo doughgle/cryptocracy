@@ -26,6 +26,11 @@ Install locally for development
 $ pip install -e .
 ```
 
+Use CLI
+```bash
+$ ./proxy-crypt
+```
+
 Test
 ```sh
 $ python setup.py test
