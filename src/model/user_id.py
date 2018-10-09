@@ -8,5 +8,5 @@ def assert_valid(user_id):
     try:
         assert re.match(pattern, user_id) is not None
     except AssertionError, e:
-        e.message = "invalid user_id. valid example: a@a.com"
+        e.message = "invalid user_id: '%s'. valid example: a@a.com" %user_id
         raise e

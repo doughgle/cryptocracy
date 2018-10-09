@@ -1,5 +1,5 @@
+from src.model import key_spec, user_id
 from src.model.result import RESULT
-from src.model.user_id import assert_valid
 
 
 class AddUserUseCase(object):
@@ -13,7 +13,8 @@ class AddUserUseCase(object):
         :return: response: result and user_id
         '''
         try:
-            assert_valid(request.user_id)
+            user_id.assert_valid(request.user_id)
+            key_spec.assert_valid(request.user_public_key)
             proxy_key = self.proxy_key_gen.generate(
                 request.user_public_key,
                 self.proxy_key_store.public_key,
