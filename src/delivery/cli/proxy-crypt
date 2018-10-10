@@ -16,13 +16,17 @@ from docopt import docopt
 from src.boundaries.proxy_key_store import AwsProxyKeyStore
 from src.model.proxy_key_generator import ProxyKeyGenerator
 from src.use_cases.add_user import AddUserUseCase, AddUserRequest
+from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Proxy Crypt 1.0')
     add_user = AddUserUseCase(ProxyKeyGenerator(master_secret_key=123456),
                               proxy_key_store=AwsProxyKeyStore('proxy-key-table'))
+    revoke_user = RevokeUserUseCase(AwsProxyKeyStore('proxy-key-table'))
     if arguments['add_user']:
         response = add_user.run(AddUserRequest(user_id=arguments['<email_address>'],
                                     user_public_key=arguments['<user_public_key>'],
                                     attributes=arguments['<attribute_expression>']))
+    elif arguments['revoke_user']:
+        response = revoke_user.run(RevokeUserRequest(user_id=arguments['<email_address>']))
     print(response)
