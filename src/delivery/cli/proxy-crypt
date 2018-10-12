@@ -10,6 +10,7 @@ Options:
   --version     Show version.
 
 """
+__version__ = 'Proxy Crypt 1.0'
 
 from docopt import docopt
 
@@ -24,7 +25,8 @@ if __name__ == '__main__':
                               proxy_key_store=AwsProxyKeyStore(table_name))
     revoke_user = RevokeUserUseCase(AwsProxyKeyStore(table_name))
 
-    arguments = docopt(__doc__, version='Proxy Crypt 1.0')
+    arguments = docopt(__doc__, version=__version__)
+    print(arguments)
     user_id = arguments['<email_address>']
     if arguments['add_user']:
         response = add_user.run(AddUserRequest(user_id=user_id,
