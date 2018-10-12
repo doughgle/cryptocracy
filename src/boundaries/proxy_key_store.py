@@ -12,6 +12,12 @@ class ProxyKeyStore(object):
     def delete(self, user_id):
         del self.proxy_key_store[user_id]
 
+    def users(self):
+        return set(self.proxy_key_store.keys())
+
+    def clear(self):
+        self.proxy_key_store.clear()
+
     @property
     def public_key(self):
         return self.__class__.__name__ + "publickey=="
@@ -23,8 +29,8 @@ import boto3
 class AwsProxyKeyStore(object):
 
     def __init__(self, table_name):
-        dynamodb = boto3.resource('dynamodb')
-        self.table = dynamodb.Table(name=table_name)
+        self.dynamodb = boto3.resource('dynamodb')
+        self.table = self.dynamodb.Table(name=table_name)
 
     def put(self, user_id, proxy_key):
         self.table.put_item(Item={u'user_id': user_id, u'proxy_key': proxy_key})
@@ -36,6 +42,10 @@ class AwsProxyKeyStore(object):
 
     def delete(self, user_id):
         self.table.delete_item(Key={u'user_id': user_id})
+
+    def users(self):
+        response = self.table.scan()
+        return {user['user_id'] for user in response['Items']}
 
     @property
     def public_key(self):
