@@ -38,6 +38,7 @@ if __name__ == '__main__':
 
     arguments = docopt(__doc__, version=__version__)
     user_id = arguments['<email_address>']
+    response = "Coming soon..!"
     if arguments['user']:
         if arguments['add']:
             response = add_user.run(AddUserRequest(user_id=user_id,
