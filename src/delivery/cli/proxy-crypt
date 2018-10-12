@@ -22,13 +22,19 @@ from src.model.proxy_key_generator import ProxyKeyGenerator
 from src.use_cases.add_user import AddUserUseCase, AddUserRequest
 from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
-if __name__ == '__main__':
+
+def init_use_cases():
+    global add_user, revoke_user, list_users
     table_name = 'proxy-key-table'
     proxy_key_store = AwsProxyKeyStore(table_name)
     add_user = AddUserUseCase(ProxyKeyGenerator(master_secret_key=123456),
                               proxy_key_store)
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
+
+
+if __name__ == '__main__':
+    init_use_cases()
 
     arguments = docopt(__doc__, version=__version__)
     user_id = arguments['<email_address>']
