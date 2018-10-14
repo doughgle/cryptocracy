@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 """
-Usage: proxy-crypt user add <email_address> <user_public_key> <attribute_expression>
-       proxy-crypt user list
-       proxy-crypt user revoke <email_address>
-       proxy-crypt (encrypt|decrypt) <file>
-       proxy-crypt (upload|download) <file>
+Usage: proxy-crypt user add <email_address> <user_public_key> <attribute_expression> [options]
+       proxy-crypt user list [options]
+       proxy-crypt user revoke <email_address> [options]
+       proxy-crypt (encrypt|decrypt) <file> [options]
+       proxy-crypt (upload|download) <url> --email-address=ADDRESS [options]
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  --proxy-crypt-config=FILE      Path to the config file to use for CLI commands. [default: $HOME/.proxy-crypt]
+  --email-address=ADDRESS        Identity of the caller for upload download commands.
+  -v, --verbose                  Show debug information.
+  -h --help                      Show this screen.
+  --version                      Show version.
 
 """
+from src.boundaries.object_store import AwsObjectStore
+from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 from src.use_cases.list_users import ListUsersUseCase, ListUsersRequest
 
 __version__ = 'Proxy Crypt 1.0'
@@ -24,19 +29,25 @@ from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
 
 def init_use_cases():
-    global add_user, revoke_user, list_users
-    table_name = 'proxy-key-table'
+    global add_user, revoke_user, list_users, download_file
+    table_name = 'proxy-key-table-default'
     proxy_key_store = AwsProxyKeyStore(table_name)
     add_user = AddUserUseCase(ProxyKeyGenerator(master_secret_key=123456),
                               proxy_key_store)
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
 
+    object_store = AwsObjectStore('proxy-crypt-bucket-default')
+    object_cache = AwsObjectStore('object-cache-bucket-default')
+    download_file = DownloadFileUseCase(proxy_key_store, object_store, object_cache)
+
 
 if __name__ == '__main__':
     init_use_cases()
 
     arguments = docopt(__doc__, version=__version__)
+    if arguments['--verbose']:
+        print(arguments)
     user_id = arguments['<email_address>']
     response = "Coming soon..!"
     if arguments['user']:
@@ -48,5 +59,7 @@ if __name__ == '__main__':
             response = revoke_user.run(RevokeUserRequest(user_id=user_id))
         elif arguments['list']:
             response = list_users.run(ListUsersRequest())
+    if arguments['download']:
+        response = download_file.run(DownloadFileRequest(user_id=arguments['--email-address'], request_url=arguments['<url>']))
 
     print(response)

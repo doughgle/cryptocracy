@@ -4,9 +4,13 @@ pattern_str = '''[a-zA-Z0-9!#$%&'*+-/=^_`{|}~]{1,64}@[a-zA-Z0-9!#$%&'*+-/=^_`{|}
 pattern = re.compile(pattern_str)
 
 
+class InvalidInput(StandardError):
+    pass
+
+
 def assert_valid(user_id):
     try:
         assert re.match(pattern, user_id) is not None
-    except AssertionError, e:
-        e.message = "invalid user_id: '%s'. valid example: a@a.com" %user_id
-        raise e
+    except (AssertionError, TypeError), e:
+        e.message = "invalid user_id: '%s'. valid example: a@a.com" % user_id
+        raise InvalidInput(e)

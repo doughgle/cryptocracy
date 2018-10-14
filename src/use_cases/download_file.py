@@ -1,7 +1,9 @@
 from src.boundaries.object_store import ObjectStore, ObjectNotFound
+from src.model import user_id
 from src.model.crypto import proxy_decrypt
 from src.model.object_cache_lookup_key import make_lookup_key
 from src.model.result import RESULT, STATUS
+from src.model.user_id import InvalidInput
 
 
 class DownloadFileUseCase(object):
@@ -15,6 +17,7 @@ class DownloadFileUseCase(object):
         :type request: DownloadFileRequest
         """
         try:
+            user_id.assert_valid(request.user_id)
             proxy_key = self.proxy_key_store.get(request.user_id)
             ciphertext = self.object_store.get(request.request_url)
             partially_decrypted_value = proxy_decrypt(proxy_key, ciphertext)
@@ -26,6 +29,8 @@ class DownloadFileUseCase(object):
             response = DownloadFileResponse(RESULT.FAILURE, status=STATUS.FORBIDDEN)
         except ObjectNotFound:
             response = DownloadFileResponse(RESULT.FAILURE, status=STATUS.NOT_FOUND)
+        except InvalidInput, e:
+            response = DownloadFileResponse(RESULT.FAILURE, status=STATUS.BAD_REQUEST, message=e.message)
         return response
 
 
@@ -35,21 +40,23 @@ class DownloadFileRequest(object):
         self.request_url = request_url
 
 
-class DownloadFileResponse(object):
-    def __init__(self, result, status=STATUS.OK, download_url=None):
-        self._result = result
-        self._status = status
-        self._download_url = download_url
+class DownloadFileResponse(dict):
+    def __init__(self, result, status=STATUS.OK, download_url=None, message=None):
+        super(DownloadFileResponse, self).__init__({"result": result, "status": status, "download_url": download_url, "message": message})
 
     @property
     def download_url(self):
         """ephemeral download url with TTL."""
-        return self._download_url
+        return self.__getitem__("download_url")
 
     @property
     def result(self):
-        return self._result
+        return self.__getitem__("result")
 
     @property
     def status(self):
-        return self._status
+        return self.__getitem__("status")
+
+    @property
+    def message(self):
+        return self.__getitem__("message")
