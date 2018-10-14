@@ -1,5 +1,6 @@
 from src.model import key_spec, user_id
 from src.model.result import RESULT
+from src.model.user_id import InvalidInput
 
 
 class AddUserUseCase(object):
@@ -22,7 +23,7 @@ class AddUserUseCase(object):
             )
             self.proxy_key_store.put(request.user_id, proxy_key)
             return {"result": RESULT.SUCCESS, "user_id": request.user_id}
-        except AssertionError, e:
+        except InvalidInput, e:
             return {"result": RESULT.FAILURE, "user_id": request.user_id, "error": e.message}
 
 
