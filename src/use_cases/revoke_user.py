@@ -3,8 +3,6 @@ from src.model.result import RESULT
 
 class RevokeUserResponse(dict):
     pass
-    # def __init__(self):
-    #     super(RevokeUserResponse, self).__init__({"result": RESULT.SUCCESS, "user_id": "id"})
 
 
 class RevokeUserUseCase(object):
