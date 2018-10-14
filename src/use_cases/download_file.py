@@ -42,7 +42,10 @@ class DownloadFileRequest(object):
 
 class DownloadFileResponse(dict):
     def __init__(self, result, status=STATUS.OK, download_url=None, message=None):
-        super(DownloadFileResponse, self).__init__({"result": result, "status": status, "download_url": download_url, "message": message})
+        super(DownloadFileResponse, self).__init__({"result": result,
+                                                    "status": status,
+                                                    "download_url": download_url,
+                                                    "message": message})
 
     @property
     def download_url(self):

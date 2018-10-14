@@ -60,6 +60,7 @@ if __name__ == '__main__':
         elif arguments['list']:
             response = list_users.run(ListUsersRequest())
     if arguments['download']:
-        response = download_file.run(DownloadFileRequest(user_id=arguments['--email-address'], request_url=arguments['<url>']))
+        response = download_file.run(DownloadFileRequest(user_id=arguments['--email-address'],
+                                                         request_url=arguments['<url>']))
 
     print(response)
