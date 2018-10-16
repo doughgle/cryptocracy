@@ -1,3 +1,5 @@
+import requests
+
 from src.boundaries.object_store import ObjectStore, ObjectNotFound
 from src.model import user_id
 from src.model.crypto import proxy_decrypt
@@ -24,7 +26,7 @@ class DownloadFileUseCase(object):
             expiring_object_key = make_lookup_key(request.request_url, request.user_id)
             self.object_cache.put_binary(expiring_object_key, partially_decrypted_value)
             download_url = self.object_cache.get_download_url(expiring_object_key)
-            response = DownloadFileResponse(RESULT.SUCCESS, download_url=download_url)
+            response = DownloadFileResponse(RESULT.SUCCESS, download_url=download_url, content=partially_decrypted_value)
         except KeyError:
             response = DownloadFileResponse(RESULT.FAILURE, status=STATUS.FORBIDDEN)
         except ObjectNotFound:
@@ -41,11 +43,12 @@ class DownloadFileRequest(object):
 
 
 class DownloadFileResponse(dict):
-    def __init__(self, result, status=STATUS.OK, download_url=None, message=None):
+    def __init__(self, result, status=STATUS.OK, download_url=None, message=None, content=None):
         super(DownloadFileResponse, self).__init__({"result": result,
                                                     "status": status,
                                                     "download_url": download_url,
-                                                    "message": message})
+                                                    "message": message,
+                                                    "content": content})
 
     @property
     def download_url(self):
