@@ -2,7 +2,7 @@
 > Delegate attribute-based decryption to a proxy server without the need to implicitly trust that server.
 
 ## Use Cases
-See [use-cases.md](src/use_cases/use-cases.md).
+See [use-cases.md](src/use_cases/README.md).
 
 
 
