@@ -8,7 +8,7 @@ See [use-cases.md](src/use_cases/use-cases.md).
 
 ## Developing
 
-Install pyopenabe
+Install pyopenabe.so into site-packages of your virtualenv.
 
 ```bash
 $ workon proxy-crypt

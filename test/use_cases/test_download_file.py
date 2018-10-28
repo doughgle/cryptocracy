@@ -12,7 +12,8 @@ class DownloadFileTest(unittest.TestCase):
     def setUp(self):
         self.input_file = os.path.join(os.path.dirname(__file__), 'cipher.txt')
         proxy_key_store = ProxyKeyStore()
-        proxy_key_store.put("alice@dev.net", "7a9360fc945435a33==")
+        proxy_key_store.put("alice@dev.net",
+                            "AAAAGKpvyXuiGVSBpe8Sff9BS9UdclJhbGljZQAAAQShAUuhRLOhQQIYhYQlVG+tzLPKQM+h69kwRKjQ6NR1LEYRyx3ic3u29AkpPJ59F7Gldx0HX/0O7fLi5MOz97vGZjEkKbW4+iK3oQZLWF9vbmWhJLKhIQIfNrlRSadPvnTH33CkyAqA/we432XBKXi7nhpGVX2NKqEIS1hfdGhyZWWhJLKhIQMgEL0GndbHEqThLECpW9lELVb6Z8Kz0tOEXetVInMFYaEBTKFEs6FBAwuJStrBh1NmUwOZXXyWvdpMYtLWrd8hyAKYaA/ZGGBpF5HsQPsmUE7+HwqPLPlTAQq6P45SXvW6B2JMSceSWm+hBWlucHV0oQt8b25lfHRocmVlfA==")
 
         with open(self.input_file, 'w') as f:
             f.write("4d916ac7a9360fc==")

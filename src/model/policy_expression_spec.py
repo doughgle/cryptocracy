@@ -21,7 +21,9 @@ def attributes():
 def inequalities(draw):
     attr = draw(attributes())
     oper = draw(inequality_operators())
-    numb = draw(integers())
+    # FIXME: openABE insists that numb > 1 or it throws
+    # `Driver::error string stream:1.10: syntax error, unexpected '-', expecting string or an integer`
+    numb = draw(integers(min_value=1))
     return u' '.join((attr, oper, str(numb)))
 
 
