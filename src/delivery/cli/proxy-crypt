@@ -3,7 +3,8 @@
 Usage: proxy-crypt user add <email_address> <user_public_key> <attribute_expression> [options]
        proxy-crypt user list [options]
        proxy-crypt user revoke <email_address> [options]
-       proxy-crypt (encrypt|decrypt) <file> [options]
+       proxy-crypt encrypt <file> <policy_expression> [options]
+       proxy-crypt decrypt <file> [options]
        proxy-crypt (upload|download) <url> --email-address=ADDRESS [options]
 
 Options:
@@ -15,7 +16,9 @@ Options:
 
 """
 from src.boundaries.object_store import AwsObjectStore
+from src.model.cipher import OpenABECipher
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
+from src.use_cases.encrypt_file import EncryptFileUseCase, EncryptFileRequest
 from src.use_cases.list_users import ListUsersUseCase, ListUsersRequest
 
 __version__ = 'Proxy Crypt 1.0'
@@ -29,7 +32,7 @@ from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
 
 def init_use_cases():
-    global add_user, revoke_user, list_users, download_file
+    global add_user, revoke_user, list_users, download_file, encrypt_file
     table_name = 'proxy-key-table-default'
     proxy_key_store = AwsProxyKeyStore(table_name)
     add_user = AddUserUseCase(ProxyKeyGenerator(master_secret_key=123456),
@@ -40,6 +43,9 @@ def init_use_cases():
     object_store = AwsObjectStore('proxy-crypt-bucket-default')
     object_cache = AwsObjectStore('object-cache-bucket-default')
     download_file = DownloadFileUseCase(proxy_key_store, object_store, object_cache)
+
+    cipher = OpenABECipher()
+    encrypt_file = EncryptFileUseCase(cipher)
 
 
 if __name__ == '__main__':
@@ -62,5 +68,7 @@ if __name__ == '__main__':
     if arguments['download']:
         response = download_file.run(DownloadFileRequest(user_id=arguments['--email-address'],
                                                          request_url=arguments['<url>']))
+    if arguments['encrypt']:
+        response = encrypt_file.run(EncryptFileRequest(input_file=arguments['<file>'], policy_expression=arguments['<policy_expression>'], output_file=None))
 
     print(response)

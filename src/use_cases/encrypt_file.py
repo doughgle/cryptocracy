@@ -40,27 +40,15 @@ class EncryptFileRequest(object):
         return self._policy_expression
 
 
-class EncryptFileResponse(object):
+class EncryptFileResponse(dict):
     def __init__(self, result, output_file):
-        self._result = result
-        self._output_file = output_file
+        super(EncryptFileResponse, self).__init__({"result": result,
+                                                   "output_file": output_file})
 
     @property
     def result(self):
-        return self._result
+        return self.__getitem__("result")
 
     @property
     def output_file(self):
-        return self._output_file
-
-    def __eq__(self, other):
-        if not isinstance(other, EncryptFileResponse):
-            return NotImplemented
-        if self is other:
-            return True
-        return self.result == other.result and self.output_file == other.output_file
-
-    def __repr__(self):
-        return super(EncryptFileResponse, self).__repr__() + \
-               "result=" + self.result.name + \
-               "output_file=" + self.output_file
+        return self.__getitem__("output_file")
