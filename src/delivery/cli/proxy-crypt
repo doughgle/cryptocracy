@@ -5,7 +5,8 @@ Usage: proxy-crypt user add <email_address> <user_public_key> <attribute_express
        proxy-crypt user revoke <email_address> [options]
        proxy-crypt encrypt <file> <policy_expression> [options]
        proxy-crypt decrypt <file> [options]
-       proxy-crypt (upload|download) <url> --email-address=ADDRESS [options]
+       proxy-crypt upload <source_url> [<dest_key>] --email-address=ADDRESS [options]
+       proxy-crypt download <url> --email-address=ADDRESS [options]
 
 Options:
   --proxy-crypt-config=FILE      Path to the config file to use for CLI commands. [default: $HOME/.proxy-crypt]
@@ -20,6 +21,7 @@ from src.model.cipher import OpenABECipher
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 from src.use_cases.encrypt_file import EncryptFileUseCase, EncryptFileRequest
 from src.use_cases.list_users import ListUsersUseCase, ListUsersRequest
+from src.use_cases.upload_file import UploadFileUseCase, UploadFileRequest
 
 __version__ = 'Proxy Crypt 1.0'
 
@@ -32,7 +34,7 @@ from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
 
 def init_use_cases():
-    global add_user, revoke_user, list_users, download_file, encrypt_file
+    global add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
     table_name = 'proxy-key-table-default'
     proxy_key_store = AwsProxyKeyStore(table_name)
     add_user = AddUserUseCase(ProxyKeyGenerator(master_secret_key=123456),
@@ -42,6 +44,7 @@ def init_use_cases():
 
     object_store = AwsObjectStore('proxy-crypt-bucket-default')
     object_cache = AwsObjectStore('object-cache-bucket-default')
+    upload_file = UploadFileUseCase(object_store)
     download_file = DownloadFileUseCase(proxy_key_store, object_store, object_cache)
 
     cipher = OpenABECipher()
@@ -65,6 +68,8 @@ if __name__ == '__main__':
             response = revoke_user.run(RevokeUserRequest(user_id=user_id))
         elif arguments['list']:
             response = list_users.run(ListUsersRequest())
+    if arguments['upload']:
+        response = upload_file.run(UploadFileRequest(arguments['<source_url>']))
     if arguments['download']:
         response = download_file.run(DownloadFileRequest(user_id=arguments['--email-address'],
                                                          request_url=arguments['<url>']))

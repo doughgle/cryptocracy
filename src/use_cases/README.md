@@ -39,6 +39,12 @@ Use Cases
 
 |Upload file||
 |---|---|
+|actors|Data Owner|
+|pre-conditions|Has encrypted file to upload.|
+|post-conditions|Encrypted file is stored in object store.|
+|main course|<ol><li>User specifies `file` to upload.<li>System uploads and stores `file` in default object store.<li>System responds with success status.</ol>|
+|alternate courses||
+|exceptional courses|
 |example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp encrypted.png.cpabe s3://proxy-crypt-bucket/encrypted.png.cpabe```|
 
 ---
