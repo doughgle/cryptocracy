@@ -1,5 +1,4 @@
 import os
-import urllib2
 
 from src.boundaries.object_store import ObjectStore
 from src.model.result import RESULT
