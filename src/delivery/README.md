@@ -2,7 +2,7 @@
 
 ## Command Line Interface (CLI)
 
-Make proxy-crypt executable and execute it like in the following example:
+Make proxy-crypt executable and execute it like in the following example with `--help` to see usage and options:
 ```bash
 $ cli/proxy-crypt --help
 Usage: proxy-crypt user add <email_address> <user_public_key> <attribute_expression> [options]
