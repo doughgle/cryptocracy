@@ -24,6 +24,8 @@ class ProxyKeyStore(object):
 
 
 import boto3
+from botocore import exceptions
+from boto3.dynamodb.conditions import Attr
 
 
 class AwsProxyKeyStore(object):
@@ -41,7 +43,12 @@ class AwsProxyKeyStore(object):
         return proxy_key
 
     def delete(self, user_id):
-        self.table.delete_item(Key={u'user_id': user_id})
+        try:
+            self.table.delete_item(Key={u'user_id': user_id},
+                                   ConditionExpression=Attr('user_id').eq(user_id))
+        except exceptions.ClientError as e:
+            if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+                raise KeyError(e)
 
     def users(self):
         response = self.table.scan()
