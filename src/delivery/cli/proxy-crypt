@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-Usage: proxy-crypt user add <email_address> <user_public_key> <attribute_expression> [options]
-       proxy-crypt user list [options]
-       proxy-crypt user revoke <email_address> [options]
+Usage: proxy-crypt add user <email_address> <user_public_key> <attribute_expression> [options]
+       proxy-crypt list (user|file) [options]
+       proxy-crypt revoke user <email_address> [options]
        proxy-crypt encrypt <file> <policy_expression> [options]
        proxy-crypt decrypt <file> [options]
        proxy-crypt upload <source_url> [<dest_key>] --email-address=ADDRESS [options]
