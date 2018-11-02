@@ -3,6 +3,7 @@ import unittest
 
 from src.boundaries.object_store import ObjectStore
 from src.boundaries.proxy_key_store import ProxyKeyStore
+from src.model.cipher import OpenABECipher
 from src.model.result import RESULT, STATUS
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest, DownloadFileResponse
 
@@ -10,19 +11,27 @@ from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 class DownloadFileTest(unittest.TestCase):
 
     def setUp(self):
-        self.input_file = os.path.join(os.path.dirname(__file__), 'cipher.txt')
+        cipher = OpenABECipher()
+        # key authority adds user
+        alice = "alice@dev.net"
+        alice_key = cipher.proxy_keygen("", "", user_id=alice, attribute_list="Singaporean|female")
+
         proxy_key_store = ProxyKeyStore()
-        proxy_key_store.put("alice@dev.net",
-                            "AAAAGKpvyXuiGVSBpe8Sff9BS9UdclJhbGljZQAAAQShAUuhRLOhQQIYhYQlVG+tzLPKQM+h69kwRKjQ6NR1LEYRyx3ic3u29AkpPJ59F7Gldx0HX/0O7fLi5MOz97vGZjEkKbW4+iK3oQZLWF9vbmWhJLKhIQIfNrlRSadPvnTH33CkyAqA/we432XBKXi7nhpGVX2NKqEIS1hfdGhyZWWhJLKhIQMgEL0GndbHEqThLECpW9lELVb6Z8Kz0tOEXetVInMFYaEBTKFEs6FBAwuJStrBh1NmUwOZXXyWvdpMYtLWrd8hyAKYaA/ZGGBpF5HsQPsmUE7+HwqPLPlTAQq6P45SXvW6B2JMSceSWm+hBWlucHV0oQt8b25lfHRocmVlfA==")
+        proxy_key_store.put(alice, alice_key)
 
-        with open(self.input_file, 'w') as f:
-            f.write("4d916ac7a9360fc==")
+        # data owner encrypts cyphertext
+        ciphertext = cipher.encrypt("hello ABE world!", "Singaporean")
+        self.input_file = os.path.join(os.path.dirname(__file__), 'cipher.txt')
+        with open(self.input_file, 'wb') as f:
+            f.write(ciphertext)
 
+        # data owner uploads ciphertext to cloud storage
         obj_store = ObjectStore()
-        self.key = os.path.basename(self.input_file)
-        obj_store.put(self.input_file, self.key)
-        self.download_url = obj_store.get_download_url(self.key)
-        self.download_file = DownloadFileUseCase(proxy_key_store, obj_store)
+        key = os.path.basename(self.input_file)
+        obj_store.put(self.input_file, key)
+        self.download_url = obj_store.get_download_url(key)
+
+        self.download_file = DownloadFileUseCase(proxy_key_store, obj_store, cipher=cipher)
 
     def tearDown(self):
         os.remove(self.input_file)
@@ -35,7 +44,7 @@ class DownloadFileTest(unittest.TestCase):
         expected_response = DownloadFileResponse(
             result=RESULT.SUCCESS,
             download_url='fca2b4fd8e90fc9537720c3d00b0fd37433fa33aec12c76a4a33255dab27a16a',
-            content='intermediate_value'
+            content='hello ABE world!'
         )
         self.assertEqual(expected_response, response)
 

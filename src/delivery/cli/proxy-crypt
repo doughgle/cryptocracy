@@ -45,7 +45,7 @@ def init_use_cases():
     object_store = AwsObjectStore('proxy-crypt-bucket-default')
     object_cache = AwsObjectStore('object-cache-bucket-default')
     upload_file = UploadFileUseCase(object_store)
-    download_file = DownloadFileUseCase(proxy_key_store, object_store, object_cache)
+    download_file = DownloadFileUseCase(proxy_key_store, object_store, object_cache, cipher=OpenABECipher())
 
     cipher = OpenABECipher()
     encrypt_file = EncryptFileUseCase(cipher)

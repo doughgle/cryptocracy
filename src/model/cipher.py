@@ -38,6 +38,7 @@ class OpenABECipher(object):
                      user_id,
                      attribute_list):
         self._cpabe.keygen(attribute_list, user_id)
+        return self._cpabe.exportUserKey(user_id)
 
     def encrypt(self, plaintext, policy_expression):
         return self._cpabe.encrypt(policy_expression, plaintext)
