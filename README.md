@@ -16,6 +16,17 @@ $ workon proxy-crypt
 (proxy-crypt) dough@ubdg:/media/dough/Storage/repos/tools/openabe$ . ./env && make -C bindings/python install
 ```
 
+Install Charm crypto
+
+```bash
+$ workon charm-crypto-py3
+$ ./configure.sh --python=$(which python) --extra-cflags=-I/usr/local/include --extra-ldflags=-L/usr/local/lib
+$ make install
+$ sudo ldconfig
+$ make test
+
+```
+
 Clean
 ```sh
 $ python setup.py clean --all
