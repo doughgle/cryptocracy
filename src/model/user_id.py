@@ -4,7 +4,7 @@ pattern_str = '''[a-zA-Z0-9!#$%&'*+-/=^_`{|}~]{1,64}@[a-zA-Z0-9!#$%&'*+-/=^_`{|}
 pattern = re.compile(pattern_str)
 
 
-class InvalidInput(StandardError):
+class InvalidInput(Exception):
     pass
 
 
