@@ -11,6 +11,6 @@ class InvalidInput(StandardError):
 def assert_valid(user_id):
     try:
         assert re.match(pattern, user_id) is not None
-    except (AssertionError, TypeError), e:
+    except (AssertionError, TypeError) as e:
         e.message = "invalid user_id: '%s'. valid example: a@a.com" % user_id
         raise InvalidInput(e)

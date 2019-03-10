@@ -33,7 +33,7 @@ class DownloadFileUseCase(object):
             response = DownloadFileResponse(RESULT.FAILURE, status=STATUS.FORBIDDEN)
         except ObjectNotFound:
             response = DownloadFileResponse(RESULT.FAILURE, status=STATUS.NOT_FOUND)
-        except InvalidInput, e:
+        except InvalidInput as e:
             response = DownloadFileResponse(RESULT.FAILURE, status=STATUS.BAD_REQUEST, message=e.message)
         return response
 

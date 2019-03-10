@@ -16,7 +16,7 @@ class ObjectStore(object):
     def get(self, request_url):
         try:
             return self.store[request_url]
-        except KeyError, e:
+        except KeyError as e:
             raise ObjectNotFound(e)
 
     def get_download_url(self, key):
@@ -60,7 +60,7 @@ class AwsObjectStore(object):
     def get(self, download_url):
         try:
             return urllib2.urlopen(download_url).read()
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             raise ObjectNotFound(e)
 
     def delete(self, key):
