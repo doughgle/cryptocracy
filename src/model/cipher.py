@@ -1,7 +1,11 @@
-import pyopenabe
+from charm.schemes.abenc.abenc_yllc15 import YLLC15
+from charm.toolbox.pairinggroup import PairingGroup
 
 
 class NullCipher(object):
+
+    def setup(self):
+        raise NotImplementedError
 
     def user_keygen(self, pk, mk, object):
         raise NotImplementedError
@@ -22,13 +26,14 @@ class NullCipher(object):
         raise NotImplementedError
 
 
-class OpenABECipher(object):
-
-    __openabe = pyopenabe.PyOpenABE()
+class CharmABE(object):
 
     def __init__(self):
-        self._cpabe = OpenABECipher.__openabe.CreateABEContext("CP-ABE")
-        self._cpabe.generateParams()
+        group = PairingGroup('SS512')
+        self.abe = YLLC15(group)
+
+    def setup(self):
+        pass
 
     def user_keygen(self, pk, mk, object):
         raise NotImplementedError
@@ -37,14 +42,13 @@ class OpenABECipher(object):
                      user_public_key,
                      user_id,
                      attribute_list):
-        self._cpabe.keygen(attribute_list, user_id)
-        return self._cpabe.exportUserKey(user_id)
+        raise NotImplementedError
 
     def encrypt(self, plaintext, policy_expression):
-        return self._cpabe.encrypt(policy_expression, plaintext)
+        raise NotImplementedError
 
     def proxy_decrypt(self, cloud_server_private_key, proxy_key_user, user_id, ciphertext):
-        return self._cpabe.decrypt(user_id, ciphertext)
+        return "intermediate_value"
 
     def decrypt(self, user_private_key, intermediate_value):
-        return intermediate_value
+        raise NotImplementedError

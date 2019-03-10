@@ -17,7 +17,7 @@ Options:
 
 """
 from src.boundaries.object_store import AwsObjectStore
-from src.model.cipher import OpenABECipher
+from src.model.cipher import CharmABE
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 from src.use_cases.encrypt_file import EncryptFileUseCase, EncryptFileRequest
 from src.use_cases.list_users import ListUsersUseCase, ListUsersRequest
@@ -37,7 +37,7 @@ def init_use_cases():
     global add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
     table_name = 'proxy-key-table-default'
     proxy_key_store = AwsProxyKeyStore(table_name)
-    abe_cipher = OpenABECipher()
+    abe_cipher = CharmABE()
     add_user = AddUserUseCase(ProxyKeyGenerator(cipher=abe_cipher),
                               proxy_key_store)
     revoke_user = RevokeUserUseCase(proxy_key_store)

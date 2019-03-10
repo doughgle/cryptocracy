@@ -4,16 +4,16 @@
 ## Use Cases
 See [use-cases.md](src/use_cases/README.md).
 
-
+### Use CLI
+```bash
+$ ./proxy-crypt
+```
 
 ## Developing
 
-Install pyopenabe.so into site-packages of your virtualenv.
-
+With virtualenvwrapper installed, you can create a new virtualenv primed with the pip dependencies. 
 ```bash
-$ workon proxy-crypt
-(proxy-crypt) /openabe$ pip install -r bindings/python/requirements.txt
-(proxy-crypt) /openabe$ . ./env && make -C bindings/python install
+$ mkproject -a /path/to/proxy-crypt -r requirements.txt --python=python3 cryptocracy
 ```
 
 Install Charm crypto
@@ -24,41 +24,38 @@ $ ./configure.sh --python=$(which python) --extra-cflags=-I/usr/local/include --
 $ make install
 $ sudo ldconfig
 $ make test
-
 ```
 
-Clean
+### Clean
 ```sh
 $ python setup.py clean --all
 ```
 
-Install locally for development
+### Install locally for development
 ```bash
 $ pip install -e .
 ```
 
-Use CLI
-```bash
-$ ./proxy-crypt
-```
-
-Test
+### Test
+#### Run Unit Tests
 ```sh
 $ python setup.py test
 ```
 
+#### Run Integration Tests
 
-Package
+
+### Package
 ```sh
 $ python setup.py sdist
 ```
 
-Register in PyPi
+### Register in PyPi
 ```
 $ python setup.py register
 ```
 
-Publish to PyPi
+### Publish to PyPi
 ```
 $ python setup.py upload
 ```
