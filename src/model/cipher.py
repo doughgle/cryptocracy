@@ -30,10 +30,10 @@ class CharmABE(object):
 
     def __init__(self):
         group = PairingGroup('SS512')
-        self.abe = YLLC15(group)
+        self._abe = YLLC15(group)
 
     def setup(self):
-        pass
+        return self._abe.setup()
 
     def user_keygen(self, pk, mk, object):
         raise NotImplementedError
