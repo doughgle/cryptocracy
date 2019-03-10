@@ -12,8 +12,8 @@ Install pyopenabe.so into site-packages of your virtualenv.
 
 ```bash
 $ workon proxy-crypt
-(proxy-crypt) dough@ubdg:/media/dough/Storage/repos/tools/openabe$ pip install -r bindings/python/requirements.txt
-(proxy-crypt) dough@ubdg:/media/dough/Storage/repos/tools/openabe$ . ./env && make -C bindings/python install
+(proxy-crypt) /openabe$ pip install -r bindings/python/requirements.txt
+(proxy-crypt) /openabe$ . ./env && make -C bindings/python install
 ```
 
 Install Charm crypto
