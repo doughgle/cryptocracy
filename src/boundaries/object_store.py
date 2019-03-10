@@ -1,10 +1,14 @@
-import urllib2
-import urlparse
+try:
+    from urllib.request import urlopen, urlparse
+    from urllib.error import URLError
+except ImportError:
+    from urllib2 import urlopen, URLError
+    from urlparse import urlparse
 
 import boto3
 
 
-class ObjectNotFound(urllib2.URLError):
+class ObjectNotFound(URLError):
     pass
 
 
@@ -23,9 +27,9 @@ class ObjectStore(object):
         return key
 
     def put(self, source_url, key):
-        full_url = urlparse.urlparse(source_url)
+        full_url = urlparse(source_url)
         url = ("file://" + source_url) if full_url.scheme == '' else full_url.geturl()
-        data = urllib2.urlopen(url).read()
+        data = urlopen(url).read()
         self.put_binary(key, data)
 
     def put_binary(self, key, data):
@@ -59,8 +63,8 @@ class AwsObjectStore(object):
 
     def get(self, download_url):
         try:
-            return urllib2.urlopen(download_url).read()
-        except urllib2.URLError as e:
+            return urlopen(download_url).read()
+        except URLError as e:
             raise ObjectNotFound(e)
 
     def delete(self, key):
