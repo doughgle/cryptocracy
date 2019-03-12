@@ -20,7 +20,7 @@ class RevokeUserTest(unittest.TestCase):
         response = revoke_user.run(request)
 
         self.assertRaises(KeyError, self.proxy_key_store.get, user_id)
-        self.assertDictContainsSubset({"result": RESULT.SUCCESS, "user_id": user_id}, response)
+        self.assertDictEqual({"result": RESULT.SUCCESS, "user_id": user_id}, response)
 
     def test_revoke_non_existing_user(self):
         user_id = "alice.tan@nus.edu.sg"
@@ -29,7 +29,7 @@ class RevokeUserTest(unittest.TestCase):
 
         response = revoke_user.run(request)
 
-        self.assertDictContainsSubset({"result": RESULT.FAILURE, "user_id": user_id, "error": "does not exist"}, response)
+        self.assertDictEqual({"result": RESULT.FAILURE, "user_id": user_id, "error": "does not exist"}, response)
 
 
 if __name__ == '__main__':
