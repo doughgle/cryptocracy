@@ -4,3 +4,4 @@
 .pytest_cache
 .egg*
 *.egg*
+dist
