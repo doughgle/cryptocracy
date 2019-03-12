@@ -3,7 +3,7 @@ import unittest
 from hypothesis import given
 
 from src.boundaries.proxy_key_store import ProxyKeyStore
-from src.model.cipher import NullCipher
+from src.model.abe_scheme import NullCipher
 from src.model.key_spec import keys
 from src.model.result import RESULT
 from src.use_cases.add_user import AddUserRequest
@@ -15,8 +15,8 @@ class AddUserTest(unittest.TestCase):
     @given(user_public_key=keys())
     def test_add_user_stores_proxy_key(self, user_public_key):
         proxy_key_store = ProxyKeyStore()
-        cipher = FakeProxyKeyCipher()
-        add_user = AddUserUseCase(cipher, proxy_key_store)
+        abe_scheme = FakeProxyKeyABE()
+        add_user = AddUserUseCase(abe_scheme, proxy_key_store)
 
         user_id = "alice.tan@nus.edu.sg"
         attributes = {"gender": "female", "age": 25}
@@ -32,7 +32,7 @@ class AddUserTest(unittest.TestCase):
         self.assertDictEqual({"result": RESULT.SUCCESS, "user_id": user_id}, response)
 
 
-class FakeProxyKeyCipher(NullCipher):
+class FakeProxyKeyABE(NullCipher):
 
     def proxy_keygen(self, cloud_server_public_key, user_public_key, user_id, attribute_list):
         return "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f"

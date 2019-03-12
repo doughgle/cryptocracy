@@ -3,7 +3,7 @@ import unittest
 
 from src.boundaries.object_store import ObjectStore
 from src.boundaries.proxy_key_store import ProxyKeyStore
-from src.model.cipher import CharmABE
+from src.model.abe_scheme import CharmHybridABE
 from src.model.result import RESULT, STATUS
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest, DownloadFileResponse
 
@@ -11,19 +11,19 @@ from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 class DownloadFileTest(unittest.TestCase):
 
     def setUp(self):
-        cipher = CharmABE()
-        cipher.setup()
+        abe_scheme = CharmHybridABE()
+        abe_scheme.setup()
         alice = "alice@dev.net"
-        pku, sku = cipher.user_keygen(alice)
-        pkcs, skcs = cipher.user_keygen("cryptocracy@amazonaws.com")
+        pku, sku = abe_scheme.user_keygen(alice)
+        pkcs, skcs = abe_scheme.user_keygen("cryptocracy@amazonaws.com")
         # key authority adds user
-        alice_key = cipher.proxy_keygen(pkcs, pku, user_id=alice, attribute_list=["Singaporean", "female"])
+        alice_key = abe_scheme.proxy_keygen(pkcs, pku, user_id=alice, attribute_list=["Singaporean", "female"])
 
         proxy_key_store = ProxyKeyStore()
         proxy_key_store.put(alice, alice_key)
 
         # data owner encrypts cyphertext
-        ciphertext = cipher.encrypt("hello ABE world!", "Singaporean")
+        ciphertext = abe_scheme.encrypt("hello ABE world!", "Singaporean")
         self.input_file = os.path.join(os.path.dirname(__file__), 'cipher.txt')
         with open(self.input_file, 'wb') as f:
             f.write(ciphertext)
@@ -34,7 +34,7 @@ class DownloadFileTest(unittest.TestCase):
         obj_store.put(self.input_file, key)
         self.download_url = obj_store.get_download_url(key)
 
-        self.download_file = DownloadFileUseCase(proxy_key_store, skcs, obj_store, cipher=cipher)
+        self.download_file = DownloadFileUseCase(proxy_key_store, skcs, obj_store, abe_scheme=abe_scheme)
 
     def tearDown(self):
         os.remove(self.input_file)

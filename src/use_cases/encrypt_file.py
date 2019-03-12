@@ -2,16 +2,16 @@ from src.model.result import RESULT
 
 
 class EncryptFileUseCase(object):
-    def __init__(self, cipher):
-        self.cipher = cipher
+    def __init__(self, abe_scheme):
+        self.abe_scheme = abe_scheme
 
     def run(self, request):
         result = RESULT.FAILURE
         try:
             with open(request.input_file, 'r') as in_f:
                 plaintext = in_f.read()
-            ciphertext = self.cipher.encrypt(plaintext,
-                                             request.policy_expression)
+            ciphertext = self.abe_scheme.encrypt(plaintext,
+                                                 request.policy_expression)
             with open(request.output_file, 'w') as out_f:
                 out_f.write(ciphertext)
             result = RESULT.SUCCESS

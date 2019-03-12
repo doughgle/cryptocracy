@@ -24,7 +24,7 @@ class EncryptFileTest(unittest.TestCase):
         os.remove(self.input_file)
 
     def test_encrypt_to_output_file(self):
-        encrypt_file = EncryptFileUseCase(cipher=NullCipher())
+        encrypt_file = EncryptFileUseCase(abe_scheme=NullCipher())
         request = EncryptFileRequest(self.input_file,
                                      policy_expression=u'((Manager and Experience > 3) or Admin)',
                                      output_file=self.output_file)
@@ -34,7 +34,7 @@ class EncryptFileTest(unittest.TestCase):
         os.remove(self.output_file)
 
     def test_encrypt_file_in_place(self):
-        encrypt_file = EncryptFileUseCase(cipher=NullCipher())
+        encrypt_file = EncryptFileUseCase(abe_scheme=NullCipher())
         request = EncryptFileRequest(self.input_file, policy_expression=u'((Manager and Experience > 3) or Admin)' )
         response = encrypt_file.run(request)
         expected_response = EncryptFileResponse(result=RESULT.SUCCESS, output_file=self.input_file)

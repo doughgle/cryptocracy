@@ -29,7 +29,7 @@ class NullCipher(object):
         raise NotImplementedError
 
 
-class CharmABE(object):
+class CharmHybridABE(object):
 
     def __init__(self):
         group = PairingGroup('SS512')

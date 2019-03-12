@@ -4,7 +4,7 @@ from hypothesis import given, settings
 from hypothesis._strategies import lists
 from hypothesis.strategies import binary, emails
 
-from src.model.cipher import CharmABE as Cipher
+from src.model.abe_scheme import CharmHybridABE as ABE
 from src.model.policy_expression_spec import policy_expressions, attributes
 
 
@@ -18,23 +18,23 @@ class TestCipher(unittest.TestCase):
                                                       plaintext,
                                                       user_id,
                                                       attribute_list):
-        cipher = Cipher()
-        cipher.setup()
+        abe = ABE()
+        abe.setup()
 
-        pku, sku = cipher.user_keygen(user_id)
-        pkcs, skcs = cipher.user_keygen(user_id)
-        proxy_key_user = cipher.proxy_keygen(pkcs, pku, user_id, attribute_list)
+        pku, sku = abe.user_keygen(user_id)
+        pkcs, skcs = abe.user_keygen(user_id)
+        proxy_key_user = abe.proxy_keygen(pkcs, pku, user_id, attribute_list)
         policy_expression = attribute_list[0]
 
         pt = str(plaintext, 'latin-1')
-        ciphertext = cipher.encrypt(pt, policy_expression)
-        intermediate_value = cipher.proxy_decrypt(skcs, proxy_key_user, user_id, ciphertext)
-        self.assertEqual(pt, str(cipher.decrypt(sku, intermediate_value), 'utf8'))
+        ciphertext = abe.encrypt(pt, policy_expression)
+        intermediate_value = abe.proxy_decrypt(skcs, proxy_key_user, user_id, ciphertext)
+        self.assertEqual(pt, str(abe.decrypt(sku, intermediate_value), 'utf8'))
 
     @given(binary(min_size=1), policy_expressions())
     def test_ciphertext_is_never_equal_to_plaintext(self, plaintext, policy_expression):
-        cipher = Cipher()
-        cipher.setup()
+        abe = ABE()
+        abe.setup()
         pt = str(plaintext, 'latin-1')
-        ciphertext = cipher.encrypt(pt, policy_expression)
+        ciphertext = abe.encrypt(pt, policy_expression)
         assert ciphertext != plaintext

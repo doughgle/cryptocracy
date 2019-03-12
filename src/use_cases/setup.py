@@ -1,4 +1,4 @@
-from src.model.cipher import NullCipher
+from src.model.abe_scheme import NullCipher
 from src.model.result import RESULT
 
 
