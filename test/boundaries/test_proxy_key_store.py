@@ -1,6 +1,7 @@
 import unittest
 
 import boto3
+import pytest
 from hypothesis import given, settings
 from hypothesis.strategies import emails, lists
 
@@ -31,6 +32,7 @@ class InMemoryProxyKeyStoreTestBase(unittest.TestCase, object):
         self.assertEqual(set(user_ids), users)
 
 
+@pytest.mark.skip("takes too long, produces flaky results and sends hypothesis into a crazy loop")
 class AwsProxyKeyStoreTestBase(InMemoryProxyKeyStoreTestBase):
 
     def __init__(self, methodName):

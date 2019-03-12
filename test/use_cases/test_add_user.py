@@ -3,19 +3,20 @@ import unittest
 from hypothesis import given
 
 from src.boundaries.proxy_key_store import ProxyKeyStore
-from src.use_cases.add_user import AddUserUseCase
+from src.model.cipher import NullCipher
 from src.model.key_spec import keys
 from src.model.result import RESULT
 from src.use_cases.add_user import AddUserRequest
+from src.use_cases.add_user import AddUserUseCase
 
 
 class AddUserTest(unittest.TestCase):
 
     @given(user_public_key=keys())
-    def runTest(self, user_public_key):
+    def test_add_user_stores_proxy_key(self, user_public_key):
         proxy_key_store = ProxyKeyStore()
-        proxy_key_gen = ProxyKeyGeneratorMock()
-        add_user = AddUserUseCase(proxy_key_gen, proxy_key_store)
+        cipher = FakeProxyKeyCipher()
+        add_user = AddUserUseCase(cipher, proxy_key_store)
 
         user_id = "alice.tan@nus.edu.sg"
         attributes = {"gender": "female", "age": 25}
@@ -28,12 +29,12 @@ class AddUserTest(unittest.TestCase):
             proxy_key_store.get(user_id)
         )
         
-        self.assertDictContainsSubset({"result": RESULT.SUCCESS, "user_id": user_id}, response)
+        self.assertDictEqual({"result": RESULT.SUCCESS, "user_id": user_id}, response)
 
 
-class ProxyKeyGeneratorMock(object):
+class FakeProxyKeyCipher(NullCipher):
 
-    def generate(self, user_public_key, cloud_server_public_key, user_attributes):
+    def proxy_keygen(self, cloud_server_public_key, user_public_key, user_id, attribute_list):
         return "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f"
 
 

@@ -4,8 +4,8 @@ from src.model.user_id import InvalidInput
 
 
 class AddUserUseCase(object):
-    def __init__(self, proxy_key_gen, proxy_key_store):
-        self.proxy_key_gen = proxy_key_gen
+    def __init__(self, cipher, proxy_key_store):
+        self.cipher = cipher
         self.proxy_key_store = proxy_key_store
 
     def run(self, request):
@@ -16,11 +16,10 @@ class AddUserUseCase(object):
         try:
             user_id.assert_valid(request.user_id)
             key_spec.assert_valid(request.user_public_key)
-            proxy_key = self.proxy_key_gen.generate(
-                request.user_public_key,
-                self.proxy_key_store.public_key,
-                request.attributes
-            )
+            proxy_key = self.cipher.proxy_keygen(self.proxy_key_store.public_key,
+                                                 request.user_public_key,
+                                                 request.user_id,
+                                                 request.attributes)
             self.proxy_key_store.put(request.user_id, proxy_key)
             return {"result": RESULT.SUCCESS, "user_id": request.user_id}
         except InvalidInput as e:

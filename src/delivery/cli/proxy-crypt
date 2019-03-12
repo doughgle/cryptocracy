@@ -30,7 +30,6 @@ __version__ = 'Proxy Crypt 1.0'
 from docopt import docopt
 
 from src.boundaries.proxy_key_store import AwsProxyKeyStore
-from src.model.proxy_key_generator import ProxyKeyGenerator
 from src.use_cases.add_user import AddUserUseCase, AddUserRequest
 from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
@@ -41,15 +40,14 @@ def init_use_cases():
     proxy_key_store = AwsProxyKeyStore(table_name)
     abe_cipher = CharmABE()
     setup = SetupUseCase(abe_cipher)
-    add_user = AddUserUseCase(ProxyKeyGenerator(cipher=abe_cipher),
-                              proxy_key_store)
+    add_user = AddUserUseCase(abe_cipher, proxy_key_store)
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
 
     object_store = AwsObjectStore('proxy-crypt-bucket-default')
     object_cache = AwsObjectStore('object-cache-bucket-default')
     upload_file = UploadFileUseCase(object_store)
-    download_file = DownloadFileUseCase(proxy_key_store, object_store, object_cache, cipher=abe_cipher)
+    download_file = DownloadFileUseCase(proxy_key_store, None, object_store, object_cache, cipher=abe_cipher)
 
     cipher = abe_cipher
     encrypt_file = EncryptFileUseCase(cipher)
@@ -81,8 +79,10 @@ if __name__ == '__main__':
             response = download_file.run(DownloadFileRequest(user_id=arguments['--email-address'],
                                                              request_url=arguments['<url>']))
         if arguments['encrypt']:
-            response = encrypt_file.run(EncryptFileRequest(input_file=arguments['<file>'], policy_expression=arguments['<policy_expression>'], output_file=None))
+            response = encrypt_file.run(
+                EncryptFileRequest(input_file=arguments['<file>'], policy_expression=arguments['<policy_expression>'],
+                                   output_file=None))
 
         print(response)
-    except Exception as e:
-        print(e)
+    except Exception as err:
+        print(err)
