@@ -3,7 +3,7 @@ import unittest
 
 from src.boundaries.object_store import ObjectStore
 from src.boundaries.proxy_key_store import ProxyKeyStore
-from src.model.cipher import OpenABECipher
+from src.model.cipher import CharmABE
 from src.model.result import RESULT, STATUS
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest, DownloadFileResponse
 
@@ -11,10 +11,13 @@ from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 class DownloadFileTest(unittest.TestCase):
 
     def setUp(self):
-        cipher = OpenABECipher()
-        # key authority adds user
+        cipher = CharmABE()
+        cipher.setup()
         alice = "alice@dev.net"
-        alice_key = cipher.proxy_keygen("", "", user_id=alice, attribute_list="Singaporean|female")
+        pku, sku = cipher.user_keygen(alice)
+        pkcs, skcs = cipher.user_keygen("cryptocracy@amazonaws.com")
+        # key authority adds user
+        alice_key = cipher.proxy_keygen(pkcs, pku, user_id=alice, attribute_list=["Singaporean", "female"])
 
         proxy_key_store = ProxyKeyStore()
         proxy_key_store.put(alice, alice_key)
@@ -31,7 +34,7 @@ class DownloadFileTest(unittest.TestCase):
         obj_store.put(self.input_file, key)
         self.download_url = obj_store.get_download_url(key)
 
-        self.download_file = DownloadFileUseCase(proxy_key_store, obj_store, cipher=cipher)
+        self.download_file = DownloadFileUseCase(proxy_key_store, skcs, obj_store, cipher=cipher)
 
     def tearDown(self):
         os.remove(self.input_file)
@@ -43,8 +46,7 @@ class DownloadFileTest(unittest.TestCase):
 
         expected_response = DownloadFileResponse(
             result=RESULT.SUCCESS,
-            download_url='fca2b4fd8e90fc9537720c3d00b0fd37433fa33aec12c76a4a33255dab27a16a',
-            content='hello ABE world!'
+            download_url='fca2b4fd8e90fc9537720c3d00b0fd37433fa33aec12c76a4a33255dab27a16a'
         )
         self.assertEqual(expected_response, response)
 

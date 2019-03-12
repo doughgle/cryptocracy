@@ -7,8 +7,10 @@ from src.model.user_id import InvalidInput
 
 
 class DownloadFileUseCase(object):
-    def __init__(self, proxy_key_store, object_store=ObjectStore(), object_cache=ObjectStore(), cipher=NullCipher()):
+    def __init__(self, proxy_key_store, cloud_server_secret_key, object_store=ObjectStore(), object_cache=ObjectStore(),
+                 cipher=NullCipher()):
         self.proxy_key_store = proxy_key_store
+        self.__cloud_server_secret_key = cloud_server_secret_key
         self.object_cache = object_cache
         self.object_store = object_store
         self.cipher = cipher
@@ -21,14 +23,14 @@ class DownloadFileUseCase(object):
             user_id.assert_valid(request.user_id)
             proxy_key = self.proxy_key_store.get(request.user_id)
             ciphertext = self.object_store.get(request.request_url)
-            partially_decrypted_value = self.cipher.proxy_decrypt("cloud server private key",
+            partially_decrypted_value = self.cipher.proxy_decrypt(self.__cloud_server_secret_key,
                                                                   proxy_key_user=proxy_key,
                                                                   user_id=request.user_id,
                                                                   ciphertext=ciphertext)
             expiring_object_key = make_lookup_key(request.request_url, request.user_id)
             self.object_cache.put_binary(expiring_object_key, partially_decrypted_value)
             download_url = self.object_cache.get_download_url(expiring_object_key)
-            response = DownloadFileResponse(RESULT.SUCCESS, download_url=download_url, content=partially_decrypted_value)
+            response = DownloadFileResponse(RESULT.SUCCESS, download_url=download_url)
         except KeyError:
             response = DownloadFileResponse(RESULT.FAILURE, status=STATUS.FORBIDDEN)
         except ObjectNotFound:
