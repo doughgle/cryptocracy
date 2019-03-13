@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
 Usage: proxy-crypt setup
+       proxy-crypt generate keypair
        proxy-crypt add user <email_address> <user_public_key> <attribute_expression> [options]
        proxy-crypt list (user|file) [options]
        proxy-crypt revoke user <email_address> [options]
@@ -21,6 +22,7 @@ from src.boundaries.object_store import AwsObjectStore
 from src.model.abe_scheme import CharmHybridABE
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 from src.use_cases.encrypt_file import EncryptFileUseCase, EncryptFileRequest
+from src.use_cases.generate_key_pair import GenerateKeyPairUseCase, GenerateKeyPairRequest
 from src.use_cases.list_users import ListUsersUseCase, ListUsersRequest
 from src.use_cases.setup import SetupUseCase, SetupRequest
 from src.use_cases.upload_file import UploadFileUseCase, UploadFileRequest
@@ -35,11 +37,12 @@ from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
 
 def init_use_cases():
-    global setup, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
+    global setup, generate_key_pair, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
     table_name = 'proxy-key-table-default'
     proxy_key_store = AwsProxyKeyStore(table_name)
     abe_scheme = CharmHybridABE()
     setup = SetupUseCase(abe_scheme)
+    generate_key_pair = GenerateKeyPairUseCase(abe_scheme)
     add_user = AddUserUseCase(abe_scheme, proxy_key_store)
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
@@ -63,6 +66,9 @@ if __name__ == '__main__':
         response = "Coming soon..!"
         if arguments['setup']:
             response = setup.run(SetupRequest())
+        if arguments['generate']:
+            if arguments['keypair']:
+                response = generate_key_pair.run(GenerateKeyPairRequest())
         if arguments['user']:
             if arguments['add']:
                 response = add_user.run(AddUserRequest(user_id=user_id,
