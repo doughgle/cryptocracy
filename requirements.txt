@@ -1,0 +1,8 @@
+requests
+docopt
+hypothesis
+ipython
+pylint
+pytest
+boto3
+pytest-pylint

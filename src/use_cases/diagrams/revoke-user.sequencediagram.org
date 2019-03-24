@@ -1,0 +1,14 @@
+# source code for https://sequencediagram.org/
+title Revoke User Workflow
+
+Data Owner->CLI:add_user("alice@dev.net")
+CLI->CLI:generate_proxy_key("alice@dev.net"): proxy_key
+CLI->Proxy Key Store:put("alice@dev.net", proxy_key)
+break
+Data Owner->CLI:revoke_user("alice@dev.net")
+CLI->Proxy Key Store:delete("alice@dev.net")
+break
+Cloud Server<-Alice:download("alice@dev.net", file_url)
+Proxy Key Store<-Cloud Server:get("alice@dev.net")
+Proxy Key Store-->Cloud Server:None
+Alice<--Cloud Server:Forbidden

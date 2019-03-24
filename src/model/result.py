@@ -1,0 +1,4 @@
+from enum import Enum
+
+RESULT = Enum("RESULT", "SUCCESS FAILURE")
+STATUS = Enum("STATUS", "OK FORBIDDEN NOT_FOUND BAD_REQUEST")

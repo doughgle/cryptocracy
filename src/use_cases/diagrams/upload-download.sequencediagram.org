@@ -1,0 +1,16 @@
+# source code for https://sequencediagram.org/
+title Upload-Download Workflow
+
+Data Owner->CLI:add_user(user_id)
+CLI-->CLI:generate_proxy_key(user_id): proxy_key
+CLI-->Proxy Key Store:put(user_id, proxy_key)
+break
+Data Owner->Data Owner:encrypt_file(file): ciphertext
+Data Owner->Cloud Server:upload(ciphertext)
+break
+Alice->Cloud Server:download(user_id, file_url)
+Proxy Key Store<-Cloud Server:get(user_id)
+Proxy Key Store-->Cloud Server:proxy_key
+Cloud Server-->>Cloud Server:proxy_decrypt(proxy_key, ciphertext)
+Alice<--Cloud Server:intermediate_value
+Alice->Alice:decrypt(intermediate_value): plaintext
