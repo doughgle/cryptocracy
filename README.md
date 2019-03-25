@@ -2,6 +2,8 @@
 
 > Democratise cryptographic access control to the people closest to the data.
 
+[![Build Status](https://travis-ci.com/doughgle/cryptocracy.svg?branch=master)](https://travis-ci.com/doughgle/cryptocracy)
+
 ## Use Cases
 See [use-cases.md](src/use_cases/README.md).
 
