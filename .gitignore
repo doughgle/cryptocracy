@@ -5,3 +5,6 @@
 .egg*
 *.egg*
 dist
+.terraform
+*.tfstate
+terraform.tfstate.backup

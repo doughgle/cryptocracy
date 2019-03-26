@@ -21,6 +21,8 @@ before_install:
 - sudo apt-get install -y openssl libssl-dev
 # Download charm
 - git clone https://github.com/JHUISI/charm.git
+- wget https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip
+- unzip terraform_0.11.13_linux_amd64.zip
 install:
 # Install charm
 - pip install -r charm/requirements.txt
@@ -29,5 +31,7 @@ install:
 - make install -C ./charm
 # Install other requirements
 - pip install -r requirements.txt
+- ./terraform init terraform-infra
 script:
 - pytest -k 'not boundaries'
+- ./terraform validate terraform-infra
