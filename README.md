@@ -2,11 +2,12 @@
 
 > Democratise cryptographic access control to your data stored in an untrusted cloud.
 
-[![Build Status](https://travis-ci.com/doughgle/cryptocracy.svg?branch=master)](https://travis-ci.com/doughgle/cryptocracy)
-
-This project is a reference design for using Attribute-Based Encryption (ABE) for the purpose of confidential one-to-many file-sharing in an untrusted public cloud.
+This project is a reference design for using Attribute-Based Encryption (ABE) for the purpose of secure one-to-many file-sharing in an untrusted public cloud.
 For now, it depends on infrastructure hosted on Amazon Web Services (AWS) (you'll need an AWS account). 
 It leverages the popular Charm Crypto Python Framework for the Extended Proxy-Assisted Attribute-Based Encryption implementation. It demonstrates practical considerations and offers a starting point so that you can evaluate ABE technology for your application.
+
+[![Build Status](https://travis-ci.com/doughgle/cryptocracy.svg?branch=master)](https://travis-ci.com/doughgle/cryptocracy)
+[![Tested with Hypothesis](https://img.shields.io/badge/hypothesis-tested-brightgreen.svg)](https://hypothesis.readthedocs.io/)
 
 ## Features
 
@@ -21,7 +22,7 @@ It leverages the popular Charm Crypto Python Framework for the Extended Proxy-As
 + An AWS account
 + Linux
 + Terraform
-+ Python 3.5+
++ Python >= 3.4
 + Charm Crypto Library (and its pre-requisite libraries)
 
 ## Getting Started
@@ -33,7 +34,7 @@ $ export AWS_SECRET_ACCESS_KEY="BAR"
 $ export AWS_DEFAULT_REGION="ap-southeast-1"
 ```
 
-Create the infrastructure.
+##### Create the infrastructure
 ```bash
 $ terraform init
 $ terraform workspace new playground
@@ -42,25 +43,41 @@ $ terraform apply
 
 See [Terraform README](terraform-infra/README.md) for more details.
 
+##### Setup the Key Authority
+
+```bash
+src/delivery/cli$ ./cryptocracy setup
+```
+
+This will generate 2 files - `params` and `msk`.
+> `params` is the public parameters for the scheme.
+> `msk` is the master secret key for the scheme.
+
+It will put them in your Cryptocracy home directory (`$HOME/.cryptocracy` by default).
+The Key Authority can now share the public parameters file with all of the users of Cryptocracy.
+
+Once a Data Owner has the `params`, they can begin encrypting files.
+They can also generate a user key pair. 
+
 ## CLI
 ```bash
-$ ./proxy-crypt
-Usage: proxy-crypt setup
-       proxy-crypt generate keypair
-       proxy-crypt add user <email_address> <user_public_key> <attribute_expression> [options]
-       proxy-crypt list (user|file) [options]
-       proxy-crypt revoke user <email_address> [options]
-       proxy-crypt encrypt <file> <policy_expression> [options]
-       proxy-crypt decrypt <file> [options]
-       proxy-crypt upload <source_url> [<dest_key>] --email-address=ADDRESS [options]
-       proxy-crypt download <url> --email-address=ADDRESS [options]
+$ ./cryptocracy
+Usage: cryptocracy setup
+       cryptocracy generate keypair
+       cryptocracy add user <email_address> <user_public_key> <attribute_expression> [options]
+       cryptocracy list (user|file) [options]
+       cryptocracy revoke user <email_address> [options]
+       cryptocracy encrypt <file> <policy_expression> [options]
+       cryptocracy decrypt <file> [options]
+       cryptocracy upload <source_url> [<dest_key>] --email-address=ADDRESS [options]
+       cryptocracy download <url> --email-address=ADDRESS [options]
 ```
 
 ## Developing
 
 With virtualenvwrapper installed, you can create a new virtualenv primed with the pip dependencies. 
 ```bash
-$ mkproject -a /path/to/proxy-crypt -r requirements.txt --python=python3 cryptocracy
+$ mkproject -a /path/to/cryptocracy -r requirements.txt --python=python3 cryptocracy
 ```
 
 Install Charm crypto

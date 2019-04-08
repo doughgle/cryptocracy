@@ -21,7 +21,7 @@ Use Cases
 |main course|<ol><li>Data Owner issues `revoke` command with `userid ` (maybe email address).<li>System removes `proxy key` for given user.<li>System responds to Data Owner with result and `user identification ref`.</ol>|
 |alternate courses|
 |exceptional courses|
-|example|`$ proxy-crypt revoke_user alice@a.com`|
+|example|`$ cryptocracy revoke_user alice@a.com`|
 
 ---
 
@@ -45,7 +45,7 @@ Use Cases
 |main course|<ol><li>User specifies `file` to upload.<li>System uploads and stores `file` in default object store.<li>System responds with success status.</ol>|
 |alternate courses||
 |exceptional courses|
-|example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp encrypted.png.cpabe s3://proxy-crypt-bucket/encrypted.png.cpabe```|
+|example|```$ source $HOME/.mycreds; aws s3 cp encrypted.png.cpabe s3://proxy-crypt-bucket/encrypted.png.cpabe```|
 
 ---
 
@@ -57,7 +57,7 @@ Use Cases
 |main course|<ol><li>User requests `file`.<li>System partially decrypts `file` using User's `proxy key`.<li>System returns partially decrypted file to User.</ol>|
 |alternate courses|2a.)<ol><li>User's `proxy key` not in Proxy Key Store.<li>System responds with Forbidden status.</ol>2b.)<ol><li>`file` does not exist in Cloud Server.<li>System responds with Not Found status.</ol>|
 |exceptional courses|
-|example|```$ source /media/dough/Storage/repos//exercises/ABE/proxy-crypt-infra/.mycreds; aws s3 cp s3://proxy-crypt-bucket/encrypted.png.cpabe encrypted.png.cpabe```|
+|example|```$ source $HOME/.mycreds; aws s3 cp s3://proxy-crypt-bucket/encrypted.png.cpabe encrypted.png.cpabe```|
 
 ---
 ### Upload Download Workflow

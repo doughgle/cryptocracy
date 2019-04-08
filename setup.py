@@ -1,10 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='proxy-crypt',
+    name='cryptocracy',
     version='0.1.0',
-    description='Delegate attribute-based decryption to a \
-    proxy server without the need to implicitly trust that server.',
+    description='Democratise cryptographic access control to your data stored in an untrusted cloud.',
     url='github.com/doughgle',
     packages=find_packages(),
     install_requires=[],

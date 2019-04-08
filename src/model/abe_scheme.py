@@ -42,7 +42,7 @@ class CharmHybridABE(object):
 
     def setup(self):
         self._params, self._msk = self._cpabe.setup()
-        return self._params, self._msk
+        return objectToBytes(self._params, self._cpabe.group), objectToBytes(self._msk, self._cpabe.group)
 
     def user_keygen(self, user_id):
         pk, sk = self._cpabe.ukgen(self._params, user_id)

@@ -1,25 +1,28 @@
 #!/usr/bin/env python
 """
-Usage: proxy-crypt setup
-       proxy-crypt generate keypair
-       proxy-crypt add user <email_address> <user_public_key> <attribute_expression> [options]
-       proxy-crypt list (user|file) [options]
-       proxy-crypt revoke user <email_address> [options]
-       proxy-crypt encrypt <file> <policy_expression> [options]
-       proxy-crypt decrypt <file> [options]
-       proxy-crypt upload <source_url> [<dest_key>] --email-address=ADDRESS [options]
-       proxy-crypt download <url> --email-address=ADDRESS [options]
+Usage: cryptocracy setup
+       cryptocracy generate keypair
+       cryptocracy add user <email_address> <user_public_key> <attribute_expression> [options]
+       cryptocracy list (user|file) [options]
+       cryptocracy revoke user <email_address> [options]
+       cryptocracy encrypt <file> <policy_expression> [options]
+       cryptocracy decrypt <file> [options]
+       cryptocracy upload <source_url> [<dest_key>] --email-address=ADDRESS [options]
+       cryptocracy download <url> --email-address=ADDRESS [options]
 
 Options:
-  --proxy-crypt-config=FILE      Path to the config file to use for CLI commands. [default: $HOME/.proxy-crypt]
+  --cryptocracy-config=FILE      Path to the config file to use for CLI commands. [default: $HOME/.cryptocracy]
   --email-address=ADDRESS        Identity of the caller for upload download commands.
   -v, --verbose                  Show debug information.
   -h --help                      Show this screen.
   --version                      Show version.
 
 """
+import os
+
 from src.boundaries.object_store import AwsObjectStore
 from src.model.abe_scheme import CharmHybridABE
+from src.model.result import RESULT
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 from src.use_cases.encrypt_file import EncryptFileUseCase, EncryptFileRequest
 from src.use_cases.generate_key_pair import GenerateKeyPairUseCase, GenerateKeyPairRequest
@@ -36,26 +39,7 @@ from src.use_cases.add_user import AddUserUseCase, AddUserRequest
 from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
 
-def init_use_cases():
-    global setup, generate_key_pair, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
-    table_name = 'proxy-key-table-default'
-    proxy_key_store = AwsProxyKeyStore(table_name)
-    abe_scheme = CharmHybridABE()
-    setup = SetupUseCase(abe_scheme)
-    generate_key_pair = GenerateKeyPairUseCase(abe_scheme)
-    add_user = AddUserUseCase(abe_scheme, proxy_key_store)
-    revoke_user = RevokeUserUseCase(proxy_key_store)
-    list_users = ListUsersUseCase(proxy_key_store)
-
-    object_store = AwsObjectStore('proxy-crypt-bucket-default')
-    object_cache = AwsObjectStore('object-cache-bucket-default')
-    upload_file = UploadFileUseCase(object_store)
-    download_file = DownloadFileUseCase(proxy_key_store, None, object_store, object_cache, abe_scheme=abe_scheme)
-
-    encrypt_file = EncryptFileUseCase(abe_scheme)
-
-
-if __name__ == '__main__':
+def main():
     try:
         init_use_cases()
 
@@ -66,6 +50,7 @@ if __name__ == '__main__':
         response = "Coming soon..!"
         if arguments['setup']:
             response = setup.run(SetupRequest())
+            save_setup(response)
         if arguments['generate']:
             if arguments['keypair']:
                 response = generate_key_pair.run(GenerateKeyPairRequest())
@@ -91,3 +76,37 @@ if __name__ == '__main__':
         print(response)
     except Exception as err:
         print(err)
+
+
+def init_use_cases():
+    global setup, generate_key_pair, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
+    table_name = 'proxy-key-table-default'
+    proxy_key_store = AwsProxyKeyStore(table_name)
+    abe_scheme = CharmHybridABE()
+    setup = SetupUseCase(abe_scheme)
+    generate_key_pair = GenerateKeyPairUseCase(abe_scheme)
+    add_user = AddUserUseCase(abe_scheme, proxy_key_store)
+    revoke_user = RevokeUserUseCase(proxy_key_store)
+    list_users = ListUsersUseCase(proxy_key_store)
+
+    object_store = AwsObjectStore('proxy-crypt-bucket-default')
+    object_cache = AwsObjectStore('object-cache-bucket-default')
+    upload_file = UploadFileUseCase(object_store)
+    download_file = DownloadFileUseCase(proxy_key_store, None, object_store, object_cache, abe_scheme=abe_scheme)
+
+    encrypt_file = EncryptFileUseCase(abe_scheme)
+
+
+def save_setup(response):
+    if response['result'] == RESULT.SUCCESS:
+        home = os.path.expanduser("~")
+        cryptocracy_home = os.path.join(home, '.cryptocracy')
+        os.makedirs(cryptocracy_home, mode=0o700, exist_ok=True)
+        with open(os.open(os.path.join(cryptocracy_home, 'msk'), os.O_CREAT | os.O_WRONLY, 0o600), 'wb') as f:
+            f.write(response['msk'])
+        with open(os.open(os.path.join(cryptocracy_home, 'params'), os.O_CREAT | os.O_WRONLY, 0o644), 'wb') as f:
+            f.write(response['params'])
+
+
+if __name__ == '__main__':
+    main()
