@@ -1,6 +1,6 @@
 from src.model import key_spec, user_id
 from src.model.result import RESULT
-from src.model.user_id import InvalidInput
+from src.model.exceptions import InvalidInput
 
 
 class AddUserUseCase(object):

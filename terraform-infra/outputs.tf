@@ -3,7 +3,7 @@ output "proxy_key_store_table_name" {
 }
 
 output "object_store_bucket_name" {
-  value = "${aws_s3_bucket.proxy_crypt_bucket.bucket}"
+  value = "${aws_s3_bucket.encrypted_files_bucket.bucket}"
 }
 
 output "object_cache_bucket_name" {

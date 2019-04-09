@@ -35,12 +35,34 @@ $ export AWS_DEFAULT_REGION="ap-southeast-1"
 ```
 
 ##### Create the infrastructure
+
+From the terraform-infra directory, execute the following commands to setup the infrastructure for Cryptocracy.
 ```bash
-$ terraform init
-$ terraform workspace new playground
-$ terraform apply
+terraform-infra$ terraform init
+terraform-infra$ terraform workspace new playground
+terraform-infra$ terraform apply
 ```
 
+If Terraform succeeds, you'll see something like the following:
+
+```bash
+Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+object_cache_bucket_name = object-cache-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de
+object_store_bucket_name = encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de
+proxy_key_store_table_name = proxy-key-table-playground
+```
+
+Copy the values from the Terraform outputs and create environment variables for each one:
+
+```bash
+$ export CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME=encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de
+$ export CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME=object-cache-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de
+$ export CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME=proxy-key-table-playground
+```
+ 
 See [Terraform README](terraform-infra/README.md) for more details.
 
 ##### Setup the Key Authority
@@ -56,7 +78,7 @@ This will generate 2 files - `params` and `msk`.
 It will put them in your Cryptocracy home directory (`$HOME/.cryptocracy` by default).
 The Key Authority can now share the public parameters file with all of the users of Cryptocracy.
 
-Once a Data Owner has the `params`, they can begin encrypting files.
+Once a Data Owner has the `params`, they can begin encrypting files with access policies.
 They can also generate a user key pair. 
 
 ## CLI

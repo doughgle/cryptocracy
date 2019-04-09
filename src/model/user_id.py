@@ -1,11 +1,9 @@
 import re
 
+from src.model.exceptions import InvalidInput
+
 pattern_str = '''[a-zA-Z0-9!#$%&'*+-/=^_`{|}~]{1,64}@[a-zA-Z0-9!#$%&'*+-/=^_`{|}~]+\.(com|net||org||biz|info)'''
 pattern = re.compile(pattern_str)
-
-
-class InvalidInput(Exception):
-    pass
 
 
 def assert_valid(user_id):

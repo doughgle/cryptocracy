@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 """
-Usage: cryptocracy setup
-       cryptocracy generate keypair
+Usage: cryptocracy setup [options]
+       cryptocracy generate keypair [options]
        cryptocracy add user <email_address> <user_public_key> <attribute_expression> [options]
        cryptocracy list (user|file) [options]
        cryptocracy revoke user <email_address> [options]
        cryptocracy encrypt <file> <policy_expression> [options]
        cryptocracy decrypt <file> [options]
-       cryptocracy upload <source_url> [<dest_key>] --email-address=ADDRESS [options]
-       cryptocracy download <url> --email-address=ADDRESS [options]
+       cryptocracy upload <source_url> [<dest_key>] [options]
+       cryptocracy download <url> <user_id> [options]
 
 Options:
   --cryptocracy-config=FILE      Path to the config file to use for CLI commands. [default: $HOME/.cryptocracy]
@@ -19,6 +19,7 @@ Options:
 
 """
 import os
+import traceback
 
 from src.boundaries.object_store import AwsObjectStore
 from src.model.abe_scheme import CharmHybridABE
@@ -76,12 +77,12 @@ def main():
         print(response)
     except Exception as err:
         print(err)
+        traceback.print_tb(err.__traceback__)
 
 
 def init_use_cases():
     global setup, generate_key_pair, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
-    table_name = 'proxy-key-table-default'
-    proxy_key_store = AwsProxyKeyStore(table_name)
+    proxy_key_store = AwsProxyKeyStore(os.getenv('CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME'))
     abe_scheme = CharmHybridABE()
     setup = SetupUseCase(abe_scheme)
     generate_key_pair = GenerateKeyPairUseCase(abe_scheme)
@@ -89,8 +90,8 @@ def init_use_cases():
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
 
-    object_store = AwsObjectStore('proxy-crypt-bucket-default')
-    object_cache = AwsObjectStore('object-cache-bucket-default')
+    object_store = AwsObjectStore(os.getenv('CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME'))
+    object_cache = AwsObjectStore(os.getenv('CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME'))
     upload_file = UploadFileUseCase(object_store)
     download_file = DownloadFileUseCase(proxy_key_store, None, object_store, object_cache, abe_scheme=abe_scheme)
 

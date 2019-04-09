@@ -4,15 +4,15 @@ provider "aws" {
 
 resource "random_uuid" "instance_uuid" {}
 
-resource "aws_s3_bucket" "proxy_crypt_bucket" {
-  bucket = "proxy-crypt-bucket-${terraform.workspace}-${random_uuid.instance_uuid.result}"
+resource "aws_s3_bucket" "encrypted_files_bucket" {
+  bucket = "encrypted-files-${terraform.workspace}-${random_uuid.instance_uuid.result}"
   acl    = "private"
 
   tags = "${merge(var.default_tags,map("Environment", terraform.workspace))}"
 }
 
 resource "aws_s3_bucket" "object_cache_bucket" {
-  bucket = "object-cache-bucket-${terraform.workspace}-${random_uuid.instance_uuid.result}"
+  bucket = "object-cache-${terraform.workspace}-${random_uuid.instance_uuid.result}"
   acl    = "private"
 
   tags = "${merge(var.default_tags,map("Environment", terraform.workspace))}"

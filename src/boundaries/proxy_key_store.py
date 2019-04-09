@@ -1,3 +1,6 @@
+from src.model.exceptions import InvalidInput
+
+
 class ProxyKeyStore(object):
 
     def __init__(self):
@@ -31,6 +34,8 @@ from boto3.dynamodb.conditions import Attr
 class AwsProxyKeyStore(object):
 
     def __init__(self, table_name):
+        if not table_name:
+            raise InvalidInput("ERROR: dynamodb table is undefined.")
         self.dynamodb = boto3.resource('dynamodb')
         self.table = self.dynamodb.Table(name=table_name)
 

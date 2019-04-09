@@ -1,3 +1,5 @@
+from src.model.exceptions import InvalidInput
+
 try:
     from urllib.request import urlopen, urlparse
     from urllib.error import URLError
@@ -42,8 +44,10 @@ class ObjectStore(object):
 class AwsObjectStore(object):
 
     def __init__(self, bucket_name):
-        self.s3 = boto3.client('s3')
+        if not bucket_name:
+            raise InvalidInput("ERROR: s3 bucket name is undefined.")
         self.bucket_name = bucket_name
+        self.s3 = boto3.client('s3')
 
     def put(self, source_url, key):
         self.s3.upload_file(source_url, self.bucket_name, key)

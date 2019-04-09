@@ -1,3 +1,4 @@
+import os
 import unittest
 
 import boto3
@@ -43,7 +44,7 @@ class AwsProxyKeyStoreTestBase(InMemoryProxyKeyStoreTestBase):
 class ClearableAwsProxyKeyStore(AwsProxyKeyStore):
 
     def __init__(self):
-        self.table_name = u'proxy-key-table-nonprod'
+        self.table_name = os.getenv('CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME')
         super(ClearableAwsProxyKeyStore, self).__init__(
             table_name=self.table_name
         )

@@ -14,7 +14,7 @@ class ObjectStoreTest(unittest.TestCase):
         self.store = object_store
         unittest.TestCase.__init__(self, methodName)
 
-    @settings(max_examples=10, deadline=750)
+    @settings(max_examples=10, deadline=None)
     @given(ciphertext=binary(min_size=16, max_size=2048))
     def test_put_url_get_binary(self, ciphertext):
         self.path = os.path.join(os.path.dirname(__file__), 'cipher.txt')
@@ -29,7 +29,7 @@ class ObjectStoreTest(unittest.TestCase):
         self.store.delete(key)
         os.remove(self.path)
 
-    @settings(max_examples=10, deadline=750)
+    @settings(max_examples=10, deadline=None)
     @given(lookup_key=lookup_keys(), ciphertext=binary(min_size=16, max_size=2048))
     def test_put_binary_get_url(self, lookup_key, ciphertext):
         self.store.put_binary(lookup_key, ciphertext)
@@ -41,4 +41,7 @@ class ObjectStoreTest(unittest.TestCase):
 class AwsObjectStoreTest(ObjectStoreTest):
 
     def __init__(self, methodName):
-        ObjectStoreTest.__init__(self, methodName, object_store=AwsObjectStore(u'proxy-crypt-bucket-nonprod'))
+        object_store_bucket_name = os.getenv('CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME')
+        ObjectStoreTest.__init__(self,
+                                 methodName,
+                                 object_store=AwsObjectStore(object_store_bucket_name))

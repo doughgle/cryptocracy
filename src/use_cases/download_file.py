@@ -3,7 +3,7 @@ from src.model import user_id
 from src.model.abe_scheme import NullCipher
 from src.model.object_cache_lookup_key import make_lookup_key
 from src.model.result import RESULT, STATUS
-from src.model.user_id import InvalidInput
+from src.model.exceptions import InvalidInput
 
 
 class DownloadFileUseCase(object):
