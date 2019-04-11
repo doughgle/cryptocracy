@@ -51,16 +51,16 @@ Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-object_cache_bucket_name = object-cache-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de
-object_store_bucket_name = encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de
+object_cache_bucket_name = object-cache-playground-cab79872-ccda-4987-8115-d024dd19618d
+object_store_bucket_name = encrypted-files-playground-cab79872-ccda-4987-8115-d024dd19618d
 proxy_key_store_table_name = proxy-key-table-playground
 ```
 
 Copy the values from the Terraform outputs and create environment variables for each one:
 
 ```bash
-$ export CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME=encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de
-$ export CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME=object-cache-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de
+$ export CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME=encrypted-files-playground-cab79872-ccda-4987-8115-d024dd19618d
+$ export CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME=object-cache-playground-cab79872-ccda-4987-8115-d024dd19618d
 $ export CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME=proxy-key-table-playground
 ```
  
@@ -83,7 +83,7 @@ Here, we'll upload it to our S3 bucket:
 
 ```bash
 (KA)src/delivery/cli$ ./cryptocracy upload ~/.cryptocracy/params 
-{'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/params?Signature=31NFg6QnNlM3vh5JmAJD7YFTuk8%3D&AWSAccessKeyId=AKIAJ25YUGY4JXICK2CQ&Expires=1554989651'}
+{'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-cab79872-ccda-4987-8115-d024dd19618d.s3.amazonaws.com/params?Signature=9DIXUT0PLP83TVH2REWVTLSVDQAFZIW&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C&Expires=1554989651'}
 ```
 
 Once a Data Owner has the `params`, they can begin encrypting files with access policies.
@@ -96,7 +96,7 @@ First, we need to get the public scheme parameters from the bucket.
 Since the public parameters are in plaintext, we can simply download using the url given upon upload.
 
 ```bash
-(DO)$ wget 'https://encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/params?Signature=31NFg6QnNlM3vh5JmAJD7YFTuk8%3D&AWSAccessKeyId=AKIAJ25YUGY4JXICK2CQ&Expires=1554989651' -O ~/.cryptocracy/params
+(DO)$ wget 'https://encrypted-files-playground-cab79872-ccda-4987-8115-d024dd19618d.s3.amazonaws.com/params?Signature=9DIXUT0PLP83TVH2REWVTLSVDQAFZIW&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C&Expires=1554989651' -O ~/.cryptocracy/params
 ```
 
 Let's start from the beginning. 
@@ -168,25 +168,12 @@ $ pip install -e .
 ### Test
 #### Run Unit Tests
 ```sh
-$ python setup.py test
+$ pytest
 ```
-
-#### Run Integration Tests
-
 
 ### Package
 ```sh
 $ python setup.py sdist
-```
-
-### Register in PyPi
-```
-$ python setup.py register
-```
-
-### Publish to PyPi
-```
-$ python setup.py upload
 ```
 
 ## Use Cases
