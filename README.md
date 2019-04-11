@@ -4,7 +4,8 @@
 
 This project is a reference design for using Attribute-Based Encryption (ABE) for the purpose of secure one-to-many file-sharing in an untrusted public cloud.
 For now, it depends on infrastructure hosted on Amazon Web Services (AWS) (you'll need an AWS account). 
-It leverages the popular Charm Crypto Python Framework for the Extended Proxy-Assisted Attribute-Based Encryption implementation. It demonstrates practical considerations and offers a starting point so that you can evaluate ABE technology for your application.
+It leverages the popular Charm Crypto Python Framework for the Extended Proxy-Assisted Attribute-Based Encryption implementation.
+It demonstrates practical considerations and offers a starting point so that you can evaluate ABE technology for your application.
 
 [![Build Status](https://travis-ci.com/doughgle/cryptocracy.svg?branch=master)](https://travis-ci.com/doughgle/cryptocracy)
 [![Tested with Hypothesis](https://img.shields.io/badge/hypothesis-tested-brightgreen.svg)](https://hypothesis.readthedocs.io/)
@@ -34,7 +35,7 @@ $ export AWS_SECRET_ACCESS_KEY="BAR"
 $ export AWS_DEFAULT_REGION="ap-southeast-1"
 ```
 
-##### Create the infrastructure
+#### Create the infrastructure
 
 From the terraform-infra directory, execute the following commands to setup the infrastructure for Cryptocracy.
 ```bash
@@ -65,10 +66,10 @@ $ export CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME=proxy-key-table-playground
  
 See [Terraform README](terraform-infra/README.md) for more details.
 
-##### Setup the Key Authority
+#### Setup the Key Authority
 
 ```bash
-src/delivery/cli$ ./cryptocracy setup
+(KA)src/delivery/cli$ ./cryptocracy setup
 ```
 
 This will generate 2 files - `params` and `msk`.
@@ -78,8 +79,50 @@ This will generate 2 files - `params` and `msk`.
 It will put them in your Cryptocracy home directory (`$HOME/.cryptocracy` by default).
 The Key Authority can now share the public parameters file with all of the users of Cryptocracy.
 
+Here, we'll upload it to our S3 bucket:
+
+```bash
+(KA)src/delivery/cli$ ./cryptocracy upload ~/.cryptocracy/params 
+{'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/params?Signature=31NFg6QnNlM3vh5JmAJD7YFTuk8%3D&AWSAccessKeyId=AKIAJ25YUGY4JXICK2CQ&Expires=1554989651'}
+```
+
 Once a Data Owner has the `params`, they can begin encrypting files with access policies.
 They can also generate a user key pair. 
+
+#### Encrypt your first file
+
+Now we're on the Data Owner's machine.
+First, we need to get the public scheme parameters from the bucket.
+Since the public parameters are in plaintext, we can simply download using the url given upon upload.
+
+```bash
+(DO)$ wget 'https://encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/params?Signature=31NFg6QnNlM3vh5JmAJD7YFTuk8%3D&AWSAccessKeyId=AKIAJ25YUGY4JXICK2CQ&Expires=1554989651' -O ~/.cryptocracy/params
+```
+
+Let's start from the beginning. 
+We'll create a file `hello` with the plaintext contents `hello world`:
+
+```bash
+(DO)src/delivery/cli$ echo "hello world" > hello
+```
+
+Now we can encrypt our plaintext `hello` with a policy expression.
+Since we know that the file contains a common and safe greeting amongst humans, 
+we'll specify an access policy of `(human or earthling)`.
+We'll output the resulting ciphertext to `hello.enc`.
+
+```bash
+src/delivery/cli$ ./cryptocracy encrypt hello '(human or earthling)' hello.enc
+{'result': <RESULT.SUCCESS: 1>, 'output_file': 'hello.enc'}
+``` 
+
+Inspecting the ciphertext, you can see that its base64 encoded.
+That's convenient for transport and storage!
+
+```bash
+src/delivery/cli$ cat hello.enc ; echo
+eJztVk1vGzcQ/SuCTg2gA8nlZ4AcFDmJHEQJ2rpF4TpYrPVlAbLjSkra1PB/L998rJRb00sPyWGlXXI4nJn33pAPw7kbPh08DG/36/o/3B92Tx+uhue/XtWvq+H6+ebd7HZ69+ky/zi9XC1fxxIm62fProajOjt7d/YCdg4fk839zXJ3sfzrwEuvV2d/v/zt/PL12d6HafNHsx1fzP7UpeM3r2BmHuvXcLFZL/cH3d44Z1dNSCWErkvWLVbBzYtfxXSd56lrukVc5tiFRbeyC2uSLdb4sFr5xXUy3i3gsdv22Uxn40n783Tsho91Ym4p2wn9tu182+33bQvb68+H5R5r2/ZTt/24pNHfgx0NQh4NYhwNchkNrK0v1tS3HEaD5EeDkjBQR1MdCPXJRsywJll81JFQTT0cuPpRMkbrwhT5sYYWiYeEaVMXZPJNP3Uo1JcMvwG21XGqi2L1mRoOBQH6xJHgoeUWMRoxqk9wGCyyOpymlJzshPiQXzDsxCcNyPFO5CDqDOJGsigFtmDTzANYT0nRLnBq2UeIkgZKQyHXd9+IlTX0RhHV8WzZEwLoU87iqOExKi2clCJpEk4SMibwnhteQfUn35iBOXI5QpR6VIzkeyxn5lppFhSME3tC3Yslwuo9wQTkABq0j3VSPDIBDDzccJRUC5rWMIiNmnlUmmU25dIhSy/lC0E3AYeAN1UEoGNR1hIhymjfQx+T9n63uV3+W3kg3pBlX+ucJJfkA4xlvhmGkOuNQJwVWgatTo8J8u8LIeyMJ8qJ8kALqCmqQpywXF/a1fM4b9jIHsSiLFWlLYxwCjCy2hoRrSkSJQWVpeIcV1AJFWErQ2VZgkG4TA1B1Ed+AXOQf8iLasSqB/WzoMVTVnhWTvoNLQD4cJvtF8jdf9hu5p/b2vK08/1w8/G2uxt82A2W3e5ws93crZ8AwXnbHQ67PWE8/WU2fgskvxLuKCGSmkT6qFGWNkRgUSFES1RkJ1ViipNIMncZUVlQfKRjhr5pROkGwDLLxkQkm7VZWAWUf0Ac0IFo7owMc8dT4qHcRdlKGyXpjNiDNR0VXjkCUP+sqvlSYUVkSbsxuF5aKh8R0sGpcSTpFUFPCWmY8ELUtVE7Qzg2fnoI8a8XaJJGC6YRi+SMQE1Ji1m7skwy/1F26r1WkjfauAVfr+ZW+r508HxaipL6chjWL/VtkUTWBsFANMdgWABSvKLokl7jsW/DOspJk/Wotf1Rq6JmGgiQWE+neJIZZopjL6Rats96EjlJOmt3ojA8MyUKJ3D6nGrzfcXkxfini+mb87evvkvtG5Ca8kWP6hxVG335+XYj0PhGdZdYGUWoTqdI6Wsmd8osN7SkkrYSeArHw1DuLkkK2ZwCQzV2uiroacc3CrnygcX9NZWcQWZ6oGe9A2a5b3D4epZrp0iSGG8hCBRzPNkgP+zk9cqj0Zn+Hkiks2qv5GMi+/6nHOE6vcf819vMd839z5p7fPwHAAbsGQ==
+```
 
 ## CLI
 ```bash

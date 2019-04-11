@@ -5,13 +5,13 @@ Usage: cryptocracy setup [options]
        cryptocracy add user <email_address> <user_public_key> <attribute_expression> [options]
        cryptocracy list (user|file) [options]
        cryptocracy revoke user <email_address> [options]
-       cryptocracy encrypt <file> <policy_expression> [options]
+       cryptocracy encrypt <input_file> <policy_expression> <output_file>[options]
        cryptocracy decrypt <file> [options]
        cryptocracy upload <source_url> [<dest_key>] [options]
        cryptocracy download <url> <user_id> [options]
 
 Options:
-  --cryptocracy-config=FILE      Path to the config file to use for CLI commands. [default: $HOME/.cryptocracy]
+  --params=FILE                  Path to the scheme public parameters file to use for CLI commands. [default: $HOME/.cryptocracy/params]
   --email-address=ADDRESS        Identity of the caller for upload download commands.
   -v, --verbose                  Show debug information.
   -h --help                      Show this screen.
@@ -67,12 +67,14 @@ def main():
         if arguments['upload']:
             response = upload_file.run(UploadFileRequest(arguments['<source_url>']))
         if arguments['download']:
-            response = download_file.run(DownloadFileRequest(user_id=arguments['--email-address'],
+            response = download_file.run(DownloadFileRequest(user_id=arguments['<user_id>'],
                                                              request_url=arguments['<url>']))
         if arguments['encrypt']:
             response = encrypt_file.run(
-                EncryptFileRequest(input_file=arguments['<file>'], policy_expression=arguments['<policy_expression>'],
-                                   output_file=None))
+                EncryptFileRequest(input_file=arguments['<input_file>'],
+                                   policy_expression=arguments['<policy_expression>'],
+                                   output_file=arguments['<output_file>'],
+                                   params=load_params(arguments['--params'])))
 
         print(response)
     except Exception as err:
@@ -107,6 +109,11 @@ def save_setup(response):
             f.write(response['msk'])
         with open(os.open(os.path.join(cryptocracy_home, 'params'), os.O_CREAT | os.O_WRONLY, 0o644), 'wb') as f:
             f.write(response['params'])
+
+
+def load_params(config_file):
+    with open(os.path.expandvars(config_file), 'rb') as c:
+        return c.read()
 
 
 if __name__ == '__main__':

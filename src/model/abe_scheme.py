@@ -61,9 +61,10 @@ class CharmHybridABE(object):
                                         pku,
                                         attribute_list)
 
-    def encrypt(self, plaintext, policy_expression):
+    def encrypt(self, params, plaintext, policy_expression):
+        params = bytesToObject(params, self._cpabe.group)
         symm_key = self._cpabe.group.random(GT)
-        c1 = self._cpabe.encrypt(self._params, symm_key, policy_expression)
+        c1 = self._cpabe.encrypt(params, symm_key, policy_expression)
         cipher = AuthenticatedCryptoAbstraction(sha2(symm_key))
         c2 = cipher.encrypt(plaintext)
         ciphertext = {'c1': c1, 'c2': c2}

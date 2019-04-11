@@ -12,7 +12,7 @@ class DownloadFileTest(unittest.TestCase):
 
     def setUp(self):
         abe_scheme = CharmHybridABE()
-        abe_scheme.setup()
+        params, msk = abe_scheme.setup()
         alice = "alice@dev.net"
         pku, sku = abe_scheme.user_keygen(alice)
         pkcs, skcs = abe_scheme.user_keygen("cryptocracy@amazonaws.com")
@@ -23,7 +23,7 @@ class DownloadFileTest(unittest.TestCase):
         proxy_key_store.put(alice, alice_key)
 
         # data owner encrypts cyphertext
-        ciphertext = abe_scheme.encrypt("hello ABE world!", "Singaporean")
+        ciphertext = abe_scheme.encrypt(params, "hello ABE world!", "Singaporean")
         self.input_file = os.path.join(os.path.dirname(__file__), 'cipher.txt')
         with open(self.input_file, 'wb') as f:
             f.write(ciphertext)

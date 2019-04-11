@@ -1,13 +1,13 @@
-import unittest
 import os
+import unittest
 
-from src.use_cases.encrypt_file import EncryptFileResponse, EncryptFileUseCase, EncryptFileRequest
 from src.model.result import RESULT
+from src.use_cases.encrypt_file import EncryptFileResponse, EncryptFileUseCase, EncryptFileRequest
 
 
-class NullCipher(object):
-    def encrypt(self, plaintext, policy_expression):
-        ciphertext = 'ciphertext'
+class NullAbeScheme(object):
+    def encrypt(self, params, plaintext, policy_expression):
+        ciphertext = b'ciphertext'
         return ciphertext
 
 
@@ -24,20 +24,12 @@ class EncryptFileTest(unittest.TestCase):
         os.remove(self.input_file)
 
     def test_encrypt_to_output_file(self):
-        encrypt_file = EncryptFileUseCase(abe_scheme=NullCipher())
+        encrypt_file = EncryptFileUseCase(abe_scheme=NullAbeScheme())
         request = EncryptFileRequest(self.input_file,
                                      policy_expression=u'((Manager and Experience > 3) or Admin)',
-                                     output_file=self.output_file)
+                                     output_file=self.output_file,
+                                     params=b'public scheme params')
         response = encrypt_file.run(request)
         expected_response = EncryptFileResponse(RESULT.SUCCESS, self.output_file)
         self.assertEqual(expected_response, response)
         os.remove(self.output_file)
-
-    def test_encrypt_file_in_place(self):
-        encrypt_file = EncryptFileUseCase(abe_scheme=NullCipher())
-        request = EncryptFileRequest(self.input_file, policy_expression=u'((Manager and Experience > 3) or Admin)' )
-        response = encrypt_file.run(request)
-        expected_response = EncryptFileResponse(result=RESULT.SUCCESS, output_file=self.input_file)
-        self.assertEqual(expected_response, response)
-
-
