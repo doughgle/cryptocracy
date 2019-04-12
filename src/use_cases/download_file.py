@@ -1,9 +1,9 @@
 from src.boundaries.object_store import ObjectStore, ObjectNotFound
 from src.model import user_id
 from src.model.abe_scheme import NullCipher
+from src.model.exceptions import InvalidInput
 from src.model.object_cache_lookup_key import make_lookup_key
 from src.model.result import RESULT, STATUS
-from src.model.exceptions import InvalidInput
 
 
 class DownloadFileUseCase(object):
@@ -25,7 +25,6 @@ class DownloadFileUseCase(object):
             ciphertext = self.object_store.get(request.request_url)
             partially_decrypted_value = self.abe_scheme.proxy_decrypt(self.__cloud_server_secret_key,
                                                                       proxy_key_user=proxy_key,
-                                                                      user_id=request.user_id,
                                                                       ciphertext=ciphertext)
             expiring_object_key = make_lookup_key(request.request_url, request.user_id)
             self.object_cache.put_binary(expiring_object_key, partially_decrypted_value)

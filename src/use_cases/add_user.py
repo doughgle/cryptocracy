@@ -1,6 +1,6 @@
 from src.model import key_spec, user_id
-from src.model.result import RESULT
 from src.model.exceptions import InvalidInput
+from src.model.result import RESULT
 
 
 class AddUserUseCase(object):
@@ -18,7 +18,6 @@ class AddUserUseCase(object):
             key_spec.assert_valid(request.user_public_key)
             proxy_key = self.abe_scheme.proxy_keygen(self.proxy_key_store.public_key,
                                                      request.user_public_key,
-                                                     request.user_id,
                                                      request.attributes)
             self.proxy_key_store.put(request.user_id, proxy_key)
             return {"result": RESULT.SUCCESS, "user_id": request.user_id}

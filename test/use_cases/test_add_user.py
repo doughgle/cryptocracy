@@ -34,7 +34,7 @@ class AddUserTest(unittest.TestCase):
 
 class FakeProxyKeyABE(NullCipher):
 
-    def proxy_keygen(self, cloud_server_public_key, user_public_key, user_id, attribute_list):
+    def proxy_keygen(self, cloud_server_public_key, user_public_key, attribute_list):
         return "dc5819e1ae1450c6044a9cc3dacc896b9d09d12f"
 
 

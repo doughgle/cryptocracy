@@ -21,12 +21,12 @@ class TestCipher(unittest.TestCase):
         abe = ABE()
         params, msk = abe.setup()
 
-        pku, sku = abe.user_keygen(user_id)
-        pkcs, skcs = abe.user_keygen(user_id)
-        proxy_key_user = abe.proxy_keygen(pkcs, pku, user_id, attribute_list)
+        pku, sku = abe.user_keygen()
+        pkcs, skcs = abe.user_keygen()
+        proxy_key_user = abe.proxy_keygen(pkcs, pku, attribute_list)
         policy_expression = attribute_list[0]
 
         pt = str(plaintext, 'latin-1')
         ciphertext = abe.encrypt(params, pt, policy_expression)
-        intermediate_value = abe.proxy_decrypt(skcs, proxy_key_user, user_id, ciphertext)
+        intermediate_value = abe.proxy_decrypt(skcs, proxy_key_user, ciphertext)
         self.assertEqual(pt, str(abe.decrypt(sku, intermediate_value), 'utf8'))

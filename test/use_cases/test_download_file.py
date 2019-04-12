@@ -13,14 +13,13 @@ class DownloadFileTest(unittest.TestCase):
     def setUp(self):
         abe_scheme = CharmHybridABE()
         params, msk = abe_scheme.setup()
-        alice = "alice@dev.net"
-        pku, sku = abe_scheme.user_keygen(alice)
-        pkcs, skcs = abe_scheme.user_keygen("cryptocracy@amazonaws.com")
+        pku, sku = abe_scheme.user_keygen()
+        pkcs, skcs = abe_scheme.user_keygen()
         # key authority adds user
-        alice_key = abe_scheme.proxy_keygen(pkcs, pku, user_id=alice, attribute_list=["Singaporean", "female"])
+        alice_key = abe_scheme.proxy_keygen(pkcs, pku, attribute_list=["Singaporean", "female"])
 
         proxy_key_store = ProxyKeyStore()
-        proxy_key_store.put(alice, alice_key)
+        proxy_key_store.put("alice@dev.net", alice_key)
 
         # data owner encrypts cyphertext
         ciphertext = abe_scheme.encrypt(params, "hello ABE world!", "Singaporean")

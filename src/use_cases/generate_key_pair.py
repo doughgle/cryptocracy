@@ -6,7 +6,7 @@ class GenerateKeyPairUseCase(object):
         self.abe_scheme = abe_scheme
 
     def run(self, request):
-        pk, sk = self.abe_scheme.user_keygen(request.user_id)
+        pk, sk = self.abe_scheme.user_keygen()
         return {"result": RESULT.SUCCESS, "public_key": pk, "secret_key": sk}
 
 
