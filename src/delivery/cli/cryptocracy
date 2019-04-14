@@ -53,6 +53,8 @@ def main():
         encrypt_file, \
         upload_file = init_use_cases()
 
+        cryptocracy_home = create_cryptocracy_home()
+
         arguments = docopt(__doc__, version=__version__)
         if arguments['--verbose']:
             print(arguments)
@@ -60,11 +62,11 @@ def main():
         response = "Coming soon..!"
         if arguments['setup']:
             response = setup.run(SetupRequest())
-            save_setup(response)
+            save_setup(cryptocracy_home, response)
         if arguments['generate'] and arguments['keypair']:
-                response = generate_key_pair.run(GenerateKeyPairRequest(params=load_params(arguments['--params']),
-                                                                        public_key_file=arguments['--public-key-file'],
-                                                                        secret_key_file=arguments['--secret-key-file']))
+            response = generate_key_pair.run(GenerateKeyPairRequest(params=load_params(arguments['--params']),
+                                                                    public_key_file=arguments['--public-key-file'],
+                                                                    secret_key_file=arguments['--secret-key-file']))
         if arguments['user']:
             if arguments['add']:
                 response = add_user.run(AddUserRequest(user_id=user_id,
@@ -110,15 +112,19 @@ def init_use_cases():
     return setup, generate_key_pair, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
 
 
-def save_setup(response):
+def save_setup(cryptocracy_home, response):
     if response['result'] == RESULT.SUCCESS:
-        home = os.path.expanduser("~")
-        cryptocracy_home = os.path.join(home, '.cryptocracy')
-        os.makedirs(cryptocracy_home, mode=0o700, exist_ok=True)
         with open(os.open(os.path.join(cryptocracy_home, 'msk'), os.O_CREAT | os.O_WRONLY, 0o600), 'wb') as f:
             f.write(response['msk'])
         with open(os.open(os.path.join(cryptocracy_home, 'params'), os.O_CREAT | os.O_WRONLY, 0o644), 'wb') as f:
             f.write(response['params'])
+
+
+def create_cryptocracy_home():
+    home = os.path.expanduser("~")
+    cryptocracy_home = os.path.join(home, '.cryptocracy')
+    os.makedirs(cryptocracy_home, mode=0o700, exist_ok=True)
+    return cryptocracy_home
 
 
 def load_params(config_file):
