@@ -44,7 +44,14 @@ from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
 def main():
     try:
-        init_use_cases()
+        setup, \
+        generate_key_pair, \
+        add_user, \
+        revoke_user, \
+        list_users, \
+        download_file, \
+        encrypt_file, \
+        upload_file = init_use_cases()
 
         arguments = docopt(__doc__, version=__version__)
         if arguments['--verbose']:
@@ -54,8 +61,7 @@ def main():
         if arguments['setup']:
             response = setup.run(SetupRequest())
             save_setup(response)
-        if arguments['generate']:
-            if arguments['keypair']:
+        if arguments['generate'] and arguments['keypair']:
                 response = generate_key_pair.run(GenerateKeyPairRequest(params=load_params(arguments['--params']),
                                                                         public_key_file=arguments['--public-key-file'],
                                                                         secret_key_file=arguments['--secret-key-file']))
@@ -87,7 +93,6 @@ def main():
 
 
 def init_use_cases():
-    global setup, generate_key_pair, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
     proxy_key_store = AwsProxyKeyStore(os.getenv('CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME'))
     abe_scheme = CharmHybridABE()
     setup = SetupUseCase(abe_scheme)
@@ -102,6 +107,7 @@ def init_use_cases():
     download_file = DownloadFileUseCase(proxy_key_store, None, object_store, object_cache, abe_scheme=abe_scheme)
 
     encrypt_file = EncryptFileUseCase(abe_scheme)
+    return setup, generate_key_pair, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
 
 
 def save_setup(response):
