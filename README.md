@@ -132,18 +132,39 @@ src/delivery/cli$ ./cryptocracy upload hello.enc
 {'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-b60f37bb-ee49-41d4-91a4-26ebde416e61.s3.amazonaws.com/hello.enc?Signature=v6THLqiGQ6HhD8Yxof%2FHlAtn9yQ%3D&Expires=1555080419&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C'}
 ```
 
+#### Register a User with the Key Authority
+
+On the User's machine, the user must first generate a key pair:
+
+```bash
+src/delivery/cli$ ./cryptocracy generate keypair
+{'secret_key_file': '$HOME/.cryptocracy/user.key', 'result': <RESULT.SUCCESS: 1>, 'secret_key': b'eJwtjjEOwzAIRa+CPDOYJDa4V4kiK628ZXMTqap693ySDoAfH775hlqPddtbreFB82RMCVGUSaQwWUSIw8SkA9QMiIDsKqCgKlZkiD42erJb1vE/e1vhYcU7ME+wMlS9vAH+c5aFCQe9trX366Dw/LxbD78TeyUjwg==', 'public_key': b'eJw1UUFOxDAM/ErUcw6ZNk4cvoJW1YL2trcCEkL8HY9tDm4Tj8czdn628/y6Pz8f57m9lFdptYjWMlYty2JILYpa0GYk0YYhdgEOKzVILTuVCcKw07QSPTKI7NZ1ehdm9iSvlQfWAZ04e9ltkuBqTjeGGNxXqkn8XVF7BID0wSZCymDWPp122x4wW/cjExyNpSqhG3b2f7eSg6OZgEgo+4ieVhdoQedOGBxYW2zOQZnhYGiadINoCC/eG5DcDmkDt1rsXd6f9+vyd9nevj8e1/b7B9SfUpU=', 'public_key_file': '$HOME/.cryptocracy/user.pub'}
+```
+
+By default the keypair will be created in the Cryptocracy home directory (`$HOME/.cryptocracy`).
+ 
+
 ## CLI
 ```bash
-$ ./cryptocracy
-Usage: cryptocracy setup
-       cryptocracy generate keypair
+src/delivery/cli$ ./cryptocracy --help
+Usage: cryptocracy setup [options]
+       cryptocracy generate keypair [--public-key-file=<pku>] [--secret-key-file=<sku>] [options]
        cryptocracy add user <email_address> <user_public_key> <attribute_expression> [options]
        cryptocracy list (user|file) [options]
        cryptocracy revoke user <email_address> [options]
-       cryptocracy encrypt <file> <policy_expression> [options]
+       cryptocracy encrypt <input_file> <policy_expression> <output_file> [options]
        cryptocracy decrypt <file> [options]
-       cryptocracy upload <source_url> [<dest_key>] --email-address=ADDRESS [options]
-       cryptocracy download <url> --email-address=ADDRESS [options]
+       cryptocracy upload <source_url> [<dest_key>] [options]
+       cryptocracy download <url> <user_id> [options]
+
+Options:
+  --params=FILE                  Path to the scheme public parameters file to use for CLI commands. [default: $HOME/.cryptocracy/params]
+  --public-key-file=<pku>        Destination path for user public key generation [default: $HOME/.cryptocracy/user.pub]
+  --secret-key-file=<sku>        Destination path for user secret key generation [default: $HOME/.cryptocracy/user.key]
+  --email-address=ADDRESS        Identity of the caller for upload download commands.
+  -v, --verbose                  Show debug information.
+  -h --help                      Show this screen.
+  --version                      Show version.
 ```
 
 ## Developing
