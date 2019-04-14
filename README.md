@@ -167,47 +167,6 @@ Options:
   --version                      Show version.
 ```
 
-## Developing
-
-With virtualenvwrapper installed, you can create a new virtualenv primed with the pip dependencies. 
-```bash
-$ mkproject -a /path/to/cryptocracy -r requirements.txt --python=python3 cryptocracy
-```
-
-Install Charm crypto
-
-```bash
-$ workon charm-crypto-py3
-$ ./configure.sh --python=$(which python) --extra-cflags=-I/usr/local/include --extra-ldflags=-L/usr/local/lib
-$ make install
-$ sudo ldconfig
-$ make test
-```
-
-### Clean
-```sh
-$ python setup.py clean --all
-```
-
-### Install locally for development
-```bash
-$ pip install -e .
-```
-
-### Test
-#### Run Unit Tests
-```sh
-$ pytest
-```
-
-### Package
-```sh
-$ python setup.py sdist
-```
-
-## Use Cases
-See [use-cases.md](src/use_cases/README.md) for use case descriptions.
-
 ## Disclaimer
 
 This software is licensed with LGPL-3.0. Consider carefully if it may be fit for your purpose. Always read the license.
