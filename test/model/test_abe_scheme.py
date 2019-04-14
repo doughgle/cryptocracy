@@ -21,8 +21,8 @@ class TestCipher(unittest.TestCase):
         abe = ABE()
         params, msk = abe.setup()
 
-        pku, sku = abe.user_keygen()
-        pkcs, skcs = abe.user_keygen()
+        pku, sku = abe.user_keygen(params)
+        pkcs, skcs = abe.user_keygen(params)
         proxy_key_user = abe.proxy_keygen(pkcs, pku, attribute_list)
         policy_expression = attribute_list[0]
 

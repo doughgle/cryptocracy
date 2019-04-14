@@ -13,8 +13,8 @@ class DownloadFileTest(unittest.TestCase):
     def setUp(self):
         abe_scheme = CharmHybridABE()
         params, msk = abe_scheme.setup()
-        pku, sku = abe_scheme.user_keygen()
-        pkcs, skcs = abe_scheme.user_keygen()
+        pku, sku = abe_scheme.user_keygen(params)
+        pkcs, skcs = abe_scheme.user_keygen(params)
         # key authority adds user
         alice_key = abe_scheme.proxy_keygen(pkcs, pku, attribute_list=["Singaporean", "female"])
 

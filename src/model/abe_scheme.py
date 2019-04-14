@@ -43,8 +43,9 @@ class CharmHybridABE(object):
         self._params, self._msk = self._cpabe.setup()
         return objectToBytes(self._params, self._cpabe.group), objectToBytes(self._msk, self._cpabe.group)
 
-    def user_keygen(self):
-        pk, sk = self._cpabe.ukgen(self._params)
+    def user_keygen(self, params):
+        params = bytesToObject(params, self._cpabe.group)
+        pk, sk = self._cpabe.ukgen(params)
         return objectToBytes(pk, self._cpabe.group), objectToBytes(sk, self._cpabe.group)
 
     def proxy_keygen(self, cloud_server_public_key, user_public_key, attribute_list):
