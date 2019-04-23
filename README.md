@@ -134,7 +134,7 @@ Now it's encrypted, we can safely upload it to our object store:
 {'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-b60f37bb-ee49-41d4-91a4-26ebde416e61.s3.amazonaws.com/hello.enc?Signature=v6THLqiGQ6HhD8Yxof%2FHlAtn9yQ%3D&Expires=1555080419&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C'}
 ```
 
-#### Register a User with the Key Authority
+#### Register (a User) with the Key Authority
 
 On the User's machine, the user must first generate a key pair:
 
@@ -144,7 +144,13 @@ On the User's machine, the user must first generate a key pair:
 ```
 
 By default the keypair will be created in the Cryptocracy home directory (`$HOME/.cryptocracy`).
- 
+
+Next, the user registers their public key with the Key Authority:
+
+```bash
+(User)src/delivery/cli$ ./cryptocracy register alice@b.com
+{'result': <RESULT.SUCCESS: 1>, 'user_id': 'alice@b.com', 'user_public_key': 'eJw9UUEOwjAM+0q18w7N1iYpX0FoGmi33QZICPF3nC7tIVEbJ7abfodlea/7a1uW4RKuOY4h6xgoCtKEmyIYl1TGIAjOAGh2lGiyZBMEoNQD+bygohjJjEhWBMwoqIHoUoR0gshNl5DMieklSJViRTBIOgfF9CMO2dzE2VN2KEnrz42XoutXn564PQcexPSqjWZI3EGlrlZjf6uVJ5uyzejpo0QnVu59zaewO7I1aj5XYLvR0tsmt1TZbU1MtzHgfx77ehz1f4b757kdw+8PEiJT5Q==', 'error': None}
+```
 
 ## CLI
 ```bash
