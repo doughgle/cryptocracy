@@ -2,6 +2,7 @@
 """
 Usage: cryptocracy setup [options]
        cryptocracy generate keypair [--public-key-file=<pku>] [--secret-key-file=<sku>] [options]
+       cryptocracy register <email_address> [--public-key-file=<pku>] [options]
        cryptocracy add user <email_address> <user_public_key> <attribute_expression> [options]
        cryptocracy list (user|file) [options]
        cryptocracy revoke user <email_address> [options]
@@ -20,38 +21,40 @@ Options:
   --version                      Show version.
 
 """
+__version__ = '0.1.0'
+
 import os
 import traceback
 
+import requests
+from docopt import docopt
+
 from src.boundaries.object_store import AwsObjectStore
+from src.boundaries.proxy_key_store import AwsProxyKeyStore
 from src.model.abe_scheme import CharmHybridABE
 from src.model.result import RESULT
+from src.use_cases.add_user import AddUserUseCase, AddUserRequest
 from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
 from src.use_cases.encrypt_file import EncryptFileUseCase, EncryptFileRequest
 from src.use_cases.generate_key_pair import GenerateKeyPairUseCase, GenerateKeyPairRequest
 from src.use_cases.list_users import ListUsersUseCase, ListUsersRequest
+from src.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
+from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 from src.use_cases.setup import SetupUseCase, SetupRequest
 from src.use_cases.upload_file import UploadFileUseCase, UploadFileRequest
-
-__version__ = 'Proxy Crypt 1.0'
-
-from docopt import docopt
-
-from src.boundaries.proxy_key_store import AwsProxyKeyStore
-from src.use_cases.add_user import AddUserUseCase, AddUserRequest
-from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
 
 
 def main():
     try:
-        setup, \
-        generate_key_pair, \
-        add_user, \
-        revoke_user, \
-        list_users, \
-        download_file, \
-        encrypt_file, \
-        upload_file = init_use_cases()
+        (setup,
+         generate_key_pair,
+         register_user,
+         add_user,
+         revoke_user,
+         list_users,
+         download_file,
+         encrypt_file,
+         upload_file) = init_use_cases()
 
         cryptocracy_home = create_cryptocracy_home()
 
@@ -64,10 +67,12 @@ def main():
             response = setup.run(SetupRequest())
             save_setup(cryptocracy_home, response)
         if arguments['generate'] and arguments['keypair']:
-            response = generate_key_pair.run(GenerateKeyPairRequest(params=load_params(arguments['--params']),
+            response = generate_key_pair.run(GenerateKeyPairRequest(params=load(arguments['--params']),
                                                                     public_key_file=arguments['--public-key-file'],
                                                                     secret_key_file=arguments['--secret-key-file']))
-        if arguments['user']:
+        if arguments['register']:
+            response = register_user.run(RegisterUserRequest(user_id=user_id,
+                                                  pku_b64=load(arguments['--public-key-file'])))
             if arguments['add']:
                 response = add_user.run(AddUserRequest(user_id=user_id,
                                                        user_public_key=arguments['<user_public_key>'],
@@ -86,7 +91,7 @@ def main():
                 EncryptFileRequest(input_file=arguments['<input_file>'],
                                    policy_expression=arguments['<policy_expression>'],
                                    output_file=arguments['<output_file>'],
-                                   params=load_params(arguments['--params'])))
+                                   params=load(arguments['--params'])))
 
         print(response)
     except Exception as err:
@@ -99,6 +104,7 @@ def init_use_cases():
     abe_scheme = CharmHybridABE()
     setup = SetupUseCase(abe_scheme)
     generate_key_pair = GenerateKeyPairUseCase(abe_scheme)
+    register_user = RegisterUserUseCase(requests, server_address="localhost:5000")
     add_user = AddUserUseCase(abe_scheme, proxy_key_store)
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
@@ -109,7 +115,15 @@ def init_use_cases():
     download_file = DownloadFileUseCase(proxy_key_store, None, object_store, object_cache, abe_scheme=abe_scheme)
 
     encrypt_file = EncryptFileUseCase(abe_scheme)
-    return setup, generate_key_pair, add_user, revoke_user, list_users, download_file, encrypt_file, upload_file
+    return (setup,
+            generate_key_pair,
+            register_user,
+            add_user,
+            revoke_user,
+            list_users,
+            download_file,
+            encrypt_file,
+            upload_file)
 
 
 def save_setup(cryptocracy_home, response):
@@ -127,7 +141,11 @@ def create_cryptocracy_home():
     return cryptocracy_home
 
 
-def load_params(config_file):
+def load(config_file):
+    """
+    :param config_file: a Cryptocracy param file holding a single value.
+    :return: the file contents as (base64-encoded) bytes
+    """
     with open(os.path.expandvars(config_file), 'rb') as c:
         return c.read()
 

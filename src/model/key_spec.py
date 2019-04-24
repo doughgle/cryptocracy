@@ -2,6 +2,8 @@ import base64
 
 from hypothesis.strategies import binary
 
+from src.model.exceptions import InvalidInput
+
 
 def keys():
     return binary(min_size=16).map(base64.b64encode)
@@ -13,4 +15,4 @@ def assert_valid(key):
         assert base64.b64decode(key)
     except AssertionError as e:
         e.message = "invalid key: '%s'. valid example: IKUCwiMT5X1CruqyabR13Q==" % key
-        raise e
+        raise InvalidInput(e)
