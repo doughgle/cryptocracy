@@ -73,7 +73,6 @@ def main():
         if arguments['register']:
             response = register_user.run(RegisterUserRequest(user_id=user_id,
                                                   pku_b64=load(arguments['--public-key-file'])))
-        if arguments['user']:
             if arguments['add']:
                 response = add_user.run(AddUserRequest(user_id=user_id,
                                                        user_public_key=arguments['<user_public_key>'],
