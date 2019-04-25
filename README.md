@@ -152,6 +152,8 @@ Next, the user registers their public key with the Key Authority:
 {'result': <RESULT.SUCCESS: 1>, 'user_id': 'alice@b.com', 'user_public_key': 'eJw9UUEOwjAM+0q18w7N1iYpX0FoGmi33QZICPF3nC7tIVEbJ7abfodlea/7a1uW4RKuOY4h6xgoCtKEmyIYl1TGIAjOAGh2lGiyZBMEoNQD+bygohjJjEhWBMwoqIHoUoR0gshNl5DMieklSJViRTBIOgfF9CMO2dzE2VN2KEnrz42XoutXn564PQcexPSqjWZI3EGlrlZjf6uVJ5uyzejpo0QnVu59zaewO7I1aj5XYLvR0tsmt1TZbU1MtzHgfx77ehz1f4b757kdw+8PEiJT5Q==', 'error': None}
 ```
 
+By default, the `register` command will register `$HOME/.cryptocracy/user.pub` as the public_key_file for the user.
+   
 ## CLI
 ```bash
 src/delivery/cli$ ./cryptocracy --help
