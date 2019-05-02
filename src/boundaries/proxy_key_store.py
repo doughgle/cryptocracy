@@ -21,10 +21,6 @@ class ProxyKeyStore(object):
     def clear(self):
         self.proxy_key_store.clear()
 
-    @property
-    def public_key(self):
-        return self.__class__.__name__ + "publickey=="
-
 
 import boto3
 from botocore import exceptions
@@ -58,7 +54,3 @@ class AwsProxyKeyStore(object):
     def users(self):
         response = self.table.scan()
         return {user['user_id'] for user in response['Items']}
-
-    @property
-    def public_key(self):
-        return self.__class__.__name__ + "publickey=="

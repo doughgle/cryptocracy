@@ -10,7 +10,7 @@ from src.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
 
 def test_add_user_stores_proxy_key(http_test_client):
 
-    # pre-register alice tan's public key
+    # pre-register alice's public key
     register = RegisterUserUseCase(http_test_client)
     user_id = "alice@a.org"
     pku_b64 = b'''eJw1kLEOwjAMRH8l6pwhLk3s8CsIVYDY2ApICPHv3Dnu4jrn88ul32ldb4/Ltq3rdEzT9fO8b1NOUN+Xx
@@ -20,10 +20,18 @@ def test_add_user_stores_proxy_key(http_test_client):
     response = register.run(RegisterUserRequest(user_id, pku_b64))
     assert RESULT.SUCCESS == response['result']
 
+    # pre-register AWS's public key
+    user_id = "cryptocracy@amazonaws.com"
+    pku_b64 = b'''eJw9UUEOgzAM+0rFuYe6NG3YV6YJsYkbN7ZJ07S/L2kCB0JlJ7bTfod5fi/ba53n4RKulGIgjqG1GHiKA
+    WheGIKWGCZFE2sZBZFDJUEVAA4KnSctp4i2I2cneDSDSaXFlAWj3gFT42x/Es8iRJ2sofubTHJWkMqO6gKAJqumAWSj1akL
+    w2cVaD1j9mFFSObaaKqsGh6w52cngHTuRr5R0bCqjeINLR15yHRqdVqDaUC/FNglnh9uMci7PLZl3/u7DPfPc92H3x/NUVKO'''
+    response = register.run(RegisterUserRequest(user_id, pku_b64))
+    assert RESULT.SUCCESS == response['result']
+
     proxy_key_store = ProxyKeyStore()
     abe_scheme = FakeProxyKeyABE()
     add_user = AddUserUseCase(http_test_client, abe_scheme, proxy_key_store)
-    attributes = {"gender": "female", "age": 25}
+    attributes = '["female", "age=25"]'
     request = AddUserRequest(user_id, attributes)
 
     response = add_user.run(request)

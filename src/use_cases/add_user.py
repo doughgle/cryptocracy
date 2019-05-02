@@ -1,3 +1,5 @@
+import json
+
 import requests
 
 from src.model import key_spec, user_id
@@ -29,11 +31,23 @@ class AddUserUseCase(object):
                                             json={"user_id": request.user_id}
                                             )
             if http_response.status_code == 404:
-                raise InvalidInput("User (%s) not found" % user_id)
+                raise InvalidInput("User (%s) not found" % request.user_id)
 
             user_public_key = http_response.json()['user_public_key']
             key_spec.assert_valid(user_public_key)
-            proxy_key = self.abe_scheme.proxy_keygen(self.proxy_key_store.public_key,
+
+            # retrieve cloud_server_public_key for cloud
+            cs_id = "cryptocracy@amazonaws.com"
+            http_response = self.client.get('http://%s/user/%s' % (server_address, cs_id),
+                                            json={"user_id": cs_id}
+                                            )
+            if http_response.status_code == 404:
+                raise InvalidInput("User (%s) not found" % cs_id)
+
+            pkcs = http_response.json()['user_public_key']
+            key_spec.assert_valid(pkcs)
+
+            proxy_key = self.abe_scheme.proxy_keygen(pkcs,
                                                      user_public_key,
                                                      request.attributes)
             key_spec.assert_valid(proxy_key)
@@ -45,8 +59,11 @@ class AddUserUseCase(object):
 
 class AddUserRequest(object):
     def __init__(self, user_id, attributes):
+        """
+        :type attributes: str
+        """
         self._user_id = user_id
-        self._attributes = attributes
+        self._attributes = json.loads(attributes)
 
     @property
     def user_id(self):
