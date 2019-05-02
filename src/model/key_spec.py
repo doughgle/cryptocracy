@@ -13,6 +13,7 @@ def assert_valid(key):
     try:
         assert len(key) >= 24
         assert base64.b64decode(key)
-    except AssertionError as e:
+    except AssertionError:
+        e = InvalidInput()
         e.message = "invalid key: '%s'. valid example: IKUCwiMT5X1CruqyabR13Q==" % key
-        raise InvalidInput(e)
+        raise e

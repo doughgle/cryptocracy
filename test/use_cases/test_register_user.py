@@ -1,14 +1,9 @@
-import os
-import tempfile
 import unittest
 
 import pytest
-from flask import Response, Flask
 from hypothesis import given
 from hypothesis._strategies import emails
 
-from key_authority import ka_service
-from key_authority.ka_service import create_app
 from src.model.abe_scheme import CharmHybridABE
 from src.model.exceptions import InvalidInput
 from src.model.key_spec import assert_valid as assert_valid_key
@@ -54,33 +49,6 @@ def test_returns_failure_result_when_already_registered(http_test_client):
 
     assert RESULT.FAILURE == response['result']
     assert response['error'] is not None
-
-
-@pytest.fixture
-def http_test_client():
-    Flask.response_class = JsonPatchedResponse
-    app = create_app()
-    db_fd, app.config['DATABASE'] = tempfile.mkstemp()
-    app.config['TESTING'] = True
-    client = app.test_client()
-
-    with app.app_context():
-        ka_service.db.init_db()
-
-    yield client
-
-    os.close(db_fd)
-    os.unlink(app.config['DATABASE'])
-
-
-class JsonPatchedResponse(Response):
-    """
-    Adapts `json` property to `json()` method so that the interface matches the
-    `requests` library.
-    Used to replace the response object in :attr:`~flask.Flask.response_class`.
-    """
-    def json(self):
-        return self.get_json()
 
 
 if __name__ == '__main__':

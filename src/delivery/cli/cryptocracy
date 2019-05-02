@@ -3,7 +3,7 @@
 Usage: cryptocracy setup [options]
        cryptocracy generate keypair [--public-key-file=<pku>] [--secret-key-file=<sku>] [options]
        cryptocracy register <email_address> [--public-key-file=<pku>] [options]
-       cryptocracy add user <email_address> <user_public_key> <attribute_expression> [options]
+       cryptocracy add user <email_address> <attributes_json_array> [options]
        cryptocracy list (user|file) [options]
        cryptocracy revoke user <email_address> [options]
        cryptocracy encrypt <input_file> <policy_expression> <output_file> [options]
@@ -74,9 +74,7 @@ def main():
             response = register_user.run(RegisterUserRequest(user_id=user_id,
                                                   pku_b64=load(arguments['--public-key-file'])))
             if arguments['add']:
-                response = add_user.run(AddUserRequest(user_id=user_id,
-                                                       user_public_key=arguments['<user_public_key>'],
-                                                       attributes=arguments['<attribute_expression>']))
+                response = add_user.run(AddUserRequest(user_id=user_id, attributes=arguments['<attributes_json_array>']))
             elif arguments['revoke']:
                 response = revoke_user.run(RevokeUserRequest(user_id=user_id))
             elif arguments['list']:
@@ -105,7 +103,7 @@ def init_use_cases():
     setup = SetupUseCase(abe_scheme)
     generate_key_pair = GenerateKeyPairUseCase(abe_scheme)
     register_user = RegisterUserUseCase(requests, server_address="localhost:5000")
-    add_user = AddUserUseCase(abe_scheme, proxy_key_store)
+    add_user = AddUserUseCase(requests, abe_scheme, proxy_key_store)
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
 

@@ -51,11 +51,8 @@ class CharmHybridABE(object):
     def proxy_keygen(self, cloud_server_public_key, user_public_key, attribute_list):
         pkcs = bytesToObject(cloud_server_public_key, self._cpabe.group)
         pku = bytesToObject(user_public_key, self._cpabe.group)
-        return self._cpabe.proxy_keygen(self._params,
-                                        self._msk,
-                                        pkcs,
-                                        pku,
-                                        attribute_list)
+        proxy_key = self._cpabe.proxy_keygen(self._params, self._msk, pkcs, pku, attribute_list)
+        return objectToBytes(proxy_key, self._cpabe.group)
 
     def encrypt(self, params, plaintext, policy_expression):
         params = bytesToObject(params, self._cpabe.group)
@@ -69,8 +66,9 @@ class CharmHybridABE(object):
     def proxy_decrypt(self, cloud_server_private_key, proxy_key_user, ciphertext):
         skcs = bytesToObject(cloud_server_private_key, self._cpabe.group)
         ct = bytesToObject(ciphertext, self._cpabe.group)
+        pxku = bytesToObject(proxy_key_user, self._cpabe.group)
         c1, c2 = ct['c1'], ct['c2']
-        intermediate_value = self._cpabe.proxy_decrypt(skcs, proxy_key_user, c1)
+        intermediate_value = self._cpabe.proxy_decrypt(skcs, pxku, c1)
         if intermediate_value is False:
             raise Exception("failed to decrypt!")
         partial_ct = {'v': intermediate_value, 'c2': c2}

@@ -134,7 +134,7 @@ Now it's encrypted, we can safely upload it to our object store:
 {'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-b60f37bb-ee49-41d4-91a4-26ebde416e61.s3.amazonaws.com/hello.enc?Signature=v6THLqiGQ6HhD8Yxof%2FHlAtn9yQ%3D&Expires=1555080419&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C'}
 ```
 
-#### Register (a User) with the Key Authority
+#### Register User with the Key Authority
 
 On the User's machine, the user must first generate a key pair:
 
@@ -152,27 +152,32 @@ Next, the user registers their public key with the Key Authority:
 {'result': <RESULT.SUCCESS: 1>, 'user_id': 'alice@b.com', 'user_public_key': 'eJw9UUEOwjAM+0q18w7N1iYpX0FoGmi33QZICPF3nC7tIVEbJ7abfodlea/7a1uW4RKuOY4h6xgoCtKEmyIYl1TGIAjOAGh2lGiyZBMEoNQD+bygohjJjEhWBMwoqIHoUoR0gshNl5DMieklSJViRTBIOgfF9CMO2dzE2VN2KEnrz42XoutXn564PQcexPSqjWZI3EGlrlZjf6uVJ5uyzejpo0QnVu59zaewO7I1aj5XYLvR0tsmt1TZbU1MtzHgfx77ehz1f4b757kdw+8PEiJT5Q==', 'error': None}
 ```
 
-## CLI
-```bash
-src/delivery/cli$ ./cryptocracy --help
-Usage: cryptocracy setup [options]
-       cryptocracy generate keypair [--public-key-file=<pku>] [--secret-key-file=<sku>] [options]
-       cryptocracy add user <email_address> <user_public_key> <attribute_expression> [options]
-       cryptocracy list (user|file) [options]
-       cryptocracy revoke user <email_address> [options]
-       cryptocracy encrypt <input_file> <policy_expression> <output_file> [options]
-       cryptocracy decrypt <file> [options]
-       cryptocracy upload <source_url> [<dest_key>] [options]
-       cryptocracy download <url> <user_id> [options]
+By default, the `register` command will register `$HOME/.cryptocracy/user.pub` as the public_key_file for the user.
 
-Options:
-  --params=FILE                  Path to the scheme public parameters file to use for CLI commands. [default: $HOME/.cryptocracy/params]
-  --public-key-file=<pku>        Destination path for user public key generation [default: $HOME/.cryptocracy/user.pub]
-  --secret-key-file=<sku>        Destination path for user secret key generation [default: $HOME/.cryptocracy/user.key]
-  --email-address=ADDRESS        Identity of the caller for upload download commands.
-  -v, --verbose                  Show debug information.
-  -h --help                      Show this screen.
-  --version                      Show version.
+#### Register Cloud Service Provider (CSP) with the Key Authority
+For a Cloud Service Provider, the registration procedure is almost the same as for a user.
+
+First the CSP generates a key pair:
+
+```bash
+(CSP)src/delivery/cli$ ./cryptocracy generate keypair --public-key-file $HOME/.cryptocracy/cloud.pub --secret-key-file $HOME/.cryptocracy/cloud.key
+{'secret_key_file': '$HOME/.cryptocracy/cloud.key', 'result': <RESULT.SUCCESS: 1>, 'secret_key': b'eJwtjjEOwzAIRa+CPDOYJDa4V4kiK628ZXMTqap693ySDoAfH775hlqPddtbreFB82RMCVGUSaQwWUSIw8SkA9QMiIDsKqCgKlZkiD42erJb1vE/e1vhYcU7ME+wMlS9vAH+c5aFCQe9trX366Dw/LxbD78TeyUjwg==', 'public_key': b'eJw1UUFOxDAM/ErUcw6ZNk4cvoJW1YL2trcCEkL8HY9tDm4Tj8czdn628/y6Pz8f57m9lFdptYjWMlYty2JILYpa0GYk0YYhdgEOKzVILTuVCcKw07QSPTKI7NZ1ehdm9iSvlQfWAZ04e9ltkuBqTjeGGNxXqkn8XVF7BID0wSZCymDWPp122x4wW/cjExyNpSqhG3b2f7eSg6OZgEgo+4ieVhdoQedOGBxYW2zOQZnhYGiadINoCC/eG5DcDmkDt1rsXd6f9+vyd9nevj8e1/b7B9SfUpU=', 'public_key_file': '$HOME/.cryptocracy/cloud.pub'}
+```
+
+Then, the CSP registers its public key with the Key Authority:
+
+```bash
+(CSP)src/delivery/cli$ ./cryptocracy register cryptocracy@amazonaws.com --public-key-file $HOME/.cryptocracy/cloud.pub 
+{'error': None, 'result': <RESULT.SUCCESS: 1>, 'user_id': 'cryptocracy@amazonaws.com', 'user_public_key': 'eJw9UUEOgzAM+0rFuYe6NG3YV6YJsYkbN7ZJ07S/L2kCB0JlJ7bTfod5fi/ba53n4RKulGIgjqG1GHiKAWheGIKWGCZFE2sZBZFDJUEVAA4KnSctp4i2I2cneDSDSaXFlAWj3gFT42x/Es8iRJ2sofubTHJWkMqO6gKAJqumAWSj1akLw2cVaD1j9mFFSObaaKqsGh6w52cngHTuRr5R0bCqjeINLR15yHRqdVqDaUC/FNglnh9uMci7PLZl3/u7DPfPc92H3x/NUVKO'}
+```
+
+#### Add an ABE Decryption Key for the User
+
+The Key Authority defines attributes for the user and adds their key to the system.
+
+```bash
+(KA)src/delivery/cli$ ./cryptocracy add user alice@b.com '["female", "age=25"]'
+{'user_id': 'alice@a.com', 'result': <RESULT.SUCCESS: 1>}
 ```
 
 ## Disclaimer

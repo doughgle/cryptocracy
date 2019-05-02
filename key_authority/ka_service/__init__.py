@@ -62,7 +62,16 @@ def create_app(test_config=None):
                        user_public_key=user['user_public_key'],
                        error=error)
 
+    @app.route('/user/<user_id>')
+    def user(user_id):
+        db = get_db()
+        row = db.execute('SELECT user_id, user_public_key FROM user WHERE user_id = ?',
+                         (user_id,)).fetchone()
+        result = jsonify(user_id=user_id), 404
+        if row:
+            result = jsonify(user_id=row['user_id'], user_public_key=row['user_public_key'])
+
+        return result
+
     db.init_app(app)
     return app
-
-
