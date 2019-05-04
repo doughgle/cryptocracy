@@ -1,5 +1,6 @@
 import unittest
 
+from src.boundaries.key_authority_service import KeyAuthorityService
 from src.boundaries.proxy_key_store import ProxyKeyStore
 from src.model.abe_scheme import NullCipher
 from src.model.result import RESULT
@@ -10,8 +11,9 @@ from src.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
 
 def test_add_user_stores_proxy_key(http_test_client):
 
+    ka_service = KeyAuthorityService(http_test_client)
     # pre-register alice's public key
-    register = RegisterUserUseCase(http_test_client)
+    register = RegisterUserUseCase(ka_service)
     user_id = "alice@a.org"
     pku_b64 = b'''eJw1kLEOwjAMRH8l6pwhLk3s8CsIVYDY2ApICPHv3Dnu4jrn88ul32ldb4/Ltq3rdEzT9fO8b1NOUN+Xx
     +vu6qmWnKrlZDUnmXHQjkZQTNlAdkuDMOfUbZwbDOqGBQJ3xVhgW9AsOtTG3oHCAlWhdC6WJRQpwXN2jUtFDhw1lp0spUfI
@@ -30,7 +32,7 @@ def test_add_user_stores_proxy_key(http_test_client):
 
     proxy_key_store = ProxyKeyStore()
     abe_scheme = FakeProxyKeyABE()
-    add_user = AddUserUseCase(http_test_client, abe_scheme, proxy_key_store)
+    add_user = AddUserUseCase(ka_service, abe_scheme, proxy_key_store)
     attributes = '["female", "age=25"]'
     request = AddUserRequest(user_id, attributes)
 

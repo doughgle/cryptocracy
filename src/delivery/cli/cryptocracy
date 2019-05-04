@@ -21,6 +21,8 @@ Options:
   --version                      Show version.
 
 """
+from src.boundaries.key_authority_service import KeyAuthorityService
+
 __version__ = '0.1.0'
 
 import os
@@ -100,10 +102,11 @@ def main():
 def init_use_cases():
     proxy_key_store = AwsProxyKeyStore(os.getenv('CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME'))
     abe_scheme = CharmHybridABE()
+    ka_service = KeyAuthorityService(requests, server_address='localhost:5000')
     setup = SetupUseCase(abe_scheme)
     generate_key_pair = GenerateKeyPairUseCase(abe_scheme)
-    register_user = RegisterUserUseCase(requests, server_address="localhost:5000")
-    add_user = AddUserUseCase(requests, abe_scheme, proxy_key_store)
+    register_user = RegisterUserUseCase(ka_service)
+    add_user = AddUserUseCase(ka_service, abe_scheme, proxy_key_store)
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
 
