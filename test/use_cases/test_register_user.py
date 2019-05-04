@@ -4,6 +4,7 @@ import pytest
 from hypothesis import given
 from hypothesis._strategies import emails
 
+from src.boundaries.key_authority_service import KeyAuthorityService
 from src.model.abe_scheme import CharmHybridABE
 from src.model.exceptions import InvalidInput
 from src.model.key_spec import assert_valid as assert_valid_key
@@ -17,7 +18,8 @@ def test_valid_request_returns_valid_response(http_test_client, user_id):
     abe_scheme = CharmHybridABE()
     params, msk = abe_scheme.setup()
     pku, sku = abe_scheme.user_keygen(params)
-    register_user = RegisterUserUseCase(http_test_client)
+    ka_service = KeyAuthorityService(http_test_client)
+    register_user = RegisterUserUseCase(ka_service)
     request = RegisterUserRequest(user_id, pku)
 
     response = register_user.run(request)
@@ -41,7 +43,8 @@ def test_returns_failure_result_when_already_registered(http_test_client):
     abe_scheme = CharmHybridABE()
     params, msk = abe_scheme.setup()
     pku, sku = abe_scheme.user_keygen(params)
-    register_user = RegisterUserUseCase(http_test_client)
+    ka_service = KeyAuthorityService(http_test_client)
+    register_user = RegisterUserUseCase(ka_service)
     request = RegisterUserRequest("alice@a.com", pku)
 
     response = register_user.run(request)

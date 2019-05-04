@@ -4,29 +4,22 @@ from src.model.user_id import assert_valid as assert_valid_user_id
 
 
 class RegisterUserUseCase(object):
-    def __init__(self, client, server_address="localhost:5000"):
+    def __init__(self, ka_service):
         """
-        :type client: requests
-        :param client:  HTTP client that implements the `requests` library API.
-                        Specifically, `json()` for requests library Response.
-        :param server_address: hostname<:port>
+        :type ka_service: KeyAuthorityService
         """
-        self.client = client
-        self.server_address = server_address
+        self.ka_service = ka_service
 
     def run(self, request):
         """
         :type request: RegisterUserRequest
         :return response: RegisterUserResponse
         """
-        http_response = self.client.post("http://%s/register" % self.server_address,
-                                         json={"user_id": request.user_id,
-                                               "user_public_key": request.user_public_key}
-                                         )
-        http_response_json = http_response.json()
-        result = RESULT.SUCCESS if http_response_json['error'] is None else RESULT.FAILURE
+        register_response = self.ka_service.register(request.user_id, request.user_public_key)
+        error = register_response['error']
+        result = RESULT.SUCCESS if error is None else RESULT.FAILURE
         response = {"result": result}
-        response.update(http_response_json)
+        response.update(register_response)
         return RegisterUserResponse(response)
 
 
