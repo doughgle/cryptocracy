@@ -1,5 +1,6 @@
 import unittest
 
+from src.boundaries.key_authority_service import KeyAuthorityService
 from src.boundaries.proxy_key_store import ProxyKeyStore
 from src.model.abe_scheme import NullCipher
 from src.model.result import RESULT
@@ -30,7 +31,8 @@ def test_add_user_stores_proxy_key(http_test_client):
 
     proxy_key_store = ProxyKeyStore()
     abe_scheme = FakeProxyKeyABE()
-    add_user = AddUserUseCase(http_test_client, abe_scheme, proxy_key_store)
+    ka_service = KeyAuthorityService(http_test_client)
+    add_user = AddUserUseCase(ka_service, abe_scheme, proxy_key_store)
     attributes = '["female", "age=25"]'
     request = AddUserRequest(user_id, attributes)
 
