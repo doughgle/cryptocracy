@@ -8,12 +8,14 @@ from src.model.result import RESULT
 
 
 class AddUserUseCase(object):
-    def __init__(self, client, abe_scheme, proxy_key_store):
+    def __init__(self, client, abe_scheme, proxy_key_store, server_address='localhost:5000'):
         """
-        :param abe_scheme:
-        :param proxy_key_store:
         :type client: requests
+        :param abe_scheme: an ABE scheme that supports proxy_keygen
+        :param proxy_key_store: key-value store for user proxy keys
+        :param server_address: hostname<:port>
         """
+        self.server_address = server_address
         self.abe_scheme = abe_scheme
         self.proxy_key_store = proxy_key_store
         self.client = client
@@ -26,8 +28,7 @@ class AddUserUseCase(object):
         try:
             user_id.assert_valid(request.user_id)
             # retrieve user_public_key for user_id
-            server_address = 'localhost:5000'
-            http_response = self.client.get('http://%s/user/%s' % (server_address, request.user_id),
+            http_response = self.client.get('http://%s/user/%s' % (self.server_address, request.user_id),
                                             json={"user_id": request.user_id}
                                             )
             if http_response.status_code == 404:
@@ -38,7 +39,7 @@ class AddUserUseCase(object):
 
             # retrieve cloud_server_public_key for cloud
             cs_id = "cryptocracy@amazonaws.com"
-            http_response = self.client.get('http://%s/user/%s' % (server_address, cs_id),
+            http_response = self.client.get('http://%s/user/%s' % (self.server_address, cs_id),
                                             json={"user_id": cs_id}
                                             )
             if http_response.status_code == 404:

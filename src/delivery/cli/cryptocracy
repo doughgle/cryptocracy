@@ -104,7 +104,7 @@ def init_use_cases():
     setup = SetupUseCase(abe_scheme)
     generate_key_pair = GenerateKeyPairUseCase(abe_scheme)
     register_user = RegisterUserUseCase(requests, server_address="localhost:5000")
-    add_user = AddUserUseCase(requests, abe_scheme, proxy_key_store)
+    add_user = AddUserUseCase(requests, abe_scheme, proxy_key_store, server_address="localhost:5000")
     revoke_user = RevokeUserUseCase(proxy_key_store)
     list_users = ListUsersUseCase(proxy_key_store)
 

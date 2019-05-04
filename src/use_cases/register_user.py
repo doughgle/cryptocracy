@@ -4,7 +4,7 @@ from src.model.user_id import assert_valid as assert_valid_user_id
 
 
 class RegisterUserUseCase(object):
-    def __init__(self, client, server_address="localhost"):
+    def __init__(self, client, server_address="localhost:5000"):
         """
         :type client: requests
         :param client:  HTTP client that implements the `requests` library API.
