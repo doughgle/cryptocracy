@@ -41,7 +41,7 @@ class AwsProxyKeyStore(object):
     def get(self, user_id):
         response = self.table.get_item(Key={u'user_id': user_id})
         proxy_key = response['Item']['proxy_key']
-        return proxy_key
+        return proxy_key.value
 
     def delete(self, user_id):
         try:

@@ -69,11 +69,10 @@ class CharmHybridABE(object):
         pxku = bytesToObject(proxy_key_user, self._cpabe.group)
         c1, c2 = ct['c1'], ct['c2']
         intermediate_value = self._cpabe.proxy_decrypt(skcs, pxku, c1)
-        if intermediate_value is False:
-            raise Exception("failed to decrypt!")
+        if not intermediate_value:
+            raise DecryptionFailed("ERROR: failed to proxy-decrypt!")
         partial_ct = {'v': intermediate_value, 'c2': c2}
-        partial_ct_b64 = objectToBytes(partial_ct, self._cpabe.group)
-        return partial_ct_b64
+        return objectToBytes(partial_ct, self._cpabe.group)
 
     def decrypt(self, user_private_key, partial_ct_b64):
         sku = bytesToObject(user_private_key, self._cpabe.group)
@@ -83,3 +82,7 @@ class CharmHybridABE(object):
             raise Exception("failed to decrypt!")
         cipher = AuthenticatedCryptoAbstraction(sha2(symm_key))
         return cipher.decrypt(partial_ct['c2'])
+
+
+class DecryptionFailed(Exception):
+    pass

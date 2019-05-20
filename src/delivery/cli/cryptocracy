@@ -21,6 +21,8 @@ Options:
   --version                      Show version.
 
 """
+import functools
+
 from src.boundaries.key_authority_service import KeyAuthorityService
 
 __version__ = '0.1.0'
@@ -113,7 +115,11 @@ def init_use_cases():
     object_store = AwsObjectStore(os.getenv('CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME'))
     object_cache = AwsObjectStore(os.getenv('CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME'))
     upload_file = UploadFileUseCase(object_store)
-    download_file = DownloadFileUseCase(proxy_key_store, None, object_store, object_cache, abe_scheme=abe_scheme)
+    download_file = DownloadFileUseCase(functools.partial(load, "$HOME/.cryptocracy/cloud.key"),
+                                        proxy_key_store,
+                                        object_store,
+                                        object_cache,
+                                        abe_scheme=abe_scheme)
 
     encrypt_file = EncryptFileUseCase(abe_scheme)
     return (setup,
