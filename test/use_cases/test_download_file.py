@@ -13,13 +13,16 @@ class DownloadFileTest(unittest.TestCase):
     def setUp(self):
         abe_scheme = CharmHybridABE()
         params, msk = abe_scheme.setup()
-        pku, sku = abe_scheme.user_keygen(params)
+        pku_alice, sku_alice = abe_scheme.user_keygen(params)
+        pku_eve, sku_eve = abe_scheme.user_keygen(params)
         pkcs, skcs = abe_scheme.user_keygen(params)
-        # key authority adds user
-        alice_key = abe_scheme.proxy_keygen(pkcs, pku, attribute_list=["Singaporean", "female"])
+        # key authority adds users
+        alice_key = abe_scheme.proxy_keygen(pkcs, pku_alice, attribute_list=["Singaporean", "female"])
+        eve_key = abe_scheme.proxy_keygen(pkcs, pku_eve, attribute_list=["British", "female"])
 
         proxy_key_store = ProxyKeyStore()
         proxy_key_store.put("alice@dev.net", alice_key)
+        proxy_key_store.put("eve@dev.net", eve_key)
 
         # data owner encrypts cyphertext
         ciphertext = abe_scheme.encrypt(params, "hello ABE world!", "Singaporean")
@@ -51,6 +54,15 @@ class DownloadFileTest(unittest.TestCase):
 
     def test_proxy_key_not_found(self):
         request = DownloadFileRequest("bob@dev.net", self.download_url)
+
+        response = self.download_file.run(request)
+
+        self.assertEqual(RESULT.FAILURE, response.result)
+        self.assertEqual(STATUS.FORBIDDEN, response.status)
+        self.assertEqual(None, response.download_url)
+
+    def test_unauthorized_user_is_forbidden(self):
+        request = DownloadFileRequest("eve@dev.net", self.download_url)
 
         response = self.download_file.run(request)
 
