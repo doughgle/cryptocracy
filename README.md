@@ -148,8 +148,8 @@ By default the keypair will be created in the Cryptocracy home directory (`$HOME
 Next, the user registers their public key with the Key Authority:
 
 ```bash
-(User)src/delivery/cli$ ./cryptocracy register alice@b.com
-{'result': <RESULT.SUCCESS: 1>, 'user_id': 'alice@b.com', 'user_public_key': 'eJw9UUEOwjAM+0q18w7N1iYpX0FoGmi33QZICPF3nC7tIVEbJ7abfodlea/7a1uW4RKuOY4h6xgoCtKEmyIYl1TGIAjOAGh2lGiyZBMEoNQD+bygohjJjEhWBMwoqIHoUoR0gshNl5DMieklSJViRTBIOgfF9CMO2dzE2VN2KEnrz42XoutXn564PQcexPSqjWZI3EGlrlZjf6uVJ5uyzejpo0QnVu59zaewO7I1aj5XYLvR0tsmt1TZbU1MtzHgfx77ehz1f4b757kdw+8PEiJT5Q==', 'error': None}
+(User)src/delivery/cli$ ./cryptocracy register alice@a.com
+{'result': <RESULT.SUCCESS: 1>, 'user_id': 'alice@a.com', 'user_public_key': 'eJw9UUEOwjAM+0q18w7N1iYpX0FoGmi33QZICPF3nC7tIVEbJ7abfodlea/7a1uW4RKuOY4h6xgoCtKEmyIYl1TGIAjOAGh2lGiyZBMEoNQD+bygohjJjEhWBMwoqIHoUoR0gshNl5DMieklSJViRTBIOgfF9CMO2dzE2VN2KEnrz42XoutXn564PQcexPSqjWZI3EGlrlZjf6uVJ5uyzejpo0QnVu59zaewO7I1aj5XYLvR0tsmt1TZbU1MtzHgfx77ehz1f4b757kdw+8PEiJT5Q==', 'error': None}
 ```
 
 By default, the `register` command will register `$HOME/.cryptocracy/user.pub` as the public_key_file for the user.
@@ -174,9 +174,10 @@ Then, the CSP registers its public key with the Key Authority:
 #### Add an ABE Decryption Key for the User
 
 The Key Authority defines attributes for the user and adds their key to the system.
+In this example Alice is given the attribute `human` in her proxy key so that she will be able to decrypt `hello.enc` which has the policy `(human or earthling)`.
 
 ```bash
-(KA)src/delivery/cli$ ./cryptocracy add user alice@b.com '["female", "age=25"]'
+(KA)src/delivery/cli$ ./cryptocracy add user alice@a.com '["human", "female", "age=25"]'
 {'user_id': 'alice@a.com', 'result': <RESULT.SUCCESS: 1>}
 ```
 

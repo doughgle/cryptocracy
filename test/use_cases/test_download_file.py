@@ -33,7 +33,7 @@ class DownloadFileTest(unittest.TestCase):
         obj_store.put(self.input_file, key)
         self.download_url = obj_store.get_download_url(key)
 
-        self.download_file = DownloadFileUseCase(proxy_key_store, skcs, obj_store, abe_scheme=abe_scheme)
+        self.download_file = DownloadFileUseCase(lambda: skcs, proxy_key_store, obj_store, abe_scheme=abe_scheme)
 
     def tearDown(self):
         os.remove(self.input_file)
