@@ -85,4 +85,3 @@ class CharmHybridABE(object):
 
 
 class DecryptionFailed(Exception):
-    pass
