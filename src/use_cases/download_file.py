@@ -18,6 +18,7 @@ class DownloadFileUseCase(object):
     def run(self, request):
         """
         :type request: DownloadFileRequest
+        :rtype DownloadFileResponse
         """
         try:
             user_id.assert_valid(request.user_id)
