@@ -21,13 +21,16 @@ It demonstrates practical considerations and offers a starting point so that you
 ## Requirements
 
 + An AWS account
-+ Linux
++ Linux (tested on Ubuntu 16.04)
 + Terraform
 + Python >= 3.4
 + Charm Crypto Library (and its pre-requisite libraries)
 
 ## Getting Started
 
+First install Python, the pre-requisite and the Charm-Crypto library.
+Refer to `install.sh` for installation steps.
+ 
 Define your AWS creds. In this example, as environment variables. See AWS docs for alternatives.  
 ```sh
 $ export AWS_ACCESS_KEY_ID="FOO"
