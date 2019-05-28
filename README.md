@@ -73,6 +73,8 @@ See [Terraform README](terraform-infra/README.md) for more details.
 
 #### Setup the Key Authority
 
+The following steps are executed on a *Key Authority machine*.
+
 ```bash
 (KA)src/delivery/cli$ ./cryptocracy setup
 ```
@@ -94,11 +96,14 @@ Here, we'll upload it to our S3 bucket:
 Once a Data Owner has the `params`, they can begin encrypting files with access policies.
 They can also generate a user key pair. 
 
+---
+
 #### Encrypt your first file
 
-Now we're on the Data Owner's machine.
+The following steps are executed on a *Data Owner's machine*.
+
 First, we need to get the public scheme parameters from the bucket.
-Since the public parameters are in plaintext, we can simply download using the url given upon upload.
+Since the public parameters are in plaintext, we can simply download using the url given by the Key Authority.
 
 ```bash
 (DO)$ wget 'https://encrypted-files-playground-cab79872-ccda-4987-8115-d024dd19618d.s3.amazonaws.com/params?Signature=9DIXUT0PLP83TVH2REWVTLSVDQAFZIW&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C&Expires=1554989651' -O ~/.cryptocracy/params
@@ -137,16 +142,20 @@ Now it's encrypted, we can safely upload it to our object store:
 {'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-b60f37bb-ee49-41d4-91a4-26ebde416e61.s3.amazonaws.com/hello.enc?Signature=v6THLqiGQ6HhD8Yxof%2FHlAtn9yQ%3D&Expires=1555080419&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C'}
 ```
 
+The upload command responds with an expiring URL which can be shared with others so they can download the ciphertext.  
+
+---
+
 #### Register User with the Key Authority
 
-On the User's machine, the user must first generate a key pair:
+On the *User's machine*, the user must first generate a key pair:
 
 ```bash
 (User)src/delivery/cli$ ./cryptocracy generate keypair
 {'secret_key_file': '$HOME/.cryptocracy/user.key', 'result': <RESULT.SUCCESS: 1>, 'secret_key': b'eJwtjjEOwzAIRa+CPDOYJDa4V4kiK628ZXMTqap693ySDoAfH775hlqPddtbreFB82RMCVGUSaQwWUSIw8SkA9QMiIDsKqCgKlZkiD42erJb1vE/e1vhYcU7ME+wMlS9vAH+c5aFCQe9trX366Dw/LxbD78TeyUjwg==', 'public_key': b'eJw1UUFOxDAM/ErUcw6ZNk4cvoJW1YL2trcCEkL8HY9tDm4Tj8czdn628/y6Pz8f57m9lFdptYjWMlYty2JILYpa0GYk0YYhdgEOKzVILTuVCcKw07QSPTKI7NZ1ehdm9iSvlQfWAZ04e9ltkuBqTjeGGNxXqkn8XVF7BID0wSZCymDWPp122x4wW/cjExyNpSqhG3b2f7eSg6OZgEgo+4ieVhdoQedOGBxYW2zOQZnhYGiadINoCC/eG5DcDmkDt1rsXd6f9+vyd9nevj8e1/b7B9SfUpU=', 'public_key_file': '$HOME/.cryptocracy/user.pub'}
 ```
 
-By default the keypair will be created in the Cryptocracy home directory (`$HOME/.cryptocracy`).
+By default the keypair will be created in the Cryptocracy home directory (`$HOME/.cryptocracy`) with the user identity prefix `user`.
 
 Next, the user registers their public key with the Key Authority:
 
@@ -157,8 +166,10 @@ Next, the user registers their public key with the Key Authority:
 
 By default, the `register` command will register `$HOME/.cryptocracy/user.pub` as the public_key_file for the user.
 
+---
+
 #### Register Cloud Service Provider (CSP) with the Key Authority
-For a Cloud Service Provider, the registration procedure is almost the same as for a user.
+For a *Cloud Service Provider*, the registration procedure is almost the same as for a user.
 
 First the CSP generates a key pair:
 
@@ -174,15 +185,27 @@ Then, the CSP registers its public key with the Key Authority:
 {'error': None, 'result': <RESULT.SUCCESS: 1>, 'user_id': 'cryptocracy@amazonaws.com', 'user_public_key': 'eJw9UUEOgzAM+0rFuYe6NG3YV6YJsYkbN7ZJ07S/L2kCB0JlJ7bTfod5fi/ba53n4RKulGIgjqG1GHiKAWheGIKWGCZFE2sZBZFDJUEVAA4KnSctp4i2I2cneDSDSaXFlAWj3gFT42x/Es8iRJ2sofubTHJWkMqO6gKAJqumAWSj1akLw2cVaD1j9mFFSObaaKqsGh6w52cngHTuRr5R0bCqjeINLR15yHRqdVqDaUC/FNglnh9uMci7PLZl3/u7DPfPc92H3x/NUVKO'}
 ```
 
+---
+
 #### Add an ABE Decryption Key for the User
 
-The Key Authority defines attributes for the user and adds their key to the system.
+The *Key Authority* defines attributes for the user and adds their key to the system.
 In this example Alice is given the attribute `human` in her proxy key so that she will be able to decrypt `hello.enc` which has the policy `(human or earthling)`.
 
 ```bash
 (KA)src/delivery/cli$ ./cryptocracy add user alice@a.com '["human", "female", "age=25"]'
 {'user_id': 'alice@a.com', 'result': <RESULT.SUCCESS: 1>}
 ```
+
+#### Download a ciphertext
+
+Using the download URL given by the Data Owner, a alice can try to download the ciphertext.
+
+```bash
+(User)src/delivery/cli$ ./cryptocracy download
+```
+
+
 
 ## Disclaimer
 

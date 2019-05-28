@@ -20,7 +20,7 @@ class GenerateKeyPairUseCase(object):
         return {"result": RESULT.SUCCESS,
                 "public_key_file": request.public_key_file,
                 "public_key": pk,
-                "secret_key_file": request.secret_key_file,
+                "secret_key_b64": request.secret_key_file,
                 "secret_key": sk}
 
 

@@ -7,12 +7,13 @@ Usage: cryptocracy setup [options]
        cryptocracy list (user|file) [options]
        cryptocracy revoke user <email_address> [options]
        cryptocracy encrypt <input_file> <policy_expression> <output_file> [options]
-       cryptocracy decrypt <file> [options]
+       cryptocracy decrypt <file> [--secret-key-file=<secret_key_b64>] [options]
        cryptocracy upload <source_url> [<dest_key>] [options]
        cryptocracy download <url> <user_id> [options]
 
 Options:
   --params=FILE                  Path to the scheme public parameters file to use for CLI commands. [default: $HOME/.cryptocracy/params]
+  --msk=FILE                     Path to the master secret key for the scheme. [default: $HOME/.cryptocracy/msk]
   --public-key-file=<pku>        Destination path for user public key generation [default: $HOME/.cryptocracy/user.pub]
   --secret-key-file=<sku>        Destination path for user secret key generation [default: $HOME/.cryptocracy/user.key]
   --email-address=ADDRESS        Identity of the caller for upload download commands.
@@ -24,6 +25,7 @@ Options:
 import functools
 
 from src.boundaries.key_authority_service import KeyAuthorityService
+from src.use_cases.decrypt_file import DecryptUseCase, DecryptRequest
 
 __version__ = '0.1.0'
 
@@ -58,42 +60,52 @@ def main():
          list_users,
          download_file,
          encrypt_file,
-         upload_file) = init_use_cases()
+         upload_file,
+         decrypt_file) = init_use_cases()
 
         cryptocracy_home = create_cryptocracy_home()
 
-        arguments = docopt(__doc__, version=__version__)
-        if arguments['--verbose']:
-            print(arguments)
-        user_id = arguments['<email_address>']
+        args = docopt(__doc__, version=__version__)
+        if args['--verbose']:
+            print(args)
+        user_id = args['<email_address>']
         response = "Coming soon..!"
-        if arguments['setup']:
+        if args['setup']:
             response = setup.run(SetupRequest())
             save_setup(cryptocracy_home, response)
-        if arguments['generate'] and arguments['keypair']:
-            response = generate_key_pair.run(GenerateKeyPairRequest(params=load(arguments['--params']),
-                                                                    public_key_file=arguments['--public-key-file'],
-                                                                    secret_key_file=arguments['--secret-key-file']))
-        if arguments['register']:
+        if args['generate'] and args['keypair']:
+            response = generate_key_pair.run(GenerateKeyPairRequest(params=load(args['--params']),
+                                                                    public_key_file=args['--public-key-file'],
+                                                                    secret_key_file=args['--secret-key-file']))
+        if args['register']:
             response = register_user.run(RegisterUserRequest(user_id=user_id,
-                                                  pku_b64=load(arguments['--public-key-file'])))
-            if arguments['add']:
-                response = add_user.run(AddUserRequest(user_id=user_id, attributes=arguments['<attributes_json_array>']))
-            elif arguments['revoke']:
+                                                             pku_b64=load(args['--public-key-file'])))
+        if args['user']:
+            if args['add']:
+                response = add_user.run(AddUserRequest(msk=load(args['--msk']),
+                                                       params=load(args['--params']),
+                                                       user_id=user_id,
+                                                       attributes=args['<attributes_json_array>']))
+            elif args['revoke']:
                 response = revoke_user.run(RevokeUserRequest(user_id=user_id))
-            elif arguments['list']:
+            elif args['list']:
                 response = list_users.run(ListUsersRequest())
-        if arguments['upload']:
-            response = upload_file.run(UploadFileRequest(arguments['<source_url>']))
-        if arguments['download']:
-            response = download_file.run(DownloadFileRequest(user_id=arguments['<user_id>'],
-                                                             request_url=arguments['<url>']))
-        if arguments['encrypt']:
+        if args['upload']:
+            response = upload_file.run(UploadFileRequest(args['<source_url>']))
+        if args['download']:
+            response = download_file.run(DownloadFileRequest(user_id=args['<user_id>'],
+                                                             request_url=args['<url>']))
+        if args['encrypt']:
             response = encrypt_file.run(
-                EncryptFileRequest(input_file=arguments['<input_file>'],
-                                   policy_expression=arguments['<policy_expression>'],
-                                   output_file=arguments['<output_file>'],
-                                   params=load(arguments['--params'])))
+                EncryptFileRequest(input_file=args['<input_file>'],
+                                   policy_expression=args['<policy_expression>'],
+                                   output_file=args['<output_file>'],
+                                   params=load(args['--params'])))
+        if args['decrypt']:
+            request = DecryptRequest(secret_key_b64=load(args['--secret-key-file']),
+                                     partial_ct_b64=load(args['<file>']),
+                                     output_file=args['<file>'])
+            response = decrypt_file.run(request)
 
         print(response)
     except Exception as err:
@@ -122,6 +134,7 @@ def init_use_cases():
                                         abe_scheme=abe_scheme)
 
     encrypt_file = EncryptFileUseCase(abe_scheme)
+    decrypt_file = DecryptUseCase(abe_scheme)
     return (setup,
             generate_key_pair,
             register_user,
@@ -130,7 +143,8 @@ def init_use_cases():
             list_users,
             download_file,
             encrypt_file,
-            upload_file)
+            upload_file,
+            decrypt_file)
 
 
 def save_setup(cryptocracy_home, response):

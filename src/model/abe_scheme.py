@@ -13,9 +13,7 @@ class NullCipher(object):
     def user_keygen(self, pk, mk, object):
         raise NotImplementedError
 
-    def proxy_keygen(self, cloud_server_public_key,
-                     user_public_key,
-                     attribute_list):
+    def proxy_keygen(self, master_secret_key, params, cloud_server_public_key, user_public_key, attribute_list):
         raise NotImplementedError
 
     def encrypt(self, plaintext, policy_expression):
@@ -48,10 +46,12 @@ class CharmHybridABE(object):
         pk, sk = self._cpabe.ukgen(params)
         return objectToBytes(pk, self._cpabe.group), objectToBytes(sk, self._cpabe.group)
 
-    def proxy_keygen(self, cloud_server_public_key, user_public_key, attribute_list):
+    def proxy_keygen(self, master_secret_key, params, cloud_server_public_key, user_public_key, attribute_list):
         pkcs = bytesToObject(cloud_server_public_key, self._cpabe.group)
         pku = bytesToObject(user_public_key, self._cpabe.group)
-        proxy_key = self._cpabe.proxy_keygen(self._params, self._msk, pkcs, pku, attribute_list)
+        msk = bytesToObject(master_secret_key, self._cpabe.group)
+        params = bytesToObject(params, self._cpabe.group)
+        proxy_key = self._cpabe.proxy_keygen(params, msk, pkcs, pku, attribute_list)
         return objectToBytes(proxy_key, self._cpabe.group)
 
     def encrypt(self, params, plaintext, policy_expression):
@@ -77,9 +77,10 @@ class CharmHybridABE(object):
     def decrypt(self, user_private_key, partial_ct_b64):
         sku = bytesToObject(user_private_key, self._cpabe.group)
         partial_ct = bytesToObject(partial_ct_b64, self._cpabe.group)
-        symm_key = self._cpabe.decrypt(self._params, sku, partial_ct['v'])
-        if symm_key is False:
-            raise Exception("failed to decrypt!")
+        # public scheme params are not required for decrypt
+        symm_key = self._cpabe.decrypt(None, sku, partial_ct['v'])
+        if not symm_key:
+            raise DecryptionFailed("ERROR: failed to decrypt!")
         cipher = AuthenticatedCryptoAbstraction(sha2(symm_key))
         return cipher.decrypt(partial_ct['c2'])
 
