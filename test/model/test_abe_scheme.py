@@ -10,7 +10,7 @@ from src.model.policy_expression_spec import attributes
 
 class TestCipher(unittest.TestCase):
 
-    @settings(max_examples=30, deadline=350)
+    @settings(max_examples=30, deadline=None)
     @given(plaintext=binary(min_size=1),
            user_id=emails(),
            attribute_list=lists(attributes(), min_size=1))

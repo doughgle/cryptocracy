@@ -38,7 +38,7 @@ $ export AWS_SECRET_ACCESS_KEY="BAR"
 $ export AWS_DEFAULT_REGION="ap-southeast-1"
 ```
 
-#### Create the infrastructure
+### Create the infrastructure
 
 From the terraform-infra directory, execute the following commands to setup the infrastructure for Cryptocracy.
 ```bash
@@ -71,9 +71,11 @@ $ export CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME=proxy-key-table-playground
  
 See [Terraform README](terraform-infra/README.md) for more details.
 
-#### Setup the Key Authority
+---
 
-The following steps are executed on a *Key Authority machine*.
+### Setup the Key Authority
+
+The following steps are executed on a *Key Authority machine* `(KA)`.
 
 ```bash
 (KA)src/delivery/cli$ ./cryptocracy setup
@@ -98,9 +100,9 @@ They can also generate a user key pair.
 
 ---
 
-#### Encrypt your first file
+### Encrypt your first file
 
-The following steps are executed on a *Data Owner's machine*.
+The following steps are executed on a *Data Owner's machine* `(DO)`.
 
 First, we need to get the public scheme parameters from the bucket.
 Since the public parameters are in plaintext, we can simply download using the url given by the Key Authority.
@@ -134,7 +136,7 @@ That's convenient for transport and storage!
 eJztVk1vGzcQ/SuCTg2gA8nlZ4AcFDmJHEQJ2rpF4TpYrPVlAbLjSkra1PB/L998rJRb00sPyWGlXXI4nJn33pAPw7kbPh08DG/36/o/3B92Tx+uhue/XtWvq+H6+ebd7HZ69+ky/zi9XC1fxxIm62fProajOjt7d/YCdg4fk839zXJ3sfzrwEuvV2d/v/zt/PL12d6HafNHsx1fzP7UpeM3r2BmHuvXcLFZL/cH3d44Z1dNSCWErkvWLVbBzYtfxXSd56lrukVc5tiFRbeyC2uSLdb4sFr5xXUy3i3gsdv22Uxn40n783Tsho91Ym4p2wn9tu182+33bQvb68+H5R5r2/ZTt/24pNHfgx0NQh4NYhwNchkNrK0v1tS3HEaD5EeDkjBQR1MdCPXJRsywJll81JFQTT0cuPpRMkbrwhT5sYYWiYeEaVMXZPJNP3Uo1JcMvwG21XGqi2L1mRoOBQH6xJHgoeUWMRoxqk9wGCyyOpymlJzshPiQXzDsxCcNyPFO5CDqDOJGsigFtmDTzANYT0nRLnBq2UeIkgZKQyHXd9+IlTX0RhHV8WzZEwLoU87iqOExKi2clCJpEk4SMibwnhteQfUn35iBOXI5QpR6VIzkeyxn5lppFhSME3tC3Yslwuo9wQTkABq0j3VSPDIBDDzccJRUC5rWMIiNmnlUmmU25dIhSy/lC0E3AYeAN1UEoGNR1hIhymjfQx+T9n63uV3+W3kg3pBlX+ucJJfkA4xlvhmGkOuNQJwVWgatTo8J8u8LIeyMJ8qJ8kALqCmqQpywXF/a1fM4b9jIHsSiLFWlLYxwCjCy2hoRrSkSJQWVpeIcV1AJFWErQ2VZgkG4TA1B1Ed+AXOQf8iLasSqB/WzoMVTVnhWTvoNLQD4cJvtF8jdf9hu5p/b2vK08/1w8/G2uxt82A2W3e5ws93crZ8AwXnbHQ67PWE8/WU2fgskvxLuKCGSmkT6qFGWNkRgUSFES1RkJ1ViipNIMncZUVlQfKRjhr5pROkGwDLLxkQkm7VZWAWUf0Ac0IFo7owMc8dT4qHcRdlKGyXpjNiDNR0VXjkCUP+sqvlSYUVkSbsxuF5aKh8R0sGpcSTpFUFPCWmY8ELUtVE7Qzg2fnoI8a8XaJJGC6YRi+SMQE1Ji1m7skwy/1F26r1WkjfauAVfr+ZW+r508HxaipL6chjWL/VtkUTWBsFANMdgWABSvKLokl7jsW/DOspJk/Wotf1Rq6JmGgiQWE+neJIZZopjL6Rats96EjlJOmt3ojA8MyUKJ3D6nGrzfcXkxfini+mb87evvkvtG5Ca8kWP6hxVG335+XYj0PhGdZdYGUWoTqdI6Wsmd8osN7SkkrYSeArHw1DuLkkK2ZwCQzV2uiroacc3CrnygcX9NZWcQWZ6oGe9A2a5b3D4epZrp0iSGG8hCBRzPNkgP+zk9cqj0Zn+Hkiks2qv5GMi+/6nHOE6vcf819vMd839z5p7fPwHAAbsGQ==
 ```
 
-#### Upload the ciphertext
+### Upload the ciphertext
 Now it's encrypted, we can safely upload it to our object store:
 
 ```bash
@@ -146,9 +148,9 @@ The upload command responds with an expiring URL which can be shared with others
 
 ---
 
-#### Register User with the Key Authority
+### Register User with the Key Authority
 
-On the *User's machine*, the user must first generate a key pair:
+On the *User's machine* `(User)`, the user must first generate a key pair:
 
 ```bash
 (User)src/delivery/cli$ ./cryptocracy generate keypair
@@ -168,8 +170,8 @@ By default, the `register` command will register `$HOME/.cryptocracy/user.pub` a
 
 ---
 
-#### Register Cloud Service Provider (CSP) with the Key Authority
-For a *Cloud Service Provider*, the registration procedure is almost the same as for a user.
+### Register Cloud Service Provider (CSP) with the Key Authority
+For a *Cloud Service Provider* `(CSP)`, the registration procedure is almost the same as for a user.
 
 First the CSP generates a key pair:
 
@@ -187,9 +189,9 @@ Then, the CSP registers its public key with the Key Authority:
 
 ---
 
-#### Add an ABE Decryption Key for the User
+### Add an ABE Decryption Key for the User
 
-The *Key Authority* defines attributes for the user and adds their key to the system.
+The *Key Authority* `(KA)` defines attributes for the user and adds their key to the system.
 In this example Alice is given the attribute `human` in her proxy key so that she will be able to decrypt `hello.enc` which has the policy `(human or earthling)`.
 
 ```bash
@@ -197,16 +199,36 @@ In this example Alice is given the attribute `human` in her proxy key so that sh
 {'user_id': 'alice@a.com', 'result': <RESULT.SUCCESS: 1>}
 ```
 
-#### Download a ciphertext
+### Download a ciphertext
 
-Using the download URL given by the Data Owner, a alice can try to download the ciphertext.
+Using the download URL given by the Data Owner, Alice can try to download the ciphertext. If Alice is authorised, 
+Cryptocracy will respond with a download URL which can be used with `curl`, `wget` or in the web browser to download the 
+partially decrypted ciphertext.    
 
 ```bash
-(User)src/delivery/cli$ ./cryptocracy download
+(User)src/delivery/cli$ ./cryptocracy download 'https://encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/hello.enc?AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C&Signature=mwICvgV79noEI3NiVblUJjbwdT0%3D&Expires=1559137356' alice@a.com
+{'content': None, 'message': None, 'download_url': 'https://object-cache-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/d21393c5208d68339b19a45e07aca4477d7ef1a35317b54bb370b211073d4b14?Expires=1559138257&Signature=YNVu0%2BJySuUFENykN9D4oCWk1nU%3D&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C', 'result': <RESULT.SUCCESS: 1>, 'status': <STATUS.OK: 1>}
 ```
 
+In this example, she downloads the file to `~/Downloads`.
 
+### Decrypt the ciphertext
+
+Finally, Alice can decrypt the ciphertext using her secret key.
+
+```bash
+(User)src/delivery/cli$ ./cryptocracy decrypt ~/Downloads/d21393c5208d68339b19a45e07aca4477d7ef1a35317b54bb370b211073d4b14 --secret-key-file ~/.cryptocracy/alice.key
+{'message': '', 'status': <STATUS.OK: 1>, 'result': <RESULT.SUCCESS: 1>, 'output_file': '~/Downloads/d21393c5208d68339b19a45e07aca4477d7ef1a35317b54bb370b211073d4b14'}
+```
+
+Success! Inspecting the `output_file`, we can see the original message
+that only `(human or earthling)` were authorised to read.
+
+```bash
+(User)src/delivery/cli$ cat ~/Downloads/d21393c5208d68339b19a45e07aca4477d7ef1a35317b54bb370b211073d4b14
+hello world
+```
 
 ## Disclaimer
 
-This software is licensed with LGPL-3.0. Consider carefully if it may be fit for your purpose. Always read the license.
+This software is licensed with LGPL-3.0. Consider carefully if it may be fit for your purpose. Always read the [license](LICENSE).

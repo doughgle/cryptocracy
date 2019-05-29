@@ -33,9 +33,9 @@ Notice that the sub-command init-db is available.
 ## Start the server
 
 ```bash
-key_authority/ka_service$ export FLASK_APP=ka_service
-key_authority/ka_service$ export FLASK_ENV=development
-key_authority/ka_service$ flask run
+key_authority$ export FLASK_APP=ka_service
+key_authority$ export FLASK_ENV=development
+key_authority$ flask run
  * Serving Flask app "ka_service" (lazy loading)
  * Environment: development
  * Debug mode: on
@@ -43,4 +43,5 @@ key_authority/ka_service$ flask run
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 321-385-633
+127.0.0.1 - - [29/May/2019 21:24:53] "POST /register HTTP/1.1" 200 -
 ```
