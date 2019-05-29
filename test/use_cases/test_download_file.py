@@ -17,8 +17,8 @@ class DownloadFileTest(unittest.TestCase):
         pku_eve, sku_eve = abe_scheme.user_keygen(params)
         pkcs, skcs = abe_scheme.user_keygen(params)
         # key authority adds users
-        alice_key = abe_scheme.proxy_keygen(pkcs, pku_alice, attribute_list=["Singaporean", "female"])
-        eve_key = abe_scheme.proxy_keygen(pkcs, pku_eve, attribute_list=["British", "female"])
+        alice_key = abe_scheme.proxy_keygen(msk, params, pkcs, pku_alice, attribute_list=["Singaporean", "female"])
+        eve_key = abe_scheme.proxy_keygen(msk, params, pkcs, pku_eve, attribute_list=["British", "female"])
 
         proxy_key_store = ProxyKeyStore()
         proxy_key_store.put("alice@dev.net", alice_key)

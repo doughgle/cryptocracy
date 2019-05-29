@@ -23,7 +23,7 @@ class TestCipher(unittest.TestCase):
 
         pku, sku = abe.user_keygen(params)
         pkcs, skcs = abe.user_keygen(params)
-        proxy_key_user = abe.proxy_keygen(pkcs, pku, attribute_list)
+        proxy_key_user = abe.proxy_keygen(msk, params, pkcs, pku, attribute_list)
         policy_expression = attribute_list[0]
 
         pt = str(plaintext, 'latin-1')
