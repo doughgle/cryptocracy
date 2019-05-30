@@ -3,7 +3,7 @@
 > Democratise cryptographic access control to your data stored in an untrusted cloud.
 
 This project is a reference design for using Attribute-Based Encryption (ABE) for the purpose of secure one-to-many file-sharing in an untrusted public cloud.
-For now, it depends on infrastructure hosted on Amazon Web Services (AWS) (you'll need an AWS account). 
+For now, it depends on infrastructure hosted on Amazon Web Services (AWS) - for that, you'll need an AWS account. In future, it will support other public clouds. It will enable you to distribute keys and decryption stages across multiple clouds.
 It leverages the popular Charm Crypto Python Framework for the Extended Proxy-Assisted Attribute-Based Encryption implementation.
 It demonstrates practical considerations and offers a starting point so that you can evaluate ABE technology for your application.
 
