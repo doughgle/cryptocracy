@@ -1,23 +1,24 @@
 #!/usr/bin/env bash
-# install charm pre-requisites
-sudo apt update
-sudo apt install git
-sudo apt install -y python3 python3-pip python3-dev python3-setuptools
-sudo apt install -y libgmp10 libgmp-dev libgmp3c2
-if [ "$(sudo ldconfig -p | grep libpbc)" ]
-then
-wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz
-tar -xvzf pbc-0.5.14.tar.gz
-( cd pbc-0.5.14 && ./configure )
-make -C ./pbc-0.5.14
-sudo make install -C ./pbc-0.5.14
-fi
-sudo apt-get install -y openssl libssl-dev
-
-# install charm tag from source (maybe query charm build first)
+# Update the package repository
+apt-get -qq update
+# Make sure python development tools are installed
+apt-get install -y python3-dev python3-setuptools
+# Install GMP (The GNU Multiple Precision Arithmetic Library)
+apt-get install -y libgmp10 libgmp-dev
+wget http://security.ubuntu.com/ubuntu/pool/universe/g/gmp4/libgmp3c2_4.3.2+dfsg-2ubuntu1_amd64.deb
+dpkg -i libgmp3c2_4.3.2+dfsg-2ubuntu1_amd64.deb
+# Install PBC (The Pairing-Based Cryptography Library)
+wget http://voltar.org/pbcfiles/libpbc0_0.5.12_amd64.deb
+wget http://voltar.org/pbcfiles/libpbc-dev_0.5.12_amd64.deb
+dpkg -i libpbc0_0.5.12_amd64.deb
+dpkg -i libpbc-dev_0.5.12_amd64.deb
+# Install OpenSSL
+apt-get install -y openssl libssl-dev
+# Download charm
 git clone https://github.com/JHUISI/charm.git
-( cd ./charm && git checkout dev && git pull )
-pip3 install -r charm/requirements.txt
-( cd ./charm && ./configure.sh --python=$(which python) --extra-cflags=-I/usr/local/include --extra-ldflags=-L/usr/local/lib )
+
+# Install charm
+pip install -r charm/requirements.txt
+(cd ./charm && ./configure.sh)
 make -C ./charm
 make install -C ./charm

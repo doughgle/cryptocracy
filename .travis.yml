@@ -5,6 +5,8 @@ python:
   - "3.5"
   - "3.6"
 cache: pip
+services:
+  - docker
 before_install:
 # Update the package repository
 - sudo apt-get -qq update
@@ -37,3 +39,6 @@ install:
 script:
 - pytest -k 'not boundaries'
 - ./terraform validate terraform-infra
+- docker build -t doughgle/cryptocracy .
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- docker push doughgle/cryptocracy
