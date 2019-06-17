@@ -7,8 +7,16 @@ RUN chmod +x install.sh
 RUN ./install.sh
 RUN pip install -r requirements.txt && pip install .
 
+# create user
+RUN useradd --create-home cryptocracy
+ARG CRYPTOCRACY_USER_HOME="/home/cryptocracy/.cryptocracy"
+RUN mkdir -p $CRYPTOCRACY_USER_HOME && \
+    chown cryptocracy:cryptocracy $CRYPTOCRACY_USER_HOME && \
+    chmod 0700 $CRYPTOCRACY_USER_HOME
+
 WORKDIR /app/cryptocracy/src/delivery/cli
 RUN chmod +x ./cryptocracy
+USER cryptocracy
 
 ENV CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME="define me"
 ENV CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME="define me"
