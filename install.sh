@@ -15,7 +15,7 @@ dpkg -i libpbc-dev_0.5.12_amd64.deb
 # Install OpenSSL
 apt-get install -y openssl libssl-dev
 # Download charm
-git clone https://github.com/JHUISI/charm.git
+git clone -b dev https://github.com/JHUISI/charm.git --depth 100
 
 # Install charm
 pip install -r charm/requirements.txt
