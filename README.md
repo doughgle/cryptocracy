@@ -202,7 +202,7 @@ First, we need to get the public scheme parameters from the bucket.
 Since the public parameters are in plaintext, we can simply download using the url given by the Key Authority.
 
 ```bash
-(User)cryptocracy@55144ac2dc63:/app/cryptocracy$ wget -O ~/.cryptocracy/params 'https://encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/params?Signature=eZ0yhKoV7cgGD2jCWyx%2FQMvHmAE%3D&Expires=1561214855&AWSAccessKeyId=AKIAJ25YUGY4JXICK2CQ'
+(User)cryptocracy@55144ac2dc63:/app/cryptocracy$ wget -O ~/.cryptocracy/params 'https://encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/params?Signature=eZ0yhKoV7cgGD2jCWyx%2FQMvHmAE%3D&Expires=1561214855&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C'
 ```
 
 The user must first generate a key pair:
