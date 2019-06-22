@@ -9,6 +9,7 @@ It demonstrates practical considerations and offers a starting point so that you
 
 [![Build Status](https://travis-ci.com/doughgle/cryptocracy.svg?branch=master)](https://travis-ci.com/doughgle/cryptocracy)
 [![Tested with Hypothesis](https://img.shields.io/badge/hypothesis-tested-brightgreen.svg)](https://hypothesis.readthedocs.io/)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/doughgle/cryptocracy.svg)](https://cloud.docker.com/repository/docker/doughgle/cryptocracy/builds)
 
 ## Features
 
@@ -21,18 +22,13 @@ It demonstrates practical considerations and offers a starting point so that you
 ## Requirements
 
 + An AWS account
-+ Linux (tested on Ubuntu 16.04)
++ Docker for Linux
 + Terraform
-+ Python >= 3.4
-+ Charm Crypto Library (and its pre-requisite libraries)
 
 ## Getting Started
 
-First install Python, the pre-requisite and the Charm-Crypto library.
-Refer to `install.sh` for installation steps.
- 
-Define your AWS creds. In this example, as environment variables. See AWS docs for alternatives.  
-```sh
+Define your AWS creds. In this example, as environment variables. See the AWS docs for alternatives.  
+```bash
 $ export AWS_ACCESS_KEY_ID="FOO"
 $ export AWS_SECRET_ACCESS_KEY="BAR"
 $ export AWS_DEFAULT_REGION="ap-southeast-1"
@@ -59,6 +55,12 @@ object_store_bucket_name = encrypted-files-playground-cab79872-ccda-4987-8115-d0
 proxy_key_store_table_name = proxy-key-table-playground
 ```
 
+> `object_store_bucket_name` stores encrypted files (ciphertexts).
+
+> `object_cache_bucket_name` stores user-specific, partially-decrypted ciphertexts.
+
+> `proxy_key_store_table_name` stores user-specific, Attribute-Based Encryption (ABE) proxy decryption keys. 
+
 Copy the values from the Terraform outputs and create environment variables for each one.
 Note that variable names are capitalised and prefixed with `CRYPTOCRACY`.
 Also remember not to put spaces between variable name and value.  
@@ -75,23 +77,37 @@ See [Terraform README](terraform-infra/README.md) for more details.
 
 ### Setup the Key Authority
 
+Pull the Cryptocracy docker image and run it with a shell as the entry process 
+and the names of the environment variables you exported earlier:
+
+```bash
+$ docker run --env AWS_DEFAULT_REGION \
+             --env AWS_ACCESS_KEY_ID \
+             --env AWS_SECRET_ACCESS_KEY \
+             --env CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME \
+             --env CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME \
+             --env CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME \
+             -it doughgle/cryptocracy bash
+```
+
 The following steps are executed on a *Key Authority machine* `(KA)`.
 
 ```bash
-(KA)src/delivery/cli$ ./cryptocracy setup
+(KA)cryptocracy@c592c9a96d34:/app/cryptocracy$ cryptocracy setup
 ```
 
 This will generate 2 files - `params` and `msk`.
 > `params` is the public parameters for the scheme.
+
 > `msk` is the master secret key for the scheme.
 
 It will put them in your Cryptocracy home directory (`$HOME/.cryptocracy` by default).
 The Key Authority can now share the public parameters file with all of the users of Cryptocracy.
 
-Here, we'll upload it to our S3 bucket:
+Here, we'll upload `params` to our S3 bucket:
 
-```bash
-(KA)src/delivery/cli$ ./cryptocracy upload ~/.cryptocracy/params 
+```commandline
+(KA)cryptocracy@c592c9a96d34:/app/cryptocracy$ cryptocracy upload $HOME/.cryptocracy/params 
 {'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-cab79872-ccda-4987-8115-d024dd19618d.s3.amazonaws.com/params?Signature=9DIXUT0PLP83TVH2REWVTLSVDQAFZIW&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C&Expires=1554989651'}
 ```
 
@@ -104,18 +120,31 @@ They can also generate a user key pair.
 
 The following steps are executed on a *Data Owner's machine* `(DO)`.
 
+Again, pull the Cryptocracy docker image and run it with a shell as the entry process 
+and the names of the environment variables you exported earlier:
+
+```bash
+$ docker run --env AWS_DEFAULT_REGION \
+             --env AWS_ACCESS_KEY_ID \
+             --env AWS_SECRET_ACCESS_KEY \
+             --env CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME \
+             --env CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME \
+             --env CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME \
+             -it doughgle/cryptocracy bash
+```
+
 First, we need to get the public scheme parameters from the bucket.
 Since the public parameters are in plaintext, we can simply download using the url given by the Key Authority.
 
 ```bash
-(DO)$ wget 'https://encrypted-files-playground-cab79872-ccda-4987-8115-d024dd19618d.s3.amazonaws.com/params?Signature=9DIXUT0PLP83TVH2REWVTLSVDQAFZIW&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C&Expires=1554989651' -O ~/.cryptocracy/params
+(DO)cryptocracy@7cbd4d44ae20:~$ wget -O $HOME/.cryptocracy/params 'https://encrypted-files-playground-cab79872-ccda-4987-8115-d024dd19618d.s3.amazonaws.com/params?Signature=9DIXUT0PLP83TVH2REWVTLSVDQAFZIW&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C&Expires=1554989651'
 ```
 
 Let's start from the beginning. 
 We'll create a file `hello` with the plaintext contents `hello world`:
 
 ```bash
-(DO)src/delivery/cli$ echo "hello world" > hello
+(DO)cryptocracy@7cbd4d44ae20:~$ echo 'hello world' > hello
 ```
 
 Now we can encrypt our plaintext `hello` with a policy expression.
@@ -124,23 +153,23 @@ we'll specify an access policy of `(human or earthling)`.
 We'll output the resulting ciphertext to `hello.enc`.
 
 ```bash
-(DO)src/delivery/cli$ ./cryptocracy encrypt hello '(human or earthling)' hello.enc
-{'result': <RESULT.SUCCESS: 1>, 'output_file': 'hello.enc'}
+(DO)cryptocracy@7cbd4d44ae20:~$ cryptocracy encrypt hello '(human or earthling)' hello.enc
+{'output_file': 'hello.enc', 'result': <RESULT.SUCCESS: 1>}
 ``` 
 
 Inspecting the ciphertext, you can see that its base64 encoded.
 That's convenient for transport and storage!
 
 ```bash
-(DO)src/delivery/cli$ cat hello.enc ; echo
-eJztVk1vGzcQ/SuCTg2gA8nlZ4AcFDmJHEQJ2rpF4TpYrPVlAbLjSkra1PB/L998rJRb00sPyWGlXXI4nJn33pAPw7kbPh08DG/36/o/3B92Tx+uhue/XtWvq+H6+ebd7HZ69+ky/zi9XC1fxxIm62fProajOjt7d/YCdg4fk839zXJ3sfzrwEuvV2d/v/zt/PL12d6HafNHsx1fzP7UpeM3r2BmHuvXcLFZL/cH3d44Z1dNSCWErkvWLVbBzYtfxXSd56lrukVc5tiFRbeyC2uSLdb4sFr5xXUy3i3gsdv22Uxn40n783Tsho91Ym4p2wn9tu182+33bQvb68+H5R5r2/ZTt/24pNHfgx0NQh4NYhwNchkNrK0v1tS3HEaD5EeDkjBQR1MdCPXJRsywJll81JFQTT0cuPpRMkbrwhT5sYYWiYeEaVMXZPJNP3Uo1JcMvwG21XGqi2L1mRoOBQH6xJHgoeUWMRoxqk9wGCyyOpymlJzshPiQXzDsxCcNyPFO5CDqDOJGsigFtmDTzANYT0nRLnBq2UeIkgZKQyHXd9+IlTX0RhHV8WzZEwLoU87iqOExKi2clCJpEk4SMibwnhteQfUn35iBOXI5QpR6VIzkeyxn5lppFhSME3tC3Yslwuo9wQTkABq0j3VSPDIBDDzccJRUC5rWMIiNmnlUmmU25dIhSy/lC0E3AYeAN1UEoGNR1hIhymjfQx+T9n63uV3+W3kg3pBlX+ucJJfkA4xlvhmGkOuNQJwVWgatTo8J8u8LIeyMJ8qJ8kALqCmqQpywXF/a1fM4b9jIHsSiLFWlLYxwCjCy2hoRrSkSJQWVpeIcV1AJFWErQ2VZgkG4TA1B1Ed+AXOQf8iLasSqB/WzoMVTVnhWTvoNLQD4cJvtF8jdf9hu5p/b2vK08/1w8/G2uxt82A2W3e5ws93crZ8AwXnbHQ67PWE8/WU2fgskvxLuKCGSmkT6qFGWNkRgUSFES1RkJ1ViipNIMncZUVlQfKRjhr5pROkGwDLLxkQkm7VZWAWUf0Ac0IFo7owMc8dT4qHcRdlKGyXpjNiDNR0VXjkCUP+sqvlSYUVkSbsxuF5aKh8R0sGpcSTpFUFPCWmY8ELUtVE7Qzg2fnoI8a8XaJJGC6YRi+SMQE1Ji1m7skwy/1F26r1WkjfauAVfr+ZW+r508HxaipL6chjWL/VtkUTWBsFANMdgWABSvKLokl7jsW/DOspJk/Wotf1Rq6JmGgiQWE+neJIZZopjL6Rats96EjlJOmt3ojA8MyUKJ3D6nGrzfcXkxfini+mb87evvkvtG5Ca8kWP6hxVG335+XYj0PhGdZdYGUWoTqdI6Wsmd8osN7SkkrYSeArHw1DuLkkK2ZwCQzV2uiroacc3CrnygcX9NZWcQWZ6oGe9A2a5b3D4epZrp0iSGG8hCBRzPNkgP+zk9cqj0Zn+Hkiks2qv5GMi+/6nHOE6vcf819vMd839z5p7fPwHAAbsGQ==
+(DO)cryptocracy@7cbd4d44ae20:~$ cat hello.enc ; echo
+eJztV8luE0EQ/RVrTiD50D3T1QsSB2MQRpAgwiaB0Wg8niSWHIhss4TI/07X1jY34AbiYLu3qeW9VzXt26qvq3uj2+pqe5F/q+1uc+92Xk2ePZ7nqRmP5tXJ84ePcFLj5MkbHM6r8wf99fnNy9XJ6c3y8vtpl96en315cf/+vMJT09X15bB5NXzb8enXZ2524d3CPrQvplfd0+W7b4vhK57e5/NVty6+ZyeTaftyNqlxfbm6GLY73eqWnet9akI3QA1L2yyHtGigX5jamtoDpABL8L2Pi/48xR5C6GNXBxsH2/VdqvbZZG8p22l7vVldDTRu237dbbdti44WN7thi77b9ku3/jzQ6nuXxiOI41Fs8seNRynPUwbHWj8e+YiDPIsZoZQnAfKCwYW8mwLu5uc8DfIRyIMY2Jg1IEdqm3fQfOKjwbNBa/JGcGLV5gHkVRf5FOAmztGE8XySfFNoGRcONIpPPpM4TnrIWvaJ/kIQf2g+kJFwiMbl6ILFRUTCsnNrIseJxpzCgllh8pgqPoJjtKkmQhQs6AvdE4AEggSOawZhy6a8/YDcXX9ar/qbNmtBJXHn8vNV93H0aTMaus3ucr36eHEXyRN6/4xk5hMRb/jD3HgO3R0j6YQsMEKnhZKYEw4l5RQFThIDIE02qQiQVWAcyTZBYBuxFRQf3AdChxRTswekAVEqAmGlRfbrPcNP4yjcUJzR8Ar+4kcZjE5UwF9oEbdYyCB6SBxpUlJrVi/GkEpaRvXlRE5stVGlBVZCtD/RPP1VwjBxJIzURNIpqlGzVFGiXV+KNohuaYYwRqWDYCaYasNRIi8gVYAokUWjpZUK544BKfRQpdQKIMZAHDWMRARRUJRiRldYu1Ty+FgsUMljQpxl0tk0BQlsgUVBepGQuaYwvCAC9kncUrLUPKycc6UIEcTindIkjFBILFvpB6UCjlUPIlySfpQ4qBdaWQBRbNJmlRhUkk0tedKuMMBBR43cHFeEssJaM4dgtIeAdE607LXNgaKFVoPsJGmnBA3qh0BHvF0j9cRgoF8seO0G/FCQPmaOPVN42k6gNNTSJr12wEYaiyk6bOQrieYIcStNWiqlb7vdbrOlenk0OXs1e/bk9DFWxv9+9/f0u9+/gEjLACXAJZUHiKYjHLpAVOkh6hxnlBkBXcsbGFMKpbkBI4nhkvmkpW7lQlELCEEgb8RUUnQbSZ2vJsBOqBioOoI241T6NsiI+mEqe0dXEGogWjTh+DJhtI9Rn1HD1GodR8pp6zWLJIfn8OlUNN7o3SRJdz3m6kNmZfb6ZHL6v8T+4RJD/2C0XYurEim/B2w4aNEX+aFzqjx9gajyvb5wgvx38EoGFajeqcuFgC/WwNYIeiP3fvKclAy+v5jDnwV6oTLJQbYwRH4xCdNBWCR1RBWZvnMYZb0hOMmI5BqURPqLcnzDF/aQLcqslncWqJzc4Z9KkjsVNyAQqpJU2H6//wELLOvq
 ```
 
 ### Upload the ciphertext
 Now it's encrypted, we can safely upload it to our object store:
 
 ```bash
-(DO)src/delivery/cli$ ./cryptocracy upload hello.enc 
+(DO)cryptocracy@7cbd4d44ae20:~$ cryptocracy upload hello.enc 
 {'result': <RESULT.SUCCESS: 1>, 'url': 'https://encrypted-files-playground-b60f37bb-ee49-41d4-91a4-26ebde416e61.s3.amazonaws.com/hello.enc?Signature=v6THLqiGQ6HhD8Yxof%2FHlAtn9yQ%3D&Expires=1555080419&AWSAccessKeyId=QOJC73Y43KCG0B45H5W1C'}
 ```
 
@@ -150,11 +179,37 @@ The upload command responds with an expiring URL which can be shared with others
 
 ### Register User with the Key Authority
 
-On the *User's machine* `(User)`, the user must first generate a key pair:
+Exit the container.
+```bash
+cryptocracy@7cbd4d44ae20:~$ exit
+exit
+```
+
+To simulate the *User's machine* `(User)`, pull the Cryptocracy docker image and run it with a shell as the entry process 
+and the names of the environment variables you exported earlier:
 
 ```bash
-(User)src/delivery/cli$ ./cryptocracy generate keypair
-{'secret_key_file': '$HOME/.cryptocracy/user.key', 'result': <RESULT.SUCCESS: 1>, 'secret_key': b'eJwtjjEOwzAIRa+CPDOYJDa4V4kiK628ZXMTqap693ySDoAfH775hlqPddtbreFB82RMCVGUSaQwWUSIw8SkA9QMiIDsKqCgKlZkiD42erJb1vE/e1vhYcU7ME+wMlS9vAH+c5aFCQe9trX366Dw/LxbD78TeyUjwg==', 'public_key': b'eJw1UUFOxDAM/ErUcw6ZNk4cvoJW1YL2trcCEkL8HY9tDm4Tj8czdn628/y6Pz8f57m9lFdptYjWMlYty2JILYpa0GYk0YYhdgEOKzVILTuVCcKw07QSPTKI7NZ1ehdm9iSvlQfWAZ04e9ltkuBqTjeGGNxXqkn8XVF7BID0wSZCymDWPp122x4wW/cjExyNpSqhG3b2f7eSg6OZgEgo+4ieVhdoQedOGBxYW2zOQZnhYGiadINoCC/eG5DcDmkDt1rsXd6f9+vyd9nevj8e1/b7B9SfUpU=', 'public_key_file': '$HOME/.cryptocracy/user.pub'}
+$ docker run --env AWS_DEFAULT_REGION \
+             --env AWS_ACCESS_KEY_ID \
+             --env AWS_SECRET_ACCESS_KEY \
+             --env CRYPTOCRACY_OBJECT_CACHE_BUCKET_NAME \
+             --env CRYPTOCRACY_PROXY_KEY_STORE_TABLE_NAME \
+             --env CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME \
+             -it doughgle/cryptocracy bash
+```
+
+First, we need to get the public scheme parameters from the bucket.
+Since the public parameters are in plaintext, we can simply download using the url given by the Key Authority.
+
+```bash
+(User)cryptocracy@55144ac2dc63:/app/cryptocracy$ wget -O ~/.cryptocracy/params 'https://encrypted-files-playground-2c6b29f4-d10b-3419-ce66-a5fa80a197de.s3.amazonaws.com/params?Signature=eZ0yhKoV7cgGD2jCWyx%2FQMvHmAE%3D&Expires=1561214855&AWSAccessKeyId=AKIAJ25YUGY4JXICK2CQ'
+```
+
+The user must first generate a key pair:
+
+```bash
+(User)cryptocracy@55144ac2dc63:/app/cryptocracy$ cryptocracy generate keypair
+{'secret_key': b'eJw9jbEOgzAMRH/FyuwhDg0O/RWEIkBsbAEkVPXfew6FwWfdu5P9cTnP61hKzu5Nbjq3pTgm0GNc96XS/pWYIqbz2C2T+MZE4CKTdn8jAbnWKJqAx8CULJdgROH83b5QuEr1ZEKuT9EeiZrgQCvD9weY6SRw', 'result': <RESULT.SUCCESS: 1>, 'public_key_file': '$HOME/.cryptocracy/user.pub', 'public_key': b'eJxFULtuwzAM/BXBswfSFiUqvxIURlpky+YmQBDk33N8uB1EUbzj6cjXtG0/t8u+b9t0KtP38/e6T3NB9XG53a9ePQvNRXQu2uIwCwJZYM5nXS0BKKi0MZfuSLcAqBtMKAsqFbcuQe0j3rwYn1BVb0QyRio0UyFOKV5gZ8BObweE/81jWqKj/w8zAxTK7t8VxvEVgtRwo2gRF9H024xPmgYrkqahKEC6BF/XmGzkYa65Dl+D9fuCyNXWf/82fl9iYzbLoKSbPXdibEf56/0BHzBShA==', 'secret_key_b64': '$HOME/.cryptocracy/user.key'}
 ```
 
 By default the keypair will be created in the Cryptocracy home directory (`$HOME/.cryptocracy`) with the user identity prefix `user`.
