@@ -1,9 +1,9 @@
-from src.boundaries.object_store import ObjectStore, ObjectNotFound
-from src.model import user_id
-from src.model.abe_scheme import NullCipher, DecryptionFailed
-from src.model.exceptions import InvalidInput
-from src.model.object_cache_lookup_key import make_lookup_key
-from src.model.result import RESULT, STATUS
+from cryptocracy.boundaries.object_store import ObjectStore, ObjectNotFound
+from cryptocracy.model import user_id
+from cryptocracy.model.abe_scheme import NullCipher, DecryptionFailed
+from cryptocracy.model.exceptions import InvalidInput
+from cryptocracy.model.object_cache_lookup_key import make_lookup_key
+from cryptocracy.model.result import RESULT, STATUS
 
 
 class DownloadFileUseCase(object):

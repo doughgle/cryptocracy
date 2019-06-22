@@ -24,10 +24,10 @@ Options:
 """
 import functools
 
-from src.boundaries.key_authority_service import KeyAuthorityService
-from src.use_cases.decrypt_file import DecryptUseCase, DecryptRequest
+from cryptocracy.boundaries.key_authority_service import KeyAuthorityService
+from cryptocracy.use_cases.decrypt_file import DecryptUseCase, DecryptRequest
 
-__version__ = '0.1.0'
+__version__ = '0.1.2'
 
 import os
 import traceback
@@ -35,19 +35,19 @@ import traceback
 import requests
 from docopt import docopt
 
-from src.boundaries.object_store import AwsObjectStore
-from src.boundaries.proxy_key_store import AwsProxyKeyStore
-from src.model.abe_scheme import CharmHybridABE
-from src.model.result import RESULT
-from src.use_cases.add_user import AddUserUseCase, AddUserRequest
-from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
-from src.use_cases.encrypt_file import EncryptFileUseCase, EncryptFileRequest
-from src.use_cases.generate_key_pair import GenerateKeyPairUseCase, GenerateKeyPairRequest
-from src.use_cases.list_users import ListUsersUseCase, ListUsersRequest
-from src.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
-from src.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
-from src.use_cases.setup import SetupUseCase, SetupRequest
-from src.use_cases.upload_file import UploadFileUseCase, UploadFileRequest
+from cryptocracy.boundaries.object_store import AwsObjectStore
+from cryptocracy.boundaries.proxy_key_store import AwsProxyKeyStore
+from cryptocracy.model.abe_scheme import CharmHybridABE
+from cryptocracy.model.result import RESULT
+from cryptocracy.use_cases.add_user import AddUserUseCase, AddUserRequest
+from cryptocracy.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest
+from cryptocracy.use_cases.encrypt_file import EncryptFileUseCase, EncryptFileRequest
+from cryptocracy.use_cases.generate_key_pair import GenerateKeyPairUseCase, GenerateKeyPairRequest
+from cryptocracy.use_cases.list_users import ListUsersUseCase, ListUsersRequest
+from cryptocracy.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
+from cryptocracy.use_cases.revoke_user import RevokeUserUseCase, RevokeUserRequest
+from cryptocracy.use_cases.setup import SetupUseCase, SetupRequest
+from cryptocracy.use_cases.upload_file import UploadFileUseCase, UploadFileRequest
 
 
 def main():

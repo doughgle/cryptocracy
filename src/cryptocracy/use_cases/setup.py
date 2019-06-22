@@ -1,5 +1,5 @@
-from src.model.abe_scheme import NullCipher
-from src.model.result import RESULT
+from cryptocracy.model.abe_scheme import NullCipher
+from cryptocracy.model.result import RESULT
 
 
 class SetupUseCase(object):

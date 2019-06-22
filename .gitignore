@@ -8,3 +8,10 @@ dist
 .terraform
 *.tfstate
 terraform.tfstate.backup
+
+# DB
+*.sqlite
+
+# packaging excludes
+build/*
+dist/*

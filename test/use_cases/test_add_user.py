@@ -1,12 +1,12 @@
 import unittest
 
-from src.boundaries.key_authority_service import KeyAuthorityService
-from src.boundaries.proxy_key_store import ProxyKeyStore
-from src.model.abe_scheme import NullCipher
-from src.model.result import RESULT
-from src.use_cases.add_user import AddUserRequest
-from src.use_cases.add_user import AddUserUseCase
-from src.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
+from cryptocracy.boundaries.key_authority_service import KeyAuthorityService
+from cryptocracy.boundaries.proxy_key_store import ProxyKeyStore
+from cryptocracy.model.abe_scheme import NullCipher
+from cryptocracy.model.result import RESULT
+from cryptocracy.use_cases.add_user import AddUserRequest
+from cryptocracy.use_cases.add_user import AddUserUseCase
+from cryptocracy.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
 
 
 def test_add_user_stores_proxy_key(http_test_client):

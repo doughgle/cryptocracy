@@ -1,11 +1,11 @@
 import os
 import unittest
 
-from src.boundaries.object_store import ObjectStore
-from src.boundaries.proxy_key_store import ProxyKeyStore
-from src.model.abe_scheme import CharmHybridABE
-from src.model.result import RESULT, STATUS
-from src.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest, DownloadFileResponse
+from cryptocracy.boundaries.object_store import ObjectStore
+from cryptocracy.boundaries.proxy_key_store import ProxyKeyStore
+from cryptocracy.model.abe_scheme import CharmHybridABE
+from cryptocracy.model.result import RESULT, STATUS
+from cryptocracy.use_cases.download_file import DownloadFileUseCase, DownloadFileRequest, DownloadFileResponse
 
 
 class DownloadFileTest(unittest.TestCase):

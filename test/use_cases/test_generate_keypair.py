@@ -1,10 +1,10 @@
 import os
 import unittest
 
-from src.model import key_spec
-from src.model.abe_scheme import CharmHybridABE
-from src.model.result import RESULT
-from src.use_cases.generate_key_pair import GenerateKeyPairUseCase, GenerateKeyPairRequest
+from cryptocracy.model import key_spec
+from cryptocracy.model.abe_scheme import CharmHybridABE
+from cryptocracy.model.result import RESULT
+from cryptocracy.use_cases.generate_key_pair import GenerateKeyPairUseCase, GenerateKeyPairRequest
 
 
 class GenerateKeyPairTest(unittest.TestCase):

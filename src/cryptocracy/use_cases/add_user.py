@@ -1,8 +1,8 @@
 import json
 
-from src.model import key_spec, user_id
-from src.model.exceptions import InvalidInput
-from src.model.result import RESULT
+from cryptocracy.model import key_spec, user_id
+from cryptocracy.model.exceptions import InvalidInput
+from cryptocracy.model.result import RESULT
 
 
 class AddUserUseCase(object):

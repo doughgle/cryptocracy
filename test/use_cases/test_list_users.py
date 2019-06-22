@@ -1,8 +1,8 @@
 import unittest
 
-from src.boundaries.proxy_key_store import ProxyKeyStore
-from src.model.result import RESULT
-from src.use_cases.list_users import ListUsersUseCase, ListUsersRequest
+from cryptocracy.boundaries.proxy_key_store import ProxyKeyStore
+from cryptocracy.model.result import RESULT
+from cryptocracy.use_cases.list_users import ListUsersUseCase, ListUsersRequest
 
 
 class ListUsersTest(unittest.TestCase):

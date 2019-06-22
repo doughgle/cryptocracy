@@ -2,7 +2,7 @@ import base64
 
 from hypothesis.strategies import binary
 
-from src.model.exceptions import InvalidInput
+from cryptocracy.model.exceptions import InvalidInput
 
 
 def keys():

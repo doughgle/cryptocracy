@@ -4,13 +4,13 @@ import pytest
 from hypothesis import given
 from hypothesis._strategies import emails
 
-from src.boundaries.key_authority_service import KeyAuthorityService
-from src.model.abe_scheme import CharmHybridABE
-from src.model.exceptions import InvalidInput
-from src.model.key_spec import assert_valid as assert_valid_key
-from src.model.result import RESULT
-from src.model.user_id import assert_valid as assert_valid_user_id
-from src.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
+from cryptocracy.boundaries.key_authority_service import KeyAuthorityService
+from cryptocracy.model.abe_scheme import CharmHybridABE
+from cryptocracy.model.exceptions import InvalidInput
+from cryptocracy.model.key_spec import assert_valid as assert_valid_key
+from cryptocracy.model.result import RESULT
+from cryptocracy.model.user_id import assert_valid as assert_valid_user_id
+from cryptocracy.use_cases.register_user import RegisterUserUseCase, RegisterUserRequest
 
 
 @given(user_id=emails())

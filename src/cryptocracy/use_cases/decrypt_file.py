@@ -1,5 +1,5 @@
-from src.model.abe_scheme import DecryptionFailed
-from src.model.result import RESULT, STATUS
+from cryptocracy.model.abe_scheme import DecryptionFailed
+from cryptocracy.model.result import RESULT, STATUS
 
 
 class DecryptRequest(dict):
