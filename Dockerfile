@@ -14,7 +14,7 @@ RUN mkdir -p $CRYPTOCRACY_USER_HOME && \
     chown cryptocracy:cryptocracy $CRYPTOCRACY_USER_HOME && \
     chmod 0700 $CRYPTOCRACY_USER_HOME
 
-WORKDIR /app/cryptocracy
+WORKDIR /home/cryptocracy
 USER cryptocracy
 
 ENV CRYPTOCRACY_OBJECT_STORE_BUCKET_NAME="define me"
