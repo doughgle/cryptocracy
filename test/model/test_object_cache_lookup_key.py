@@ -1,7 +1,8 @@
 import unittest
+
 from hypothesis import given
 
-from src.model.object_cache_lookup_key import lookup_keys, assert_valid
+from cryptocracy.model.object_cache_lookup_key import lookup_keys, assert_valid
 
 
 class TestObjectCacheLookupKeySpecs(unittest.TestCase):

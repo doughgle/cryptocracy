@@ -2,7 +2,7 @@ import unittest
 
 from hypothesis import given
 
-from src.model.policy_expression_spec import policy_expressions, assert_valid
+from cryptocracy.model.policy_expression_spec import policy_expressions, assert_valid
 
 
 class TestPolicyExpressionSpec(unittest.TestCase):

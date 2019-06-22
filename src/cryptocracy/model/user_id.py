@@ -1,6 +1,6 @@
 import re
 
-from src.model.exceptions import InvalidInput
+from cryptocracy.model.exceptions import InvalidInput
 
 pattern_str = '''[a-zA-Z0-9!#$%&'*+-/=^_`{|}~]{1,64}@[a-zA-Z0-9!#$%&'*+-/=^_`{|}~]+\.(com|net||org||biz|info)'''
 pattern = re.compile(pattern_str)

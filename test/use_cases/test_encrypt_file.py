@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from src.model.result import RESULT
-from src.use_cases.encrypt_file import EncryptFileResponse, EncryptFileUseCase, EncryptFileRequest
+from cryptocracy.model.result import RESULT
+from cryptocracy.use_cases.encrypt_file import EncryptFileResponse, EncryptFileUseCase, EncryptFileRequest
 
 
 class NullAbeScheme(object):

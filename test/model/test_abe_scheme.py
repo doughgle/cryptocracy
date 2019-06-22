@@ -4,8 +4,8 @@ from hypothesis import given, settings
 from hypothesis._strategies import lists
 from hypothesis.strategies import binary, emails
 
-from src.model.abe_scheme import CharmHybridABE as ABE
-from src.model.policy_expression_spec import attributes
+from cryptocracy.model.abe_scheme import CharmHybridABE as ABE
+from cryptocracy.model.policy_expression_spec import attributes
 
 
 class TestCipher(unittest.TestCase):

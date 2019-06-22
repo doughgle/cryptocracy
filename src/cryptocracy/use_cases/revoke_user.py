@@ -1,4 +1,4 @@
-from src.model.result import RESULT
+from cryptocracy.model.result import RESULT
 
 
 class RevokeUserResponse(dict):

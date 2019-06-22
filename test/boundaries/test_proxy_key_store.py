@@ -6,8 +6,8 @@ import pytest
 from hypothesis import given, settings
 from hypothesis.strategies import emails, lists
 
-from src.boundaries.proxy_key_store import ProxyKeyStore, AwsProxyKeyStore
-from src.model.key_spec import keys
+from cryptocracy.boundaries.proxy_key_store import ProxyKeyStore, AwsProxyKeyStore
+from cryptocracy.model.key_spec import keys
 
 
 class InMemoryProxyKeyStoreTestBase(unittest.TestCase, object):

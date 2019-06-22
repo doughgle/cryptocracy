@@ -4,8 +4,8 @@ import unittest
 from hypothesis import given, settings
 from hypothesis.strategies import binary
 
-from src.boundaries.object_store import ObjectStore, AwsObjectStore
-from src.model.object_cache_lookup_key import lookup_keys
+from cryptocracy.boundaries.object_store import ObjectStore, AwsObjectStore
+from cryptocracy.model.object_cache_lookup_key import lookup_keys
 
 
 class ObjectStoreTest(unittest.TestCase):

@@ -1,7 +1,7 @@
 import os
 
-from src.boundaries.object_store import ObjectStore
-from src.model.result import RESULT
+from cryptocracy.boundaries.object_store import ObjectStore
+from cryptocracy.model.result import RESULT
 
 
 class UploadFileUseCase(object):

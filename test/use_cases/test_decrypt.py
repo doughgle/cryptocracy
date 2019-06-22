@@ -1,9 +1,9 @@
 import os
 import unittest
 
-from src.model.abe_scheme import CharmHybridABE
-from src.model.result import RESULT, STATUS
-from src.use_cases.decrypt_file import DecryptRequest, DecryptResponse, DecryptUseCase
+from cryptocracy.model.abe_scheme import CharmHybridABE
+from cryptocracy.model.result import RESULT, STATUS
+from cryptocracy.use_cases.decrypt_file import DecryptRequest, DecryptResponse, DecryptUseCase
 
 
 class DecryptTest(unittest.TestCase):

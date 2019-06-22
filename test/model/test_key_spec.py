@@ -1,7 +1,8 @@
 import unittest
+
 from hypothesis import given
 
-from src.model.key_spec import keys, assert_valid
+from cryptocracy.model.key_spec import keys, assert_valid
 
 
 class TestDataTypeSpecs(unittest.TestCase):

@@ -33,6 +33,7 @@ install:
 - make install -C ./charm
 # Install other requirements
 - pip install -r requirements.txt
+- pip install .
 - ./terraform init terraform-infra
 script:
 - pytest -k 'not boundaries'

@@ -1,6 +1,6 @@
-from src.model.key_spec import assert_valid as assert_valid_key
-from src.model.result import RESULT
-from src.model.user_id import assert_valid as assert_valid_user_id
+from cryptocracy.model.key_spec import assert_valid as assert_valid_key
+from cryptocracy.model.result import RESULT
+from cryptocracy.model.user_id import assert_valid as assert_valid_user_id
 
 
 class RegisterUserUseCase(object):

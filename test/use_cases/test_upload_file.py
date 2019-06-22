@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from src.model.result import RESULT
-from src.use_cases.upload_file import UploadFileUseCase, UploadFileRequest, UploadFileResponse
+from cryptocracy.model.result import RESULT
+from cryptocracy.use_cases.upload_file import UploadFileUseCase, UploadFileRequest, UploadFileResponse
 
 
 class UploadFileTest(unittest.TestCase):

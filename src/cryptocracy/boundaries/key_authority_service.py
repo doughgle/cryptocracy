@@ -1,5 +1,5 @@
-from src.model import key_spec
-from src.model.exceptions import InvalidInput
+from cryptocracy.model import key_spec
+from cryptocracy.model.exceptions import InvalidInput
 
 
 class KeyAuthorityService(object):

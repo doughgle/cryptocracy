@@ -1,4 +1,4 @@
-from src.model.exceptions import InvalidInput
+from cryptocracy.model.exceptions import InvalidInput
 
 
 class ProxyKeyStore(object):
