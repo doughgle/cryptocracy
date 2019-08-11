@@ -12,7 +12,7 @@ class EncryptFileUseCase(object):
                 plaintext = in_f.read()
             ciphertext = self.abe_scheme.encrypt(request.params,
                                                  plaintext,
-                                                 request.policy_expression)
+                                                 request.read_policy_expression)
             with open(request.output_file, 'wb') as out_f:
                 out_f.write(ciphertext)
             result = RESULT.SUCCESS
@@ -25,7 +25,7 @@ class EncryptFileUseCase(object):
 class EncryptFileRequest(object):
     def __init__(self, input_file, read_policy_expression, output_file, params):
         self._input_file = input_file
-        self._policy_expression = read_policy_expression
+        self._read_policy_expression = read_policy_expression
         self._output_file = output_file if output_file is not None else input_file
         self._params = params
 
@@ -38,8 +38,8 @@ class EncryptFileRequest(object):
         return self._output_file
 
     @property
-    def policy_expression(self):
-        return self._policy_expression
+    def read_policy_expression(self):
+        return self._read_policy_expression
 
     @property
     def params(self):
