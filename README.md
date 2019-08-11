@@ -256,8 +256,9 @@ In this example Alice is given the attribute `human` in her proxy key so that sh
 
 ### Download a ciphertext
 
-Using the download URL given by the Data Owner, Alice can try to download the ciphertext. If Alice is authorised, 
-Cryptocracy will respond with a download URL which can be used with `curl`, `wget` or in the web browser to download the 
+Using the download URL given by the Data Owner, Alice can try to download the ciphertext. 
+Cryptocracy evaluates the access policy of the ciphertext (`(human or earthling)`) against the attributes defined in Alice's ABE decryption key. 
+If Alice is authorised, Cryptocracy performs a partial decrypt and responds with a download URL which can be used with `curl`, `wget` or in the web browser to download the 
 partially decrypted ciphertext.    
 
 ```bash
