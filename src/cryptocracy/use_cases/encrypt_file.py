@@ -23,9 +23,9 @@ class EncryptFileUseCase(object):
 
 
 class EncryptFileRequest(object):
-    def __init__(self, input_file, policy_expression, output_file, params):
+    def __init__(self, input_file, read_policy_expression, output_file, params):
         self._input_file = input_file
-        self._policy_expression = policy_expression
+        self._policy_expression = read_policy_expression
         self._output_file = output_file if output_file is not None else input_file
         self._params = params
 
