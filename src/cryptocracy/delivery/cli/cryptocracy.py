@@ -27,7 +27,7 @@ import functools
 from cryptocracy.boundaries.key_authority_service import KeyAuthorityService
 from cryptocracy.use_cases.decrypt_file import DecryptUseCase, DecryptRequest
 
-__version__ = '0.2.2'
+__version__ = '0.2.0'
 
 import os
 import traceback
