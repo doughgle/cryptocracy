@@ -6,7 +6,7 @@ Usage: cryptocracy setup [options]
        cryptocracy add user <email_address> <attributes_json_array> [options]
        cryptocracy list (user|file) [options]
        cryptocracy revoke user <email_address> [options]
-       cryptocracy encrypt <input_file> <policy_expression> <output_file> [options]
+       cryptocracy encrypt <input_file> <read_policy_expression> <output_file> [--override-encrypt-in-place-prevention] [options]
        cryptocracy decrypt <file> [--secret-key-file=<secret_key_b64>] [options]
        cryptocracy upload <source_url> [<dest_key>] [options]
        cryptocracy download <url> <user_id> [options]
@@ -23,11 +23,12 @@ Options:
 
 """
 import functools
+import pprint
 
 from cryptocracy.boundaries.key_authority_service import KeyAuthorityService
 from cryptocracy.use_cases.decrypt_file import DecryptUseCase, DecryptRequest
 
-__version__ = '0.1.2'
+__version__ = '0.3.0'
 
 import os
 import traceback
@@ -98,16 +99,19 @@ def main():
         if args['encrypt']:
             response = encrypt_file.run(
                 EncryptFileRequest(input_file=args['<input_file>'],
-                                   policy_expression=args['<policy_expression>'],
+                                   read_policy_expression=args['<read_policy_expression>'],
                                    output_file=args['<output_file>'],
-                                   params=load(args['--params'])))
+                                   params=load(args['--params']),
+                                   encrypt_in_place=args['--override-encrypt-in-place-prevention']
+                                   )
+            )
         if args['decrypt']:
             request = DecryptRequest(secret_key_b64=load(args['--secret-key-file']),
                                      partial_ct_b64=load(args['<file>']),
                                      output_file=args['<file>'])
             response = decrypt_file.run(request)
 
-        print(response)
+        pprint.pprint(response)
     except Exception as err:
         print(err)
         traceback.print_tb(err.__traceback__)

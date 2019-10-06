@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from cryptocracy.model.result import RESULT
+from cryptocracy.model.result import RESULT, STATUS
 from cryptocracy.use_cases.encrypt_file import EncryptFileResponse, EncryptFileUseCase, EncryptFileRequest
 
 
@@ -26,10 +26,28 @@ class EncryptFileTest(unittest.TestCase):
     def test_encrypt_to_output_file(self):
         encrypt_file = EncryptFileUseCase(abe_scheme=NullAbeScheme())
         request = EncryptFileRequest(self.input_file,
-                                     policy_expression=u'((Manager and Experience > 3) or Admin)',
+                                     read_policy_expression=u'((Manager and Experience > 3) or Admin)',
                                      output_file=self.output_file,
                                      params=b'public scheme params')
         response = encrypt_file.run(request)
         expected_response = EncryptFileResponse(RESULT.SUCCESS, self.output_file)
         self.assertEqual(expected_response, response)
         os.remove(self.output_file)
+
+    def test_prevent_accident_encrypts_in_place(self):
+        encrypt_file = EncryptFileUseCase(abe_scheme=NullAbeScheme())
+        request = EncryptFileRequest(self.input_file,
+                                     read_policy_expression=u'(Human or Earthling)',
+                                     output_file=self.input_file,
+                                     params=b'public scheme params')
+        response = encrypt_file.run(request)
+        expected_response = EncryptFileResponse(RESULT.FAILURE,
+                                                self.input_file,
+                                                status=STATUS.WARNING,
+                                                message='Input file will be encrypted in-place! '
+                                                        'This may not be what you intended. '
+                                                        'Note that to decrypt the ciphertext, '
+                                                        'the cloud must perform a proxy-decrypt operation '
+                                                        "using the user's proxy key and the cloud server's private key."
+                                                )
+        self.assertEqual(expected_response, response)

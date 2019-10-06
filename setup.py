@@ -9,7 +9,7 @@ INSTALL_REQUIRES = [
 
 setup(
     name='cryptocracy',
-    version='0.1.2',
+    version='0.3.0',
     description='''Client-side attribute-based encryption (ABE)/ access control (ABAC) - 
     Democratise cryptographic access control to your data stored in an untrusted cloud.''',
     url='https://github.com/doughgle/cryptocracy',

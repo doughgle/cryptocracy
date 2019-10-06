@@ -3,7 +3,8 @@ docopt
 hypothesis
 ipython
 pylint
-pytest
+pytest==5.2.0; python_version >= '3.5'
+pytest; python_version < '3.5'
 boto3
 pytest-pylint
 Flask
