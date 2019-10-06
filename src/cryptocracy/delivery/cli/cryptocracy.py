@@ -23,6 +23,7 @@ Options:
 
 """
 import functools
+import pprint
 
 from cryptocracy.boundaries.key_authority_service import KeyAuthorityService
 from cryptocracy.use_cases.decrypt_file import DecryptUseCase, DecryptRequest
@@ -110,7 +111,7 @@ def main():
                                      output_file=args['<file>'])
             response = decrypt_file.run(request)
 
-        print(response)
+        pprint.pprint(response)
     except Exception as err:
         print(err)
         traceback.print_tb(err.__traceback__)
