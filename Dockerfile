@@ -1,4 +1,6 @@
-FROM python:3.5-stretch
+FROM python:3.5-slim-buster
+
+CMD apt-get install git wget
 
 WORKDIR /app/cryptocracy
 COPY install.sh ./
