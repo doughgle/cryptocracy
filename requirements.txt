@@ -3,7 +3,7 @@ docopt
 hypothesis
 ipython
 pylint
-pytest
+pytest==5.2.0
 boto3
 pytest-pylint
 Flask
