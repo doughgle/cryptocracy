@@ -6,7 +6,7 @@ Usage: cryptocracy setup [options]
        cryptocracy add user <email_address> <attributes_json_array> [options]
        cryptocracy list (user|file) [options]
        cryptocracy revoke user <email_address> [options]
-       cryptocracy encrypt <input_file> <read_policy_expression> <output_file> [options]
+       cryptocracy encrypt <input_file> <read_policy_expression> <output_file> [--override-encrypt-in-place-prevention] [options]
        cryptocracy decrypt <file> [--secret-key-file=<secret_key_b64>] [options]
        cryptocracy upload <source_url> [<dest_key>] [options]
        cryptocracy download <url> <user_id> [options]
@@ -27,7 +27,7 @@ import functools
 from cryptocracy.boundaries.key_authority_service import KeyAuthorityService
 from cryptocracy.use_cases.decrypt_file import DecryptUseCase, DecryptRequest
 
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 
 import os
 import traceback
@@ -100,7 +100,10 @@ def main():
                 EncryptFileRequest(input_file=args['<input_file>'],
                                    read_policy_expression=args['<read_policy_expression>'],
                                    output_file=args['<output_file>'],
-                                   params=load(args['--params'])))
+                                   params=load(args['--params']),
+                                   encrypt_in_place=args['--override-encrypt-in-place-prevention']
+                                   )
+            )
         if args['decrypt']:
             request = DecryptRequest(secret_key_b64=load(args['--secret-key-file']),
                                      partial_ct_b64=load(args['<file>']),
