@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Update the package repository
 apt-get -qq update
+
+# Install Base Tools
+apt-get install -y git wget make gcc
 # Make sure python development tools are installed
 apt-get install -y python3-dev python3-setuptools
 # Install GMP (The GNU Multiple Precision Arithmetic Library)
