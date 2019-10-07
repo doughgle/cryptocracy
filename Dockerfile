@@ -1,7 +1,5 @@
 FROM python:3.5-slim-buster
 
-CMD apt-get install git wget make
-
 WORKDIR /app/cryptocracy
 COPY install.sh ./
 RUN chmod +x install.sh && \
