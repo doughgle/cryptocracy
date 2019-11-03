@@ -76,5 +76,24 @@ Replace the `pip install` step with TestPyPI repo index
 RUN pip install --upgrade --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple cryptocracy
 ```
 
-## Use Cases
-See [use-cases.md](cryptocracy/use_cases/README.md) for use case descriptions.
+## Software Architecture
+
+The high level structure of the software draws inspiration from the books Clean Architecture (Martin, 2017) and Object-Oriented Software Engineering: A Use Case Driven Approach (Jacobson, 1992). The code is organised into Use Cases, Delivery Mechanisms, Input Specifications and Boundaries.
+
+### Use Cases
+Each use case is implemented as a function which takes a Request object and returns a Response object. Requests and responses are simply data structures with data fields that are specific to the use case. This design decouples the use cases from the delivery mechanism.
+
+See [use_cases/README.md](src/cryptocracy/use_cases/README.md) for use case descriptions.
+
+### Delivery Mechanisms
+Delivery mechanisms wrap the use cases and translate the request and response objects to and from the use cases. The delivery mechanism is technology and application specific. CLI, mobile and web delivery can co-exist with this architecture.
+
+See [delivery/README.md](src/cryptocracy/delivery/README.md) for more details.
+
+### Input Specifications
+Input specifications define the data types, formats and ranges that are valid for different inputs. Examples are encryption keys, access policy expressions, and attribute expressions.
+
+### Boundaries
+Boundaries represent the interfaces with other systems. They have well-defined interfaces which are depended upon by the Use Cases. Boundaries facilitate interaction with multiple clouds and fast testing of use case behaviour with in-memory implementations.
+
+See [boundaries/README.md](src/cryptocracy/boundaries/README.md) for more details.
