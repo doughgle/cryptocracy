@@ -14,10 +14,10 @@ class TestCipher(unittest.TestCase):
     @given(plaintext=binary(min_size=1),
            user_id=emails(),
            attribute_list=lists(attributes(), min_size=1))
-    def test_encrypt_proxy_decrypt_decrypt_round_trip(self,
-                                                      plaintext,
-                                                      user_id,
-                                                      attribute_list):
+    def test_correctness(self,
+                         plaintext,
+                         user_id,
+                         attribute_list):
         abe = ABE()
         params, msk = abe.setup()
 

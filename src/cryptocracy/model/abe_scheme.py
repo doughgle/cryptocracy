@@ -1,7 +1,7 @@
 from charm.core.engine.util import objectToBytes, bytesToObject
-from charm.core.math.pairing import hashPair as sha2, GT
+from charm.core.math.pairing import GT
 from charm.schemes.abenc.abenc_yllc15 import YLLC15
-from charm.toolbox.pairinggroup import PairingGroup
+from charm.toolbox.pairinggroup import PairingGroup, extract_key
 from charm.toolbox.symcrypto import AuthenticatedCryptoAbstraction
 
 
@@ -56,9 +56,9 @@ class CharmHybridABE(object):
 
     def encrypt(self, params, plaintext, policy_expression):
         params = bytesToObject(params, self._cpabe.group)
-        symm_key = self._cpabe.group.random(GT)
-        c1 = self._cpabe.encrypt(params, symm_key, policy_expression)
-        cipher = AuthenticatedCryptoAbstraction(sha2(symm_key))
+        rand_elem = self._cpabe.group.random(GT)
+        c1 = self._cpabe.encrypt(params, rand_elem, policy_expression)
+        cipher = AuthenticatedCryptoAbstraction(extract_key(rand_elem))
         c2 = cipher.encrypt(plaintext)
         ciphertext = {'c1': c1, 'c2': c2}
         return objectToBytes(ciphertext, self._cpabe.group)
@@ -78,10 +78,10 @@ class CharmHybridABE(object):
         sku = bytesToObject(user_private_key, self._cpabe.group)
         partial_ct = bytesToObject(partial_ct_b64, self._cpabe.group)
         # public scheme params are not required for decrypt
-        symm_key = self._cpabe.decrypt(None, sku, partial_ct['v'])
-        if not symm_key:
+        rand_elem = self._cpabe.decrypt(None, sku, partial_ct['v'])
+        if not rand_elem:
             raise DecryptionFailed("ERROR: failed to decrypt!")
-        cipher = AuthenticatedCryptoAbstraction(sha2(symm_key))
+        cipher = AuthenticatedCryptoAbstraction(extract_key(rand_elem))
         return cipher.decrypt(partial_ct['c2'])
 
 
